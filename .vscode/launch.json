@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Vintage Story",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "C:\\Games\\Vintagestory\\Vintagestory.exe",
+      "args": [],
+      "cwd": "C:\\Games\\Vintagestory",
+      "stopAtEntry": false,
+      "preLaunchTask": "build"
+    }
+  ]
+}

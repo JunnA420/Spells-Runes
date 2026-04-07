@@ -1,0 +1,12 @@
+{
+  "modid": "spellsandrunes",
+  "name": "Spells & Runes",
+  "authors": [""],
+  "description": "A client-sided magic mod adding spells and runes to Vintage Story.",
+  "version": "0.1.0",
+  "type": "code",
+  "side": "client",
+  "dependencies": {
+    "game": "1.20.0"
+  }
+}
