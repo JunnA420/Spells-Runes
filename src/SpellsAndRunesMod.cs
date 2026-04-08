@@ -85,140 +85,150 @@ public class SpellsAndRunesMod : ModSystem
                 float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
                 serverChannel?.SendPacket(new MsgStartCast { SpellId = msg.SpellId, CastTime = scaledCastTime }, player);
 
-                bool hit = spell.TryCast(entity, api.World, spellLevel);
-
-                // Broadcast FX packet with spell level for scaling
-                var fxMsg = new MsgSpellFx
+                // Schedule execution after cast time completes (in milliseconds)
+                int delayMs = (int)(scaledCastTime * 1000);
+                long taskId = 0;
+                taskId = api.Event.RegisterGameTickListener(dt =>
                 {
-                    SpellId     = msg.SpellId,
-                    OriginX     = entity.SidedPos.X,
-                    OriginY     = entity.SidedPos.Y,
-                    OriginZ     = entity.SidedPos.Z,
-                    LookDirX    = entity.SidedPos.GetViewVector().X,
-                    LookDirY    = entity.SidedPos.GetViewVector().Y,
-                    LookDirZ    = entity.SidedPos.GetViewVector().Z,
-                    SpellLevel  = spellLevel,
-                };
-                foreach (var p in api.World.AllOnlinePlayers)
-                    serverChannel?.SendPacket(fxMsg, p as IServerPlayer);
+                    api.Event.UnregisterGameTickListener(taskId);
 
-                // Base XP always, hit bonus if spell connected
-                data.AddSpellXp(msg.SpellId, spell.XpPerCast + (hit ? spell.XpPerCast / 2 : 0));
-                data.AddElementXp(spell.Element, spell.ElementXpPerCast + (hit ? 2 : 0));
+                    if (!entity.Alive) return;
 
-                // Spell-specific packets to the casting player only
-                if (msg.SpellId == "air_feather_fall")
-                    serverChannel?.SendPacket(new MsgFreezeMotion { NudgeY = 0.06f }, player);
+                    bool hit = spell.TryCast(entity, api.World, spellLevel);
 
-                if (msg.SpellId == "air_air_kick")
-                {
-                    var look = entity.SidedPos.GetViewVector();
-                    serverChannel?.SendPacket(new MsgLaunchPlayer
+                    // Broadcast FX packet with spell level for scaling
+                    var fxMsg = new MsgSpellFx
                     {
-                        UpForce      = Spells.Air.AirKick.UpForce,
-                        ForwardForce = Spells.Air.AirKick.ForwardForce,
-                        LookDirX     = look.X,
-                        LookDirZ     = look.Z,
-                    }, player);
+                        SpellId     = msg.SpellId,
+                        OriginX     = entity.SidedPos.X,
+                        OriginY     = entity.SidedPos.Y,
+                        OriginZ     = entity.SidedPos.Z,
+                        LookDirX    = entity.SidedPos.GetViewVector().X,
+                        LookDirY    = entity.SidedPos.GetViewVector().Y,
+                        LookDirZ    = entity.SidedPos.GetViewVector().Z,
+                        SpellLevel  = spellLevel,
+                    };
+                    foreach (var p in api.World.AllOnlinePlayers)
+                        serverChannel?.SendPacket(fxMsg, p as IServerPlayer);
 
-                    // Delay projectile until player reaches apex (~0.5s after launch)
-                    var projLook   = look.ToVec3d().Normalize(); // capture look dir at cast time
-                    Vec3d projPos  = null!;
-                    float delay    = 0.5f;
-                    float delayAcc = 0f;
-                    bool  started  = false;
+                    // Base XP always, hit bonus if spell connected
+                    data.AddSpellXp(msg.SpellId, spell.XpPerCast + (hit ? spell.XpPerCast / 2 : 0));
+                    data.AddElementXp(spell.Element, spell.ElementXpPerCast + (hit ? 2 : 0));
 
-                    long delayId = 0;
-                    delayId = api.Event.RegisterGameTickListener(ddt =>
+                    // Spell-specific packets to the casting player only
+                    if (msg.SpellId == "air_feather_fall")
+                        serverChannel?.SendPacket(new MsgFreezeMotion { NudgeY = 0.06f }, player);
+
+                    if (msg.SpellId == "air_air_kick")
                     {
-                        delayAcc += ddt;
-                        if (delayAcc < delay) return;
-                        api.Event.UnregisterGameTickListener(delayId);
-                        projPos = entity.SidedPos.XYZ.Add(0, 1.8, 0); // spawn at head level
-                        started = true;
-                    }, 50);
-
-                    // Server-side projectile simulation (starts after delay)
-                    float traveled = 0f;
-                    hit      = false;
-                    long  lid      = 0;
-                    const float stepDt   = 0.05f;
-                    float stepDist = Spells.Air.AirKick.ProjectileSpeed * stepDt;
-                    float hitR     = Spells.Air.AirKick.ProjectileRadius;
-                    float armingDist = 3f; // must travel 3 blocks before it can hit anything
-
-                    lid = api.Event.RegisterGameTickListener(dt =>
-                    {
-                        if (!started) return;
-                        if (hit) { api.Event.UnregisterGameTickListener(lid); return; }
-
-                        projPos    = projPos.Add(projLook.X * stepDist, projLook.Y * stepDist, projLook.Z * stepDist);
-                        traveled  += stepDist;
-
-                        if (traveled > Spells.Air.AirKick.MaxRange)
+                        var look = entity.SidedPos.GetViewVector();
+                        serverChannel?.SendPacket(new MsgLaunchPlayer
                         {
-                            api.Event.UnregisterGameTickListener(lid); return;
-                        }
+                            UpForce      = Spells.Air.AirKick.UpForce,
+                            ForwardForce = Spells.Air.AirKick.ForwardForce,
+                            LookDirX     = look.X,
+                            LookDirZ     = look.Z,
+                        }, player);
 
-                        // Terrain collision
-                        var block = api.World.BlockAccessor.GetBlock(new BlockPos((int)projPos.X, (int)projPos.Y, (int)projPos.Z, 0));
-                        if (block != null && block.BlockId != 0 && !block.IsLiquid())
+                        // Delay projectile until player reaches apex (~0.5s after launch)
+                        var projLook   = look.ToVec3d().Normalize(); // capture look dir at cast time
+                        Vec3d projPos  = null!;
+                        float delay    = 0.5f;
+                        float delayAcc = 0f;
+                        bool  started  = false;
+
+                        long delayId = 0;
+                        delayId = api.Event.RegisterGameTickListener(ddt =>
                         {
-                            api.Event.UnregisterGameTickListener(lid); return;
-                        }
+                            delayAcc += ddt;
+                            if (delayAcc < delay) return;
+                            api.Event.UnregisterGameTickListener(delayId);
+                            projPos = entity.SidedPos.XYZ.Add(0, 1.8, 0); // spawn at head level
+                            started = true;
+                        }, 50);
 
-                        // Broadcast projectile position FX each tick so clients see it moving
-                        var trailFx = new MsgSpellFx
+                        // Server-side projectile simulation (starts after delay)
+                        float traveled = 0f;
+                        hit      = false;
+                        long  lid      = 0;
+                        const float stepDt   = 0.05f;
+                        float stepDist = Spells.Air.AirKick.ProjectileSpeed * stepDt;
+                        float hitR     = Spells.Air.AirKick.ProjectileRadius;
+                        float armingDist = 3f; // must travel 3 blocks before it can hit anything
+
+                        lid = api.Event.RegisterGameTickListener(dt =>
                         {
-                            SpellId  = "air_air_kick_trail",
-                            OriginX  = projPos.X, OriginY = projPos.Y, OriginZ = projPos.Z,
-                            LookDirX = (float)projLook.X, LookDirY = (float)projLook.Y, LookDirZ = (float)projLook.Z,
-                        };
-                        foreach (var p in api.World.AllOnlinePlayers)
-                            serverChannel?.SendPacket(trailFx, p as IServerPlayer);
+                            if (!started) return;
+                            if (hit) { api.Event.UnregisterGameTickListener(lid); return; }
 
-                        api.World.GetEntitiesAround(projPos, hitR, hitR, e =>
-                        {
-                            if (hit) return false;
-                            if (traveled < armingDist) return false;
-                            if (e.EntityId == entity.EntityId) return false;
-                            if (e is not EntityAgent) return false;
-                            hit = true;
-                            api.Event.UnregisterGameTickListener(lid);
+                            projPos    = projPos.Add(projLook.X * stepDist, projLook.Y * stepDist, projLook.Z * stepDist);
+                            traveled  += stepDist;
 
-                            e.ReceiveDamage(new DamageSource
+                            if (traveled > Spells.Air.AirKick.MaxRange)
                             {
-                                Source       = EnumDamageSource.Entity,
-                                SourceEntity = entity,
-                                Type         = EnumDamageType.BluntAttack,
-                            }, Spells.Air.AirKick.ImpactDamage);
+                                api.Event.UnregisterGameTickListener(lid); return;
+                            }
 
-                            var impFx = new MsgSpellFx
+                            // Terrain collision
+                            var block = api.World.BlockAccessor.GetBlock(new BlockPos((int)projPos.X, (int)projPos.Y, (int)projPos.Z, 0));
+                            if (block != null && block.BlockId != 0 && !block.IsLiquid())
                             {
-                                SpellId  = "air_air_kick",
+                                api.Event.UnregisterGameTickListener(lid); return;
+                            }
+
+                            // Broadcast projectile position FX each tick so clients see it moving
+                            var trailFx = new MsgSpellFx
+                            {
+                                SpellId  = "air_air_kick_trail",
                                 OriginX  = projPos.X, OriginY = projPos.Y, OriginZ = projPos.Z,
                                 LookDirX = (float)projLook.X, LookDirY = (float)projLook.Y, LookDirZ = (float)projLook.Z,
                             };
                             foreach (var p in api.World.AllOnlinePlayers)
-                                serverChannel?.SendPacket(impFx, p as IServerPlayer);
+                                serverChannel?.SendPacket(trailFx, p as IServerPlayer);
 
-                            return false;
-                        });
-                    }, (int)(stepDt * 1000));
-                }
+                            api.World.GetEntitiesAround(projPos, hitR, hitR, e =>
+                            {
+                                if (hit) return false;
+                                if (traveled < armingDist) return false;
+                                if (e.EntityId == entity.EntityId) return false;
+                                if (e is not EntityAgent) return false;
+                                hit = true;
+                                api.Event.UnregisterGameTickListener(lid);
 
-                // Broadcast FX to all nearby clients
-                double originY = msg.SpellId == "air_feather_fall" ? 0.1 : 0.5;
-                var origin  = entity.SidedPos.XYZ.Add(0, originY, 0);
-                var lookDir = entity.SidedPos.GetViewVector();
-                var fx = new MsgSpellFx
-                {
-                    SpellId  = msg.SpellId,
-                    OriginX  = origin.X, OriginY = origin.Y, OriginZ = origin.Z,
-                    LookDirX = lookDir.X, LookDirY = lookDir.Y, LookDirZ = lookDir.Z,
-                };
-                foreach (var p in api.World.AllOnlinePlayers)
-                    serverChannel?.SendPacket(fx, p as IServerPlayer);
+                                e.ReceiveDamage(new DamageSource
+                                {
+                                    Source       = EnumDamageSource.Entity,
+                                    SourceEntity = entity,
+                                    Type         = EnumDamageType.BluntAttack,
+                                }, Spells.Air.AirKick.ImpactDamage);
+
+                                var impFx = new MsgSpellFx
+                                {
+                                    SpellId  = "air_air_kick",
+                                    OriginX  = projPos.X, OriginY = projPos.Y, OriginZ = projPos.Z,
+                                    LookDirX = (float)projLook.X, LookDirY = (float)projLook.Y, LookDirZ = (float)projLook.Z,
+                                };
+                                foreach (var p in api.World.AllOnlinePlayers)
+                                    serverChannel?.SendPacket(impFx, p as IServerPlayer);
+
+                                return false;
+                            });
+                        }, (int)(stepDt * 1000));
+                    }
+
+                    // Broadcast FX to all nearby clients
+                    double originY = msg.SpellId == "air_feather_fall" ? 0.1 : 0.5;
+                    var origin  = entity.SidedPos.XYZ.Add(0, originY, 0);
+                    var lookDir = entity.SidedPos.GetViewVector();
+                    var fx = new MsgSpellFx
+                    {
+                        SpellId  = msg.SpellId,
+                        OriginX  = origin.X, OriginY = origin.Y, OriginZ = origin.Z,
+                        LookDirX = lookDir.X, LookDirY = lookDir.Y, LookDirZ = lookDir.Z,
+                    };
+                    foreach (var p in api.World.AllOnlinePlayers)
+                        serverChannel?.SendPacket(fx, p as IServerPlayer);
+                }, delayMs);
             });
     }
 
@@ -279,6 +289,8 @@ public class SpellsAndRunesMod : ModSystem
         clientChannel!.SetMessageHandler<MsgStartCast>(msg =>
         {
             castBar?.OnBeginCast(msg.SpellId, msg.CastTime);
+            var spell = SpellRegistry.Get(msg.SpellId);
+            api.ShowChatMessage($"[SnR] Starting cast: {spell?.Name ?? msg.SpellId} ({msg.CastTime:F2}s)");
         });
 
         // Spellbook hotkey
@@ -374,10 +386,11 @@ public class SpellsAndRunesMod : ModSystem
             var data = PlayerSpellData.For(player.Entity);
             int spellLevel = data.GetSpellLevel(spellId);
             float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
+            float scaledFluxCost = spell.FluxCost * spell.GetFluxCostMultiplier(spellLevel);
 
             // Show cast bar with scaled time (via MsgStartCast from server)
             // Don't call BeginCast here — wait for server confirmation
-            api.ShowChatMessage($"[SnR] Sending cast request: {spellId} (lvl {spellLevel})");
+            api.ShowChatMessage($"[SnR] Sending cast request: {spell.Name} (lvl {spellLevel}, flux {scaledFluxCost:F1})");
             clientChannel!.SendPacket(new MsgCastSpell { SpellId = spellId, SpellLevel = spellLevel });
         };
     }

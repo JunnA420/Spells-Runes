@@ -67,11 +67,12 @@ public class AirPush : Spell
             return false;
         });
 
-        SpawnWindParticles(world, origin, lookDir, spellLevel);
+        SpawnWindParticles(world, origin, lookDir, spellLevel, range);
     }
 
-    public static void SpawnWindParticles(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
+    public static void SpawnWindParticles(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float? scaledRange = null)
     {
+        float range = scaledRange ?? Range;
         int mult = 1 + (spellLevel - 1) / 4;  // 1x @ lvl1-4, 2x @ lvl5-8, 3x @ lvl9-10
         Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
         Vec3d upPerp = lookDir.Cross(right).Normalize();
@@ -87,7 +88,7 @@ public class AirPush : Spell
             for (int i = 0; i < pts; i++)
             {
                 double t      = (double)i / pts;
-                double dist   = Range * t;
+                double dist   = range * t;
                 double twist  = armOffset + t * Math.PI * 5.0; // 2.5 full turns
                 double spread = tanA * dist * 0.7;             // tighter than cone edge
 
@@ -162,14 +163,14 @@ public class AirPush : Spell
 
         // ── 3. Rim shockwave ring at max range ───────────────────────────────────
         {
-            double rimSpread = tanA * Range;
+            double rimSpread = tanA * range;
             int    pts       = 48;
             for (int i = 0; i < pts; i++)
             {
                 double a   = i * 2.0 * Math.PI / pts;
                 double jit = 0.85 + rng.NextDouble() * 0.3;
                 Vec3d  pos = origin
-                           + lookDir * Range * jit
+                           + lookDir * range * jit
                            + right   * (Math.Cos(a) * rimSpread * jit)
                            + upPerp  * (Math.Sin(a) * rimSpread * jit);
 
@@ -197,31 +198,34 @@ public class AirPush : Spell
             }
         }
 
-        // ── 4. Dense bright core streaks along center axis ───────────────────────
-        for (int i = 0; i < 40; i++)
+        // ── 4. Dense wind gust core — thick column of wind down the center ──────
+        for (int i = 0; i < 200 * mult; i++)
         {
             double t   = rng.NextDouble();
-            Vec3d  pos = origin + lookDir * (Range * t)
-                       + right   * ((rng.NextDouble() - 0.5) * 0.25)
-                       + upPerp  * ((rng.NextDouble() - 0.5) * 0.25);
+            // Wider spread for wind gust effect (0.5 instead of 0.25)
+            double spreadWidth = 0.5 + rng.NextDouble() * 0.3;
+            Vec3d  pos = origin + lookDir * (range * t)
+                       + right   * ((rng.NextDouble() - 0.5) * spreadWidth)
+                       + upPerp  * ((rng.NextDouble() - 0.5) * spreadWidth);
 
             world.SpawnParticles(new SimpleParticleProperties
             {
                 MinPos               = new Vec3d(pos.X, pos.Y, pos.Z),
-                AddPos               = new Vec3d(0.04, 0.04, 0.04),
+                AddPos               = new Vec3d(0.08, 0.08, 0.08),
                 MinVelocity          = new Vec3f(
-                    (float)(lookDir.X * 10.0 + (rng.NextDouble() - 0.5) * 1.0),
-                    (float)(lookDir.Y *  4.0 + (rng.NextDouble() - 0.5) * 0.5),
-                    (float)(lookDir.Z * 10.0 + (rng.NextDouble() - 0.5) * 1.0)),
-                AddVelocity          = new Vec3f(0.2f, 0.1f, 0.2f),
+                    (float)(lookDir.X * 12.0 + (rng.NextDouble() - 0.5) * 2.5),
+                    (float)(lookDir.Y *  3.0 + (rng.NextDouble() - 0.5) * 1.0),
+                    (float)(lookDir.Z * 12.0 + (rng.NextDouble() - 0.5) * 2.5)),
+                AddVelocity          = new Vec3f(0.3f, 0.2f, 0.3f),
                 MinQuantity          = 1,
-                LifeLength           = 0.08f + (float)(rng.NextDouble() * 0.08f),
-                MinSize              = 0.04f,
-                MaxSize              = 0.14f,
-                GravityEffect        = 0f,
-                Color                = ColorUtil.ColorFromRgba(240, 250, 255, 200 + (int)(rng.NextDouble() * 55)),
+                LifeLength           = 0.12f + (float)(rng.NextDouble() * 0.10f),
+                MinSize              = 0.08f,
+                MaxSize              = 0.25f,
+                GravityEffect        = -0.05f,
+                Color                = ColorUtil.ColorFromRgba(220, 245, 255, 120 + (int)(rng.NextDouble() * 80)),
                 ParticleModel        = EnumParticleModel.Quad,
                 WithTerrainCollision = false,
+                ShouldDieInLiquid    = false,
             });
         }
     }

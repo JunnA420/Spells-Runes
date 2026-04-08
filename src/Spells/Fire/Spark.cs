@@ -28,15 +28,16 @@ public class Spark : Spell
     {
         var origin   = caster.SidedPos.XYZ.Add(0, 0.9, 0);
         var lookDir  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
+        float range  = Range * GetRangeMultiplier(spellLevel);
         float cosAngle = (float)Math.Cos(ConeAngleDeg * Math.PI / 180.0);
 
         float dmg = Damage * GetDamageMultiplier(spellLevel);
-        world.GetEntitiesAround(origin, Range + 1, Range + 1, e =>
+        world.GetEntitiesAround(origin, range + 1, range + 1, e =>
         {
             if (e.EntityId == caster.EntityId) return false;
             if (e is not EntityAgent) return false;
             Vec3d toEntity = e.SidedPos.XYZ.Add(0, e.LocalEyePos.Y * 0.5, 0) - origin;
-            if (toEntity.Length() > Range) return false;
+            if (toEntity.Length() > range) return false;
             if (lookDir.Dot(toEntity.Clone().Normalize()) < cosAngle) return false;
 
             e.ReceiveDamage(new DamageSource
@@ -48,11 +49,12 @@ public class Spark : Spell
             return false;
         });
 
-        SpawnFx(world, origin, lookDir, spellLevel);
+        SpawnFx(world, origin, lookDir, spellLevel, range);
     }
 
-    public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
+    public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float? scaledRange = null)
     {
+        float range  = scaledRange ?? Range;
         Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
         Vec3d upPerp = lookDir.Cross(right).Normalize();
         var   rng    = world.Rand;
@@ -75,7 +77,7 @@ public class Spark : Spell
         for (int i = 0; i < 140 * mult; i++)
         {
             double t      = rng.NextDouble();
-            double dist   = Range * t;
+            double dist   = range * t;
             double spread = tanA * dist;
             double a      = rng.NextDouble() * 2 * Math.PI;
             double r      = Math.Sqrt(rng.NextDouble()) * spread;
@@ -115,39 +117,7 @@ public class Spark : Spell
             });
         }
 
-        // ── 2. Hot core streaks — fast white/yellow bolts along axis ────────────
-        for (int i = 0; i < 50 * mult; i++)
-        {
-            double t   = rng.NextDouble();
-            Vec3d  pos = origin + lookDir * (Range * t)
-                       + right   * ((rng.NextDouble() - 0.5) * 0.25)
-                       + upPerp  * ((rng.NextDouble() - 0.5) * 0.25);
-
-            int col = rng.NextDouble() < 0.5
-                ? ColorUtil.ColorFromRgba( 60, 220, 255, 255)  // yellow-white (B,G,R,A)
-                : ColorUtil.ColorFromRgba(180, 240, 255, 255); // white-hot
-
-            world.SpawnParticles(new SimpleParticleProperties
-            {
-                MinPos        = new Vec3d(pos.X, pos.Y, pos.Z),
-                AddPos        = new Vec3d(0.02, 0.02, 0.02),
-                MinVelocity   = new Vec3f(
-                    (float)(lookDir.X * 16.0 + (rng.NextDouble() - 0.5) * 2.0),
-                    (float)(lookDir.Y *  7.0 + (rng.NextDouble() - 0.5) * 1.0),
-                    (float)(lookDir.Z * 16.0 + (rng.NextDouble() - 0.5) * 2.0)),
-                AddVelocity   = new Vec3f(0.2f, 0.1f, 0.2f),
-                MinQuantity   = 1,
-                LifeLength    = 0.03f + (float)(rng.NextDouble() * 0.04f),
-                MinSize       = 0.03f,
-                MaxSize       = 0.10f,
-                GravityEffect = 0.05f,
-                Color         = col,
-                ParticleModel        = EnumParticleModel.Quad,
-                WithTerrainCollision = false,
-            });
-        }
-
-        // ── 3. Burst ring at origin — initial strike flash ───────────────────────
+        // ── 2. Burst ring at origin — initial strike flash ───────────────────────
         for (int i = 0; i < 28 * mult; i++)
         {
             double a        = i * 2.0 * Math.PI / 28 + rng.NextDouble() * 0.15;
@@ -178,11 +148,11 @@ public class Spark : Spell
             });
         }
 
-        // ── 4. Falling ember sparks — bright tiny quads that drop with gravity ──
+        // ── 3. Falling ember sparks — bright tiny quads that drop with gravity ──
         for (int i = 0; i < 50 * mult; i++)
         {
             double t      = rng.NextDouble();
-            double dist   = Range * t;
+            double dist   = range * t;
             double spread = tanA * dist;
             double a      = rng.NextDouble() * 2 * Math.PI;
             double r      = Math.Sqrt(rng.NextDouble()) * spread;
