@@ -375,18 +375,10 @@ public class SpellsAndRunesMod : ModSystem
             int spellLevel = data.GetSpellLevel(spellId);
             float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
 
-            api.ShowChatMessage($"[SnR] Starting cast: {spellId} (lvl {spellLevel}, {scaledCastTime:F2}s)");
-            castBar.OnBeginCast(spellId, scaledCastTime);
-
-            // When cast finishes, send to server
-            castBar.BeginCast(spell, () =>
-            {
-                api.ShowChatMessage($"[SnR] Cast complete, sending: {spellId}");
-                var entity = api.World.Player?.Entity;
-                if (entity != null)
-                    api.World.PlaySoundAt(new AssetLocation("game", "sounds/effect/latch"), entity, null, true, 16f, 0.9f);
-                clientChannel!.SendPacket(new MsgCastSpell { SpellId = spellId, SpellLevel = spellLevel });
-            });
+            // Show cast bar with scaled time (via MsgStartCast from server)
+            // Don't call BeginCast here — wait for server confirmation
+            api.ShowChatMessage($"[SnR] Sending cast request: {spellId} (lvl {spellLevel})");
+            clientChannel!.SendPacket(new MsgCastSpell { SpellId = spellId, SpellLevel = spellLevel });
         };
     }
 
