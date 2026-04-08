@@ -60,14 +60,15 @@ public class AirKick : Spell
     }
 
     /// <summary>Dense compressed air ball — called every 50ms as projectile moves.</summary>
-    public static void SpawnTrailFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir)
+    public static void SpawnTrailFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
     {
+        int mult = 1 + (spellLevel - 1) / 4;  // 1x @ lvl1-4, 2x @ lvl5-8, 3x @ lvl9-10
         var rng = world.Rand;
         Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
         Vec3d upPerp = lookDir.Cross(right).Normalize();
 
         // Dense core — tightly packed sphere of compressed air
-        for (int i = 0; i < 22; i++)
+        for (int i = 0; i < 22 * mult; i++)
         {
             double a = rng.NextDouble() * 2 * Math.PI;
             double b = rng.NextDouble() * 2 * Math.PI;
@@ -153,10 +154,11 @@ public class AirKick : Spell
     }
 
     /// <summary>Tiny impact puff — only visible on direct hit.</summary>
-    public static void SpawnImpactFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir)
+    public static void SpawnImpactFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
     {
+        int mult = 1 + (spellLevel - 1) / 4;
         var rng = world.Rand;
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 12 * mult; i++)
         {
             double a = rng.NextDouble() * 2 * Math.PI;
             double b = rng.NextDouble() * 2 * Math.PI;

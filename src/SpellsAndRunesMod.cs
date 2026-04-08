@@ -256,7 +256,7 @@ public class SpellsAndRunesMod : ModSystem
                 switch (msg.SpellId)
                 {
                     case "air_air_push":
-                        Spells.Air.AirPush.SpawnWindParticles(api.World, origin, lookDir);
+                        Spells.Air.AirPush.SpawnWindParticles(api.World, origin, lookDir, msg.SpellLevel);
                         break;
                     case "air_feather_fall":
                         Spells.Air.FeatherFall.SpawnFx(api.World, origin);
