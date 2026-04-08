@@ -5,9 +5,9 @@
       "name": "Launch Vintage Story",
       "type": "coreclr",
       "request": "launch",
-      "program": "C:\\Games\\Vintagestory\\Vintagestory.exe",
-      "args": [],
-      "cwd": "C:\\Games\\Vintagestory",
+      "program": "D:\\Vintagestory\\Vintagestory.exe",
+      "args": ["--openWorld", "junnas superflat place"],
+      "cwd": "D:\\Vintagestory",
       "stopAtEntry": false,
       "preLaunchTask": "build"
     },
