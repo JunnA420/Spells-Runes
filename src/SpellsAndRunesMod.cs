@@ -41,6 +41,7 @@ public class SpellsAndRunesMod : ModSystem
             .RegisterMessageType<MsgUnlockSpell>()
             .RegisterMessageType<MsgSetHotbarSlot>()
             .RegisterMessageType<MsgCastSpell>()
+            .RegisterMessageType<MsgStartCast>()
             .RegisterMessageType<MsgSpellFx>()
             .RegisterMessageType<MsgFreezeMotion>()
             .RegisterMessageType<MsgLaunchPlayer>()
@@ -78,6 +79,11 @@ public class SpellsAndRunesMod : ModSystem
 
                 var data = PlayerSpellData.For(entity);
                 int spellLevel = data.GetSpellLevel(msg.SpellId);
+
+                // Notify casting client of cast start with scaled cast time
+                float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
+                serverChannel?.SendPacket(new MsgStartCast { SpellId = msg.SpellId, CastTime = scaledCastTime }, player);
+
                 bool hit = spell.TryCast(entity, api.World, spellLevel);
 
                 // Broadcast FX packet with spell level for scaling
@@ -223,6 +229,7 @@ public class SpellsAndRunesMod : ModSystem
             .RegisterMessageType<MsgUnlockSpell>()
             .RegisterMessageType<MsgSetHotbarSlot>()
             .RegisterMessageType<MsgCastSpell>()
+            .RegisterMessageType<MsgStartCast>()
             .RegisterMessageType<MsgSpellFx>()
             .RegisterMessageType<MsgFreezeMotion>()
             .RegisterMessageType<MsgLaunchPlayer>()
@@ -266,6 +273,12 @@ public class SpellsAndRunesMod : ModSystem
                         break;
                 }
             });
+
+        // Client-side cast start notification
+        clientChannel!.SetMessageHandler<MsgStartCast>(msg =>
+        {
+            castBar?.OnBeginCast(msg.SpellId, msg.CastTime);
+        });
 
         // Spellbook hotkey
         api.Input.RegisterHotKey("spellsandrunes.spellbook", "Open Spellbook", GlKeys.K, HotkeyType.GUIOrOtherControls);

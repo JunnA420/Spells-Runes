@@ -47,6 +47,21 @@ public class HudCastBar : HudElement
         isCasting        = true;
     }
 
+    /// <summary>Start cast with explicit cast time (from server with level scaling).</summary>
+    public void OnBeginCast(string spellId, float scaledCastTime)
+    {
+        var spell = SpellRegistry.Get(spellId);
+        if (spell != null)
+        {
+            elapsed        = 0f;
+            castTime       = Math.Max(scaledCastTime, 0.05f);
+            spellName      = spell.Name;
+            onComplete     = null;
+            (cr, cg, cb2)  = ElementColor(spell.Element);
+            isCasting      = true;
+        }
+    }
+
     public void Cancel()
     {
         isCasting  = false;
