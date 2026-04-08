@@ -8,10 +8,80 @@ A fast-paced elemental magic mod for Vintage Story. Cast spells with a flux-base
 - **Spell trees** — unlock spells per element, level them up through use
 - **Radial spell selector** — quick hotbar with up to 3 memorized spells
 - **Cast bar** — channeled spells with cast times
-- **Air element** (implemented)
-  - **Air Push** — cone knockback burst
-  - **Feather Fall** — instantly arrests your momentum mid-air
-  - **Air Kick** — launch yourself upward and fire a projectile
+
+---
+
+## Spell Trees
+
+Each element has its own tree. Unlock the two base spells to access the combined spell in the center.
+
+Legend: `⚔ Offense` `🛡 Defense` `✦ Enchantment`
+
+---
+
+### 🌬 Air
+
+```
+[Feather Fall ✦]           [Air Push ⚔]
+  Halt your fall               Cone knockback
+  15 flux · 0.5s               25 flux · 1.5s
+        \                       /
+         \                     /
+          \                   /
+           [  Air Kick ⚔  ]
+           Launch + projectile
+           30 flux · 3.0s
+```
+
+---
+
+### 🔥 Fire
+
+```
+[Hot Skin 🛡]              [Spark ⚔]
+  Burn on contact             Fire damage bolt
+  18 flux                     15 flux
+        \                       /
+         \                     /
+          \                   /
+           [ Cook in Hand ✦ ]
+           Instantly cook held item
+           12 flux
+```
+
+---
+
+### 💧 Water
+
+```
+[Healing ✦]               [Water Spray ⚔]
+  Mend your wounds            Knockback jet
+  20 flux                     18 flux
+        \                       /
+         \                     /
+          \                   /
+           [Healing Sprinkle ✦]
+           AoE heal around you
+           25 flux
+```
+
+---
+
+### 🪨 Earth
+
+```
+[Stone Skin 🛡]            [Earth Wall 🛡]
+  Reduce damage               Raise a barrier
+  14 flux                     20 flux
+        \                       /
+         \                     /
+          \                   /
+           [ Earth Clone ✦ ]
+           Summon a decoy
+           22 flux
+```
+
+---
 
 ## Branch Flow
 
