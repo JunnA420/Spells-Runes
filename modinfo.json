@@ -1,11 +1,11 @@
 {
   "modid": "spellsandrunes",
   "name": "Spells & Runes",
-  "authors": [""],
-  "description": "A client-sided magic mod adding spells and runes to Vintage Story.",
+  "authors": ["JunnA, BL1TZ"],
+  "description": "A fast-paced elemental magic mod for Vintage Story. Cast spells with a flux-based mana system, chain abilities into quick combos, and master the Air element — featuring Air Push, Feather Fall, and Air Kick. More elements and spells to come.",
   "version": "0.1.0",
   "type": "code",
-  "side": "client",
+  "side": "universal",
   "dependencies": {
     "game": "1.20.0"
   }

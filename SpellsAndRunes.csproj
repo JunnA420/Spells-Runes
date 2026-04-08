@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <AssemblyName>SpellsAndRunes</AssemblyName>
     <RootNamespace>SpellsAndRunes</RootNamespace>
+    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,11 +16,23 @@
       <HintPath>C:\Games\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="cairo-sharp">
+      <HintPath>C:\Games\Vintagestory\Lib\cairo-sharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>C:\Games\Vintagestory\Lib\protobuf-net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
-  <Target Name="CopyToMods" AfterTargets="Build">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
-          DestinationFolder="C:\Games\Vintagestory\Mods" />
+  <Target Name="PackMod" AfterTargets="Build" DependsOnTargets="Build">
+    <PropertyGroup>
+      <ModZip>$(MSBuildProjectDirectory)\$(AssemblyName).zip</ModZip>
+      <VSModsDir>$(APPDATA)\VintagestoryData\Mods</VSModsDir>
+      <ProjectRoot>$(MSBuildProjectDirectory)</ProjectRoot>
+    </PropertyGroup>
+    <Exec Command="powershell -NoProfile -Command &quot;$root = '$(ProjectRoot)'; $zip = '$(ModZip)'; if (Test-Path $zip) { Remove-Item $zip }; Add-Type -Assembly System.IO.Compression.FileSystem; $archive = [System.IO.Compression.ZipFile]::Open($zip, 'Create'); $addFile = { param($absPath, $entryName) [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $absPath, $entryName) | Out-Null }; &amp;$addFile '$(OutputPath)$(AssemblyName).dll' '$(AssemblyName).dll'; &amp;$addFile (Join-Path $root 'modinfo.json') 'modinfo.json'; Get-ChildItem -Path (Join-Path $root 'assets') -Recurse -File | ForEach-Object { $rel = $_.FullName.Substring($root.Length).TrimStart('\'); $rel = $rel -replace '\\\\', '/'; &amp;$addFile $_.FullName $rel }; $archive.Dispose(); $dest = '$(VSModsDir)'; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }; Copy-Item $zip $dest -Force&quot;" />
   </Target>
 
 </Project>

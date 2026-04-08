@@ -6,10 +6,10 @@
       "type": "coreclr",
       "request": "launch",
       "program": "C:\\Games\\Vintagestory\\Vintagestory.exe",
-      "args": [],
+      "args": ["--openWorld", "junnas superflat place"],
       "cwd": "C:\\Games\\Vintagestory",
       "stopAtEntry": false,
       "preLaunchTask": "build"
-    }
+    },
   ]
 }

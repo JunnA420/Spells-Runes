@@ -5,7 +5,7 @@
       "label": "build",
       "command": "dotnet",
       "type": "process",
-      "args": ["build", "${workspaceFolder}/SpellsAndRunes.csproj"],
+      "args": ["build", "${workspaceFolder}/SpellsAndRunes.csproj", "-c", "Release", "-t:PackMod"],
       "problemMatcher": "$msCompile",
       "group": {
         "kind": "build",

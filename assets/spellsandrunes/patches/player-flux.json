@@ -1,0 +1,8 @@
+[
+  {
+    "op": "add",
+    "path": "/server/behaviors/-",
+    "value": { "code": "fluxBehavior" },
+    "file": "game:entities/humanoid/player.json"
+  }
+]
