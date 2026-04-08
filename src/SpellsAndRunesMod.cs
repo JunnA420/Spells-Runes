@@ -80,6 +80,21 @@ public class SpellsAndRunesMod : ModSystem
                 int spellLevel = data.GetSpellLevel(msg.SpellId);
                 bool hit = spell.TryCast(entity, api.World, spellLevel);
 
+                // Broadcast FX packet with spell level for scaling
+                var fxMsg = new MsgSpellFx
+                {
+                    SpellId     = msg.SpellId,
+                    OriginX     = entity.SidedPos.X,
+                    OriginY     = entity.SidedPos.Y,
+                    OriginZ     = entity.SidedPos.Z,
+                    LookDirX    = entity.SidedPos.GetViewVector().X,
+                    LookDirY    = entity.SidedPos.GetViewVector().Y,
+                    LookDirZ    = entity.SidedPos.GetViewVector().Z,
+                    SpellLevel  = spellLevel,
+                };
+                foreach (var p in api.World.AllOnlinePlayers)
+                    serverChannel?.SendPacket(fxMsg, p as IServerPlayer);
+
                 // Base XP always, hit bonus if spell connected
                 data.AddSpellXp(msg.SpellId, spell.XpPerCast + (hit ? spell.XpPerCast / 2 : 0));
                 data.AddElementXp(spell.Element, spell.ElementXpPerCast + (hit ? 2 : 0));
@@ -118,7 +133,7 @@ public class SpellsAndRunesMod : ModSystem
 
                     // Server-side projectile simulation (starts after delay)
                     float traveled = 0f;
-                    bool  hit      = false;
+                    hit      = false;
                     long  lid      = 0;
                     const float stepDt   = 0.05f;
                     float stepDist = Spells.Air.AirKick.ProjectileSpeed * stepDt;
@@ -246,8 +261,8 @@ public class SpellsAndRunesMod : ModSystem
                         Spells.Air.AirKick.SpawnTrailFx(api.World, origin, lookDir);
                         break;
                     case "fire_spark":
-                        Spells.Fire.Spark.SpawnFx(api.World, origin, lookDir);
-                        sparkGlow?.AddSparkBurst(origin, lookDir, Spells.Fire.Spark.Range, Spells.Fire.Spark.ConeAngleDeg);
+                        Spells.Fire.Spark.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
+                        sparkGlow?.AddSparkBurst(origin, lookDir, Spells.Fire.Spark.Range, Spells.Fire.Spark.ConeAngleDeg, 60 * (1 + (msg.SpellLevel - 1) / 4));
                         break;
                 }
             });

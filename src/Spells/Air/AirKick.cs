@@ -41,6 +41,8 @@ public class AirKick : Spell
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
+        float dmgMul = GetDamageMultiplier(spellLevel);
+
         // Knockback nearby entities at launch
         var origin = caster.SidedPos.XYZ.Add(0, 0.5, 0);
         world.GetEntitiesAround(origin, LaunchKnockbackRadius, LaunchKnockbackRadius, e =>
@@ -52,7 +54,7 @@ public class AirKick : Spell
             if (dist > LaunchKnockbackRadius) return false;
             dir = dir.Normalize();
             float falloff = 1f - (float)(dist / LaunchKnockbackRadius) * 0.5f;
-            e.SidedPos.Motion.Add(dir.X * LaunchKnockbackForce * falloff, 0.2 * falloff, dir.Z * LaunchKnockbackForce * falloff);
+            e.SidedPos.Motion.Add(dir.X * LaunchKnockbackForce * dmgMul * falloff, 0.2 * falloff, dir.Z * LaunchKnockbackForce * dmgMul * falloff);
             return false;
         });
     }

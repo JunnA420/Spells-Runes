@@ -56,6 +56,14 @@ public static class DebugCommands
                 .WithDescription("Toggle infinite flux (sets regen to 200/s)")
                 .WithArgs(api.ChatCommands.Parsers.OptionalWord("toggle"))
                 .HandleWith(OnFlux)
+            .EndSubCommand()
+            // /snr spell_lvl [on|off]
+            .BeginSubCommand("spell_lvl")
+                .WithDescription("Get specific level for spell  (e.g. /snr spell_lvl fire_spark 3)")
+                    .WithArgs(
+                        api.ChatCommands.Parsers.Word("spellId"),
+                        api.ChatCommands.Parsers.Int("level"))
+                .HandleWith(OnSpellLevel)
             .EndSubCommand();
     }
 
@@ -67,6 +75,19 @@ public static class DebugCommands
         string toggle = raw.ToLowerInvariant();
         InfiniteFlux = toggle == "off" ? false : toggle == "on" ? true : !InfiniteFlux;
         return TextCommandResult.Success($"Infinite flux: {(InfiniteFlux ? "ON" : "OFF")}");
+    }
+        private static TextCommandResult OnSpellLevel(TextCommandCallingArgs args)
+    {
+        if (args.Caller.Entity is not { } entity)
+            return TextCommandResult.Error("No player entity found.");
+
+        var data = PlayerSpellData.For(entity);
+        string spellId = (string)args[0];
+        int level = (int)args[1];
+        data.SetSpellLevel(spellId, level);
+        // Implement logic to set the spell level here
+        return TextCommandResult.Success($"Set spell '{spellId}' to level {level}.");
+
     }
 
     private static TextCommandResult OnXp(TextCommandCallingArgs args)

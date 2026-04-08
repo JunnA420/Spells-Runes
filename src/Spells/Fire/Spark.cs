@@ -30,6 +30,7 @@ public class Spark : Spell
         var lookDir  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
         float cosAngle = (float)Math.Cos(ConeAngleDeg * Math.PI / 180.0);
 
+        float dmg = Damage * GetDamageMultiplier(spellLevel);
         world.GetEntitiesAround(origin, Range + 1, Range + 1, e =>
         {
             if (e.EntityId == caster.EntityId) return false;
@@ -43,12 +44,14 @@ public class Spark : Spell
                 Source       = EnumDamageSource.Entity,
                 SourceEntity = caster,
                 Type         = EnumDamageType.Fire,
-            }, Damage);
+            }, dmg);
             return false;
         });
+
+        SpawnFx(world, origin, lookDir, spellLevel);
     }
 
-    public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir)
+    public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
     {
         Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
         Vec3d upPerp = lookDir.Cross(right).Normalize();
@@ -65,8 +68,11 @@ public class Spark : Spell
             ColorUtil.ColorFromRgba(  0,  10, 180, 220),  // red
         };
 
+        // Particle count scales with spell level: 1x @ lvl1-4, 2x @ lvl5-8, 3x @ lvl9-10
+        int mult = 1 + (spellLevel - 1) / 4;
+
         // ── 1. Dense spark shower — scatter sideways, land and linger ───────────
-        for (int i = 0; i < 140; i++)
+        for (int i = 0; i < 140 * mult; i++)
         {
             double t      = rng.NextDouble();
             double dist   = Range * t;
@@ -110,7 +116,7 @@ public class Spark : Spell
         }
 
         // ── 2. Hot core streaks — fast white/yellow bolts along axis ────────────
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 50 * mult; i++)
         {
             double t   = rng.NextDouble();
             Vec3d  pos = origin + lookDir * (Range * t)
@@ -142,7 +148,7 @@ public class Spark : Spell
         }
 
         // ── 3. Burst ring at origin — initial strike flash ───────────────────────
-        for (int i = 0; i < 28; i++)
+        for (int i = 0; i < 28 * mult; i++)
         {
             double a        = i * 2.0 * Math.PI / 28 + rng.NextDouble() * 0.15;
             double outSpeed = 5.0 + rng.NextDouble() * 5.0;
@@ -173,7 +179,7 @@ public class Spark : Spell
         }
 
         // ── 4. Falling ember sparks — bright tiny quads that drop with gravity ──
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 50 * mult; i++)
         {
             double t      = rng.NextDouble();
             double dist   = Range * t;

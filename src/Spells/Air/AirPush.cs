@@ -38,25 +38,25 @@ public class AirPush : Spell
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
-        int level    = PlayerSpellData.For(caster).GetSpellLevel(Id);
-        float lvlMul = LevelMultiplier(level);
+        float lvlMul = LevelMultiplier(spellLevel);
+        float range  = Range * GetRangeMultiplier(spellLevel);
 
         var origin   = caster.SidedPos.XYZ.Add(0, 0.5, 0);
         var lookDir  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
         float cosAngle = (float)Math.Cos(ConeAngleDeg * Math.PI / 180.0);
 
-        world.GetEntitiesAround(origin, Range + 1, Range + 1, e =>
+        world.GetEntitiesAround(origin, range + 1, range + 1, e =>
         {
             if (e.EntityId == caster.EntityId) return false;
             if (e is not EntityAgent agent) return false;
 
             Vec3d toEntity = e.SidedPos.XYZ.Add(0, e.LocalEyePos.Y * 0.5, 0) - origin;
             double dist = toEntity.Length();
-            if (dist > Range) return false;
+            if (dist > range) return false;
             if (lookDir.Dot(toEntity.Clone().Normalize()) < cosAngle) return false;
 
             float weight  = Math.Max(agent.Properties?.Weight ?? 40f, 1f);
-            float falloff = 1f - (float)(dist / Range) * 0.5f;
+            float falloff = 1f - (float)(dist / range) * 0.5f;
             float force   = BaseForce * lvlMul / weight * falloff;
 
             agent.SidedPos.Motion.Add(
@@ -67,11 +67,12 @@ public class AirPush : Spell
             return false;
         });
 
-        SpawnWindParticles(world, origin, lookDir);
+        SpawnWindParticles(world, origin, lookDir, spellLevel);
     }
 
-    public static void SpawnWindParticles(IWorldAccessor world, Vec3d origin, Vec3d lookDir)
+    public static void SpawnWindParticles(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
     {
+        int mult = 1 + (spellLevel - 1) / 4;  // 1x @ lvl1-4, 2x @ lvl5-8, 3x @ lvl9-10
         Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
         Vec3d upPerp = lookDir.Cross(right).Normalize();
         var   rng    = world.Rand;
@@ -79,7 +80,7 @@ public class AirPush : Spell
 
         // ── 1. Spiral arms — 3 arms rotating around the look axis ──────────────
         // Each arm is a helix from origin to Range, twisted ~2.5 turns
-        for (int arm = 0; arm < 3; arm++)
+        for (int arm = 0; arm < 3 * mult; arm++)
         {
             double armOffset = arm * (2.0 * Math.PI / 3.0);
             int    pts       = 48;

@@ -120,6 +120,12 @@ public abstract class Spell
     /// <summary>Damage multiplier at given spell level. +15% per level.</summary>
     public virtual float GetDamageMultiplier(int spellLevel) => 1f + 0.15f * (spellLevel - 1);
 
+    /// <summary>Cast time multiplier: -5% per level, min 0.5x (50% faster at lvl10).</summary>
+    public virtual float GetCastTimeMultiplier(int spellLevel) => Math.Max(0.5f, 1f - 0.05f * (spellLevel - 1));
+
+    /// <summary>Range multiplier for Offense spells: +10% per level.</summary>
+    public virtual float GetRangeMultiplier(int spellLevel) => 1f + 0.10f * (spellLevel - 1);
+
     /// <summary>Particle multiplier: 1x at lvl1-4, 2x at lvl5-8, 3x at lvl9-10.</summary>
     public virtual int GetParticleMultiplier(int spellLevel) => 1 + (spellLevel - 1) / 4;
 

@@ -19,6 +19,15 @@ public class MsgSetHotbarSlot
 public class MsgCastSpell
 {
     [ProtoMember(1)] public string SpellId { get; set; } = "";
+    [ProtoMember(2)] public int SpellLevel { get; set; } = 1;
+}
+
+/// <summary>Server → casting client: notify cast start (for HUD cast bar).</summary>
+[ProtoContract]
+public class MsgStartCast
+{
+    [ProtoMember(1)] public string SpellId { get; set; } = "";
+    [ProtoMember(2)] public float CastTime { get; set; } = 1f;
 }
 
 /// <summary>Server → casting client only: kill your momentum immediately.</summary>
@@ -49,4 +58,5 @@ public class MsgSpellFx
     [ProtoMember(5)] public float  LookDirX { get; set; }
     [ProtoMember(6)] public float  LookDirY { get; set; }
     [ProtoMember(7)] public float  LookDirZ { get; set; }
+    [ProtoMember(8)] public int    SpellLevel { get; set; } = 1;
 }

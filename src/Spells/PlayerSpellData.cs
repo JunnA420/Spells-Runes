@@ -176,6 +176,14 @@ public class PlayerSpellData
     public int GetSpellLevel(string spellId)
         => Math.Clamp(GetTree(AttrSpellLevel).GetInt(spellId, 1), 1, 10);
 
+    public int SetSpellLevel(string spellId, int level)
+    {
+        level = Math.Clamp(level, 1, 10);
+        GetTree(AttrSpellLevel).SetInt(spellId, level);
+        entity.WatchedAttributes.MarkPathDirty(AttrSpellLevel);
+        return level;
+    }
+
     /// <summary>Raw XP within current spell level (remainder after last level-up).</summary>
     public int GetSpellXpInLevel(string spellId)
         => GetTree(AttrSpellXp).GetInt(spellId, 0);
