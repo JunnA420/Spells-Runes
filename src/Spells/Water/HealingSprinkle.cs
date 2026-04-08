@@ -26,7 +26,7 @@ public class HealingSprinkle : Spell
 
     public override IReadOnlyList<string> Prerequisites => new[] { "water_healing", "water_water_spray" };
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // TODO: AoE heal around caster
     }

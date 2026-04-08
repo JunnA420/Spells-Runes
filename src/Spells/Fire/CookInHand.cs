@@ -26,7 +26,7 @@ public class CookInHand : Spell
 
     public override IReadOnlyList<string> Prerequisites => new[] { "fire_hot_skin", "fire_spark" };
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // TODO: cook held item
     }

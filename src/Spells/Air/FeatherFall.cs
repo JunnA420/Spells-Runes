@@ -25,7 +25,7 @@ public class FeatherFall : Spell
 
     public override (int col, int row) TreePosition => (0, 0);
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // Motion is killed client-side via MsgFreezeMotion (player physics are client-authoritative)
         // Nothing needed here server-side

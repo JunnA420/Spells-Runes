@@ -8,6 +8,7 @@ using SpellsAndRunes.HUD;
 using SpellsAndRunes.GUI;
 using SpellsAndRunes.Spells;
 using SpellsAndRunes.Network;
+using SpellsAndRunes.Render;
 
 namespace SpellsAndRunes;
 
@@ -17,7 +18,8 @@ public class SpellsAndRunesMod : ModSystem
     private HudCastBar? castBar;
     private HudRadialMenu? radialMenu;
     private GuiDialogSpellbook? spellbookDialog;
-    private SpellConeRenderer? coneRenderer;
+    private SpellConeRenderer?  coneRenderer;
+    private SparkGlowRenderer? sparkGlow;
 
     private IClientNetworkChannel?  clientChannel;
     private IServerNetworkChannel? serverChannel;
@@ -76,10 +78,11 @@ public class SpellsAndRunesMod : ModSystem
 
                 var data = PlayerSpellData.For(entity);
                 int spellLevel = data.GetSpellLevel(msg.SpellId);
-                spell.TryCast(entity, api.World, spellLevel);
+                bool hit = spell.TryCast(entity, api.World, spellLevel);
 
-                data.AddSpellXp(msg.SpellId, spell.XpPerCast);
-                data.AddElementXp(spell.Element, spell.ElementXpPerCast);
+                // Base XP always, hit bonus if spell connected
+                data.AddSpellXp(msg.SpellId, spell.XpPerCast + (hit ? spell.XpPerCast / 2 : 0));
+                data.AddElementXp(spell.Element, spell.ElementXpPerCast + (hit ? 2 : 0));
 
                 // Spell-specific packets to the casting player only
                 if (msg.SpellId == "air_feather_fall")
@@ -242,6 +245,10 @@ public class SpellsAndRunesMod : ModSystem
                     case "air_air_kick_trail":
                         Spells.Air.AirKick.SpawnTrailFx(api.World, origin, lookDir);
                         break;
+                    case "fire_spark":
+                        Spells.Fire.Spark.SpawnFx(api.World, origin, lookDir);
+                        sparkGlow?.AddSparkBurst(origin, lookDir, Spells.Fire.Spark.Range, Spells.Fire.Spark.ConeAngleDeg);
+                        break;
                 }
             });
 
@@ -255,7 +262,9 @@ public class SpellsAndRunesMod : ModSystem
         castBar         = new HudCastBar(api);
         radialMenu      = new HudRadialMenu(api);
         spellbookDialog = new GuiDialogSpellbook(api, clientChannel!);
-        coneRenderer    = new SpellConeRenderer(api, radialMenu);
+        coneRenderer = new SpellConeRenderer(api, radialMenu);
+        sparkGlow    = new SparkGlowRenderer(api);
+        api.Event.RegisterRenderer(sparkGlow, EnumRenderStage.AfterOIT, "sparkglow");
 
         api.Event.RegisterGameTickListener(_ => coneRenderer.OnGameTick(_), 50);
 
@@ -347,9 +356,9 @@ public class SpellsAndRunesMod : ModSystem
     {
         hudFlux?.Dispose();
         castBar?.Dispose();
-        // coneRenderer has no Dispose (no unmanaged resources)
         radialMenu?.Dispose();
         spellbookDialog?.Dispose();
+        sparkGlow?.Dispose();
         base.Dispose();
     }
 }

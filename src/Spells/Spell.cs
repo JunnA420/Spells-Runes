@@ -80,17 +80,13 @@ public abstract class Spell
     public bool TryCast(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         float chance = MisscastChanceForLevel(spellLevel);
-        if (chance > 0f)
+        if (chance > 0f && (float)world.Rand.NextDouble() < chance)
         {
-            float roll = (float)world.Rand.NextDouble();
-            if (roll < chance)
-            {
-                OnMisscast(caster, world);
-                return false;
-            }
+            OnMisscast(caster, world);
+            return false;
         }
 
-        Execute(caster, world);
+        Execute(caster, world, spellLevel);
         return true;
     }
 
@@ -115,7 +111,17 @@ public abstract class Spell
     /// <summary>
     /// Execute the spell effect. Called server-side after a successful cast roll.
     /// </summary>
-    public abstract void Execute(EntityAgent caster, IWorldAccessor world);
+    public abstract void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel);
+
+    // ---- Scaling ----
+
+    public const int MaxSpellLevel = 10;
+
+    /// <summary>Damage multiplier at given spell level. +15% per level.</summary>
+    public virtual float GetDamageMultiplier(int spellLevel) => 1f + 0.15f * (spellLevel - 1);
+
+    /// <summary>Particle multiplier: 1x at lvl1-4, 2x at lvl5-8, 3x at lvl9-10.</summary>
+    public virtual int GetParticleMultiplier(int spellLevel) => 1 + (spellLevel - 1) / 4;
 
     /// <summary>Called every tick while the spell is active (channeled/persistent spells).</summary>
     public virtual void OnTick(EntityAgent caster, IWorldAccessor world, float deltaTime) { }

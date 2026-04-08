@@ -26,7 +26,7 @@ public class EarthClone : Spell
 
     public override IReadOnlyList<string> Prerequisites => new[] { "earth_stone_skin", "earth_earth_wall" };
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // TODO: spawn earth decoy entity
     }

@@ -12,6 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="assets\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
     <Reference Include="VintagestoryAPI">
       <HintPath>C:\Games\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>

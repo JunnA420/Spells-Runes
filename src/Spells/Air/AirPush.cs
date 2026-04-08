@@ -36,7 +36,7 @@ public class AirPush : Spell
         _ => 1.0f + (level - 1) * 0.5f,
     };
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         int level    = PlayerSpellData.For(caster).GetSpellLevel(Id);
         float lvlMul = LevelMultiplier(level);

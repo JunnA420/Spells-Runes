@@ -22,7 +22,7 @@ public class Healing : Spell
     // Left column, row 0
     public override (int col, int row) TreePosition => (0, 0);
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // TODO: apply health regen over time
     }

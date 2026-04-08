@@ -39,7 +39,7 @@ public class AirKick : Spell
     public const float LaunchKnockbackRadius = 3f;
     public const float LaunchKnockbackForce  = 0.6f;
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // Knockback nearby entities at launch
         var origin = caster.SidedPos.XYZ.Add(0, 0.5, 0);

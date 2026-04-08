@@ -22,7 +22,7 @@ public class EarthWall : Spell
     // Right column, row 0
     public override (int col, int row) TreePosition => (2, 0);
 
-    public override void Execute(EntityAgent caster, IWorldAccessor world)
+    public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         // TODO: place earth wall blocks
     }
