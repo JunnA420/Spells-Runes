@@ -2,7 +2,7 @@
   "modid": "spellsandrunes",
   "name": "Spells & Runes",
   "authors": ["JunnA, BL1TZ"],
-  "description": "A fast-paced elemental magic mod for Vintage Story. Cast spells with a flux-based mana system, chain abilities into quick combos, and master the Air element — featuring Air Push, Feather Fall, and Air Kick. More elements and spells to come.",
+  "description": "A fast-paced elemental magic mod for Vintage Story. Cast spells with a flux-based mana system and chain abilities into quick combos. Master multiple elements, each with their own spell tree — built for fluid, dynamic combat.",
   "version": "0.1.0",
   "type": "code",
   "side": "universal",
