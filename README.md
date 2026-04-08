@@ -87,14 +87,11 @@ Legend: `⚔ Offense` `🛡 Defense` `✦ Enchantment`
 
 Mastering two elements unlocks a combined spell tree with unique abilities.
 
-| Elements | Combined | Example |
-|---|---|---|
-| 🌬 Air + 🔥 Fire | ⚡ Lightning | High-speed electric strikes |
-| 🌬 Air + 💧 Water | 🌀 Storm | Wind and rain control |
-| 🌬 Air + 🪨 Earth | 🌪 Dust | Sandstorm, debris projectiles |
-| 🔥 Fire + 💧 Water | ☁ Steam | Scalding cloud, vision obscure |
-| 🔥 Fire + 🪨 Earth | 🌋 Magma | Lava, heat-based earth spells |
-| 💧 Water + 🪨 Earth | 🌿 Nature | Vines, poison, growth |
+| Elements | Combined |
+|---|---|
+| 🌬 Air + 🔥 Fire | ⚡ Lightning |
+| 🌬 Air + 💧 Water | 🧊 Ice |
+| 💧 Water + 🪨 Earth | 🌿 Plant |
 
 ---
 
