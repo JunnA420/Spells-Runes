@@ -47,9 +47,10 @@ public class HudCastBar : HudElement
         isCasting        = true;
     }
 
-    /// <summary>Start cast with explicit cast time (from server with level scaling).</summary>
+    /// <summary>Start cast with explicit cast time (from server with level scaling). Cancels any ongoing cast.</summary>
     public void OnBeginCast(string spellId, float scaledCastTime)
     {
+        Cancel();  // Kill any previous cast immediately
         var spell = SpellRegistry.Get(spellId);
         if (spell != null)
         {
@@ -143,12 +144,13 @@ public class HudCastBar : HudElement
         DrawDiamond(ctx, 0,     barY + H, 8, cr, cg, cb2);
         DrawDiamond(ctx, W,     barY + H, 8, cr, cg, cb2);
 
-        // ── Center text (percentage or "Casting…") ─────────────────
+        // ── Center text (remaining time in seconds) ─────────────────
         ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
         ctx.SetFontSize(11);
         ctx.SetSourceRGBA(1, 1, 1, 0.90);
-        string pct = frac >= 0.99 ? "!" : $"{(int)(frac * 100)}%";
-        CenterText(ctx, pct, W / 2, barY + H / 2 + 4);
+        float remaining = Math.Max(0, castTime - elapsed);
+        string timeStr = frac >= 0.99 ? "!" : $"{remaining:F1}s";
+        CenterText(ctx, timeStr, W / 2, barY + H / 2 + 4);
 
         // ── Tick marks ────────────────────────────────────────────
         ctx.SetSourceRGBA(cr, cg, cb2, 0.20);
