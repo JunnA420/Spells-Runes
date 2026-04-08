@@ -120,6 +120,9 @@ public abstract class Spell
     /// <summary>Damage multiplier at given spell level. +15% per level.</summary>
     public virtual float GetDamageMultiplier(int spellLevel) => 1f + 0.15f * (spellLevel - 1);
 
+    /// <summary>Flux cost multiplier: -8% per level, min 0.5x (50% cheaper at lvl10).</summary>
+    public virtual float GetFluxCostMultiplier(int spellLevel) => Math.Max(0.5f, 1f - 0.08f * (spellLevel - 1));
+
     /// <summary>Cast time multiplier: -5% per level, min 0.5x (50% faster at lvl10).</summary>
     public virtual float GetCastTimeMultiplier(int spellLevel) => Math.Max(0.5f, 1f - 0.05f * (spellLevel - 1));
 

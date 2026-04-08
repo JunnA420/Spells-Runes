@@ -67,18 +67,19 @@ public class SpellsAndRunesMod : ModSystem
                 var spell = SpellRegistry.Get(msg.SpellId);
                 if (spell == null) return;
 
-                float currentFlux = entity.WatchedAttributes.GetFloat("spellsandrunes:flux", 0f);
-                api.Logger.Notification($"[SnR] Cast '{msg.SpellId}': flux={currentFlux} cost={spell.FluxCost}");
-                if (currentFlux < spell.FluxCost)
-                {
-                    api.Logger.Notification($"[SnR] Flux check FAILED ({currentFlux} < {spell.FluxCost})");
-                    return;
-                }
-                entity.WatchedAttributes.SetFloat("spellsandrunes:flux", currentFlux - spell.FluxCost);
-                entity.WatchedAttributes.MarkPathDirty("spellsandrunes:flux");
-
                 var data = PlayerSpellData.For(entity);
                 int spellLevel = data.GetSpellLevel(msg.SpellId);
+                float scaledFluxCost = spell.FluxCost * spell.GetFluxCostMultiplier(spellLevel);
+
+                float currentFlux = entity.WatchedAttributes.GetFloat("spellsandrunes:flux", 0f);
+                api.Logger.Notification($"[SnR] Cast '{msg.SpellId}' lvl {spellLevel}: flux={currentFlux} cost={scaledFluxCost:F1}");
+                if (currentFlux < scaledFluxCost)
+                {
+                    api.Logger.Notification($"[SnR] Flux check FAILED ({currentFlux} < {scaledFluxCost:F1})");
+                    return;
+                }
+                entity.WatchedAttributes.SetFloat("spellsandrunes:flux", currentFlux - scaledFluxCost);
+                entity.WatchedAttributes.MarkPathDirty("spellsandrunes:flux");
 
                 // Notify casting client of cast start with scaled cast time
                 float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
@@ -368,14 +369,23 @@ public class SpellsAndRunesMod : ModSystem
             var spell = SpellRegistry.Get(spellId);
             if (spell == null) return;
 
-            api.ShowChatMessage($"[SnR] Starting cast: {spellId} ({spell.CastTime}s)");
+            var player = api.World.Player;
+            if (player?.Entity == null) return;
+            var data = PlayerSpellData.For(player.Entity);
+            int spellLevel = data.GetSpellLevel(spellId);
+            float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
+
+            api.ShowChatMessage($"[SnR] Starting cast: {spellId} (lvl {spellLevel}, {scaledCastTime:F2}s)");
+            castBar.OnBeginCast(spellId, scaledCastTime);
+
+            // When cast finishes, send to server
             castBar.BeginCast(spell, () =>
             {
                 api.ShowChatMessage($"[SnR] Cast complete, sending: {spellId}");
                 var entity = api.World.Player?.Entity;
                 if (entity != null)
                     api.World.PlaySoundAt(new AssetLocation("game", "sounds/effect/latch"), entity, null, true, 16f, 0.9f);
-                clientChannel!.SendPacket(new MsgCastSpell { SpellId = spellId });
+                clientChannel!.SendPacket(new MsgCastSpell { SpellId = spellId, SpellLevel = spellLevel });
             });
         };
     }
