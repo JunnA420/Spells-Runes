@@ -226,19 +226,6 @@
     padding: 12px 0 8px;
   }
 
-  /* SVG connector layer — sits behind nodes */
-  .stree-svg {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    overflow: visible;
-  }
-  .stree-svg line {
-    stroke: #ffffff18;
-    stroke-width: 1.5;
-  }
-
   /* One row of nodes */
   .stree-row {
     display: flex;
@@ -606,11 +593,10 @@
     </div>
     <div class="modal-body">
       <div class="stree" id="stree-air">
-        <svg class="stree-svg" id="svg-air"></svg>
         <!-- T I -->
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T I</span>
-          <div class="stree-row" id="air-t1">
+          <div class="stree-row">
             <div class="snode unlocked" data-id="air-push">
               <div class="snode-circle">💨</div>
               <div class="snode-info">
@@ -641,7 +627,7 @@
         <!-- T II -->
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T II</span>
-          <div class="stree-row" id="air-t2">
+          <div class="stree-row">
             <div class="snode planned" data-id="wind-wall">
               <div class="snode-circle">🌀</div>
               <div class="snode-info">
@@ -717,10 +703,9 @@
     </div>
     <div class="modal-body">
       <div class="stree" id="stree-fire">
-        <svg class="stree-svg" id="svg-fire"></svg>
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T I</span>
-          <div class="stree-row" id="fire-t1">
+          <div class="stree-row">
             <div class="snode unlocked">
               <div class="snode-circle">✨</div>
               <div class="snode-info">
@@ -750,7 +735,7 @@
         <div class="stree-gap"></div>
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T II</span>
-          <div class="stree-row" id="fire-t2">
+          <div class="stree-row">
             <div class="snode planned">
               <div class="snode-circle">🔴</div>
               <div class="snode-info">
@@ -1085,58 +1070,6 @@
     if (e.key === 'Escape') {
       document.querySelectorAll('.spell-tree-overlay.open').forEach(o => o.classList.remove('open'));
     }
-  });
-
-  // Draw SVG connector lines between tree rows
-  // Called when a modal opens so layout is settled
-  function drawTreeLines(streeId, svgId, topRowId, botRowId) {
-    const stree  = document.getElementById(streeId);
-    const svg    = document.getElementById(svgId);
-    const topRow = document.getElementById(topRowId);
-    const botRow = document.getElementById(botRowId);
-    if (!stree || !svg || !topRow || !botRow) return;
-
-    svg.innerHTML = '';
-    const treeRect = stree.getBoundingClientRect();
-
-    const topCircles = topRow.querySelectorAll('.snode-circle');
-    const botCircles = botRow.querySelectorAll('.snode-circle');
-
-    // Each bottom node connects to every top node (full web) — or just center of top row
-    botCircles.forEach(bot => {
-      const br = bot.getBoundingClientRect();
-      const bx = br.left + br.width / 2 - treeRect.left;
-      const by = br.top - treeRect.top;
-
-      // Connect to nearest top node
-      let nearest = null, nearestDist = Infinity;
-      topCircles.forEach(top => {
-        const tr = top.getBoundingClientRect();
-        const tx = tr.left + tr.width / 2 - treeRect.left;
-        const dist = Math.abs(tx - bx);
-        if (dist < nearestDist) { nearestDist = dist; nearest = top; }
-      });
-      if (!nearest) return;
-
-      const nr = nearest.getBoundingClientRect();
-      const nx = nr.left + nr.width / 2 - treeRect.left;
-      const ny = nr.top + nr.height - treeRect.top;
-
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', nx); line.setAttribute('y1', ny);
-      line.setAttribute('x2', bx); line.setAttribute('y2', by);
-      svg.appendChild(line);
-    });
-  }
-
-  // Wire up open buttons to also draw lines
-  document.querySelectorAll('.block-spell-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      requestAnimationFrame(() => {
-        drawTreeLines('stree-air',  'svg-air',  'air-t1',  'air-t2');
-        drawTreeLines('stree-fire', 'svg-fire', 'fire-t1', 'fire-t2');
-      });
-    });
   });
 
   // Scroll blocks into view with fade on load
