@@ -53,7 +53,7 @@
   .label {
     position: fixed;
     top: 32px;
-    left: 40px;
+    left: 10px;
     z-index: 150;
     pointer-events: none;
   }
@@ -62,13 +62,14 @@
     font-weight: 700;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #ffffff40;
+    color: goldenrod;
   }
   .label-sub {
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #ffffff20;
+    color: beige;
+    opacity: 0.45;
     margin-top: 4px;
   }
 
@@ -215,6 +216,20 @@
   .type-utility  { background: #10406e18; color: #70b4ff; border: 1px solid #10406e35; }
   .type-passive  { background: #1a5c1a18; color: #70ff90; border: 1px solid #1a5c1a35; }
   .type-defense  { background: #4a2a0a18; color: #ffa050; border: 1px solid #4a2a0a35; }
+
+  .impl-badge {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 1px;
+    margin-top: 4px;
+    margin-left: 4px;
+  }
+  .impl-yes { background: #7fff7f18; color: #7fff7f; border: 1px solid #7fff7f30; }
+  .impl-no  { background: #ffffff08; color: #ffffff25; border: 1px solid #ffffff12; }
 
   /* ── Skill tree layout ── */
   .stree {
@@ -601,24 +616,24 @@
               <div class="snode-circle">🪶</div>
               <div class="snode-info">
                 <div class="snode-name">Feather Fall</div>
-                <div class="snode-desc">Cancels all momentum the instant it's cast — a dead stop mid-air. Hit the ground running, not tumbling.</div>
-                <span class="spell-type type-utility">Utility</span>
+                <div class="snode-desc">Compresses air beneath the caster, negating all momentum on cast. No fall.</div>
+                <span class="spell-type type-utility">Utility</span><span class="impl-badge impl-yes">Implemented</span>
               </div>
             </div>
             <div class="snode unlocked">
               <div class="snode-circle">🦵</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Kick</div>
-                <div class="snode-desc">Launches into the air and fires a compressed sphere of air downward. The impact punches targets back with violent force.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <div class="snode-desc">Propels the caster upward, then fires a compressed air sphere downward. The sphere strikes with enough force to send targets flying.</div>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-yes">Implemented</span>
               </div>
             </div>
             <div class="snode unlocked">
               <div class="snode-circle">💨</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Push</div>
-                <div class="snode-desc">Releases a rolling wave of pressurized air in front of the caster. Anything in its path gets shoved — hard.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <div class="snode-desc">Condenses air into a rushing wave and sends it forward. Entities caught in its path are thrown back by the force of the gust.</div>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-yes">Implemented</span>
               </div>
             </div>
           </div>
@@ -632,24 +647,24 @@
               <div class="snode-circle">💫</div>
               <div class="snode-info">
                 <div class="snode-name">Windy Dash</div>
-                <div class="snode-desc">A clean, fast dash in the direction you're moving. No frills. Pure speed.</div>
-                <span class="spell-type type-utility">Mobility</span>
+                <div class="snode-desc">Wraps the caster in a burst of wind, propelling them forward in an instant.</div>
+                <span class="spell-type type-utility">Mobility</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode unlocked">
               <div class="snode-circle">🌪</div>
               <div class="snode-info">
                 <div class="snode-name">Updraft</div>
-                <div class="snode-desc">Thrusts the caster in whatever direction they're looking using a raw burst of air. A weapon, an escape, or both.</div>
-                <span class="spell-type type-utility">Mobility</span>
+                <div class="snode-desc">Channels a concentrated burst of air behind the caster, thrusting them in the direction they are looking.</div>
+                <span class="spell-type type-utility">Mobility</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode unlocked">
               <div class="snode-circle">🌬</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Slash</div>
-                <div class="snode-desc">Sends a single arc of compressed wind flying toward the target. Fast, precise, satisfying.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <div class="snode-desc">Shapes compressed air into a curved blade and launches it forward. Cuts through the air at considerable speed.</div>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
           </div>
@@ -663,8 +678,8 @@
               <div class="snode-circle">⚔️</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Step</div>
-                <div class="snode-desc">The caster accelerates to violent speed in an instant — carving through anything in their path with a wind blade on contact. The line between movement and attack.</div>
-                <span class="spell-type type-offense">Offense / Mobility</span>
+                <div class="snode-desc">Envelops the caster in a wind blade and launches them at great speed toward where they are looking. Cuts through anything in the path.</div>
+                <span class="spell-type type-offense">Offense / Mobility</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
           </div>
@@ -678,7 +693,7 @@
               <div class="snode-circle">👤</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Clone</div>
-                <div class="snode-desc">Summons a duplicate of the caster. When the clone takes a hit, it detonates into a blinding smoke veil — buying time, breaking focus.</div>
+                <div class="snode-desc">Shapes compressed air into a copy of the caster. When the clone is struck, it disperses into a blinding smoke veil.</div>
                 <span class="spell-type type-utility">Utility</span>
               </div>
             </div>
@@ -686,7 +701,7 @@
               <div class="snode-circle">🌀</div>
               <div class="snode-info">
                 <div class="snode-name">Cloning Wind Step</div>
-                <div class="snode-desc">Performs Wind Step as usual — but leaves behind an air clone at the point of departure. Confusion and aggression in a single motion.</div>
+                <div class="snode-desc">Performs Wind Step, leaving a Wind Clone at the point of departure.</div>
                 <span class="spell-type type-offense">Offense / Utility</span>
               </div>
             </div>
@@ -694,7 +709,7 @@
               <div class="snode-circle">💢</div>
               <div class="snode-info">
                 <div class="snode-name">Triple Wind Slash</div>
-                <div class="snode-desc">Three slashes. One breath. Fired in rapid succession — the last one hits before the first one fades.</div>
+                <div class="snode-desc">Shapes three wind blades in quick succession and launches them forward, each following the last.</div>
                 <span class="spell-type type-offense">Offense</span>
               </div>
             </div>
@@ -702,9 +717,8 @@
               <div class="snode-circle">👁</div>
               <div class="snode-info">
                 <div class="snode-name">Storm's Eye</div>
-                <div class="snode-desc">Locks one or more targets inside a localized eye of turbulence. They can't move. You can.</div>
-                <span class="spell-type type-defense">Control</span>
-              </div>
+                <div class="snode-desc">Creates a localized eye of turbulence around a target. The winds within hold them in place.</div>
+                <span class="spell-type type-defense">Control</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
@@ -717,7 +731,7 @@
               <div class="snode-circle">🌪</div>
               <div class="snode-info">
                 <div class="snode-name">Tornado</div>
-                <div class="snode-desc">Summons a tornado that moves on its own accord — unpredictable, uncontrolled and indiscriminately dangerous. Cast at your own risk.</div>
+                <div class="snode-desc">Summons a tornado at the target location. The tornado moves on its own and cannot be controlled once cast.</div>
                 <span class="spell-type type-offense">Offense</span>
               </div>
             </div>
@@ -725,7 +739,7 @@
               <div class="snode-circle">🎯</div>
               <div class="snode-info">
                 <div class="snode-name">Spear in an Eye</div>
-                <div class="snode-desc">Storm's Eye, scaled up — a vast eye of stillness into which spears of compressed air are continuously driven. Targets held inside have nowhere to go.</div>
+                <div class="snode-desc">Creates a large Storm's Eye, then continuously fires Wind Spears into it. Targets held within are struck repeatedly.</div>
                 <span class="spell-type type-offense">Offense / Control</span>
               </div>
             </div>
@@ -733,7 +747,7 @@
               <div class="snode-circle">🗡</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Spear</div>
-                <div class="snode-desc">Air compressed to a razor point and fired like a bullet. Fast, precise, punishing — it doesn't push. It punctures.</div>
+                <div class="snode-desc">Compresses air into a narrow point and launches it forward at high velocity. Pierces through targets rather than pushing them.</div>
                 <span class="spell-type type-offense">Offense</span>
               </div>
             </div>
@@ -741,9 +755,8 @@
               <div class="snode-circle">🌀</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Vortex</div>
-                <div class="snode-desc">Hold to sustain a sphere of roaring wind around the caster — repelling enemies, deflecting projectiles and shielding the body within. Release to collapse it outward.</div>
-                <span class="spell-type type-defense">Defense / Utility</span>
-              </div>
+                <div class="snode-desc">Surrounds the caster with a sustained sphere of wind while the button is held. Pushes away nearby entities. Releasing the cast collapses the sphere outward.</div>
+                <span class="spell-type type-defense">Defense / Utility</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
@@ -785,8 +798,7 @@
               <div class="snode-info">
                 <div class="snode-name">Deep Healing</div>
                 <div class="snode-desc">Sustained ritual — slow powerful heal</div>
-                <span class="spell-type type-utility">Utility</span>
-              </div>
+                <span class="spell-type type-utility">Utility</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
@@ -828,8 +840,7 @@
               <div class="snode-info">
                 <div class="snode-name">Hot Skin</div>
                 <div class="snode-desc">Heat aura damages nearby foes</div>
-                <span class="spell-type type-passive">Passive</span>
-              </div>
+                <span class="spell-type type-passive">Passive</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
@@ -850,8 +861,7 @@
               <div class="snode-info">
                 <div class="snode-name">Flame Shield</div>
                 <div class="snode-desc">Ignites attackers on hit</div>
-                <span class="spell-type type-defense">Defense</span>
-              </div>
+                <span class="spell-type type-defense">Defense</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
@@ -893,8 +903,7 @@
               <div class="snode-info">
                 <div class="snode-name">Earth Clone</div>
                 <div class="snode-desc">Summons a decoy golem</div>
-                <span class="spell-type type-utility">Utility</span>
-              </div>
+                <span class="spell-type type-utility">Utility</span><span class="impl-badge impl-no">Not Implemented</span></div>
             </div>
           </div>
         </div>
