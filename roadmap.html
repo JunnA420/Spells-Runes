@@ -108,6 +108,259 @@
     50%       { transform: translateX(6px); }
   }
 
+  /* ── Spell tree button ── */
+  .spell-tree-btn {
+    position: fixed;
+    bottom: 32px;
+    left: 40px;
+    z-index: 150;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #ffffff40;
+    background: #ffffff08;
+    border: 1px solid #ffffff15;
+    padding: 8px 16px;
+    border-radius: 2px;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .spell-tree-btn:hover {
+    color: #ffffffaa;
+    background: #ffffff14;
+    border-color: #ffffff30;
+  }
+  .spell-tree-btn .btn-icon { font-size: 13px; }
+
+  /* ── Spell tree modal ── */
+  .spell-tree-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000000bb;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+  }
+  .spell-tree-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .spell-tree-modal {
+    width: 860px;
+    max-height: 80vh;
+    background: #13131a;
+    border: 1px solid #ffffff18;
+    border-radius: 4px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff15 transparent;
+    transform: translateY(16px);
+    transition: transform 0.25s;
+    cursor: default;
+  }
+  .spell-tree-overlay.open .spell-tree-modal { transform: translateY(0); }
+
+  .modal-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid #ffffff10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: #13131a;
+    z-index: 1;
+  }
+  .modal-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ffffff50;
+  }
+  .modal-close {
+    font-size: 18px;
+    color: #ffffff30;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 2px;
+    transition: color 0.2s, background 0.2s;
+  }
+  .modal-close:hover { color: #ffffffaa; background: #ffffff10; }
+
+  .modal-body { padding: 32px; }
+
+  /* ── Spell element section ── */
+  .spell-element {
+    margin-bottom: 40px;
+  }
+  .spell-element:last-child { margin-bottom: 0; }
+
+  .element-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .element-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .element-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff60;
+  }
+  .element-echo {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #ffffff25;
+    margin-top: 2px;
+  }
+
+  .e-air    .element-icon { background: #253a52; }
+  .e-fire   .element-icon { background: #4a1a06; }
+  .e-water  .element-icon { background: #0a2a3a; }
+  .e-earth  .element-icon { background: #162a12; }
+
+  /* ── Spell tier row ── */
+  .tier-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .tier-label {
+    width: 56px;
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff20;
+    padding-top: 14px;
+    padding-right: 12px;
+    text-align: right;
+  }
+
+  .tier-spells {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+  }
+
+  /* Connector line from tier label to spells */
+  .tier-row::before {
+    content: '';
+    position: absolute;
+    left: 52px;
+    top: 22px;
+    width: 16px;
+    height: 1px;
+    background: #ffffff12;
+  }
+
+  /* ── Spell node ── */
+  .spell-node {
+    background: #1e1e28;
+    border: 1px solid #ffffff12;
+    border-radius: 3px;
+    padding: 10px 16px;
+    min-width: 140px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .spell-node:hover {
+    border-color: #ffffff30;
+    background: #252530;
+  }
+
+  .spell-node.unlocked {
+    border-color: #ffffff25;
+  }
+  .spell-node.unlocked::after {
+    content: '';
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #7fff7f;
+    box-shadow: 0 0 5px #7fff7f;
+  }
+
+  .spell-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffffcc;
+    margin-bottom: 3px;
+  }
+  .spell-desc {
+    font-size: 10.5px;
+    color: #ffffff40;
+    line-height: 1.5;
+  }
+  .spell-type {
+    display: inline-block;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 1px;
+    margin-top: 6px;
+  }
+  .type-offense  { background: #6e101022; color: #ff7070; border: 1px solid #6e101040; }
+  .type-utility  { background: #10406e22; color: #70b4ff; border: 1px solid #10406e40; }
+  .type-passive  { background: #1a5c1a22; color: #70ff90; border: 1px solid #1a5c1a40; }
+  .type-defense  { background: #4a2a0a22; color: #ffa050; border: 1px solid #4a2a0a40; }
+
+  /* ── Tree connector lines between tiers ── */
+  .tier-connector {
+    display: flex;
+    margin-left: 68px;
+    margin-bottom: 0;
+    padding-bottom: 8px;
+    gap: 8px;
+  }
+  .tier-connector-line {
+    width: 1px;
+    height: 16px;
+    background: #ffffff10;
+    margin-left: 20px;
+  }
+
+  /* Element divider */
+  .element-divider {
+    height: 1px;
+    background: linear-gradient(to right, #ffffff08, transparent);
+    margin: 40px 0;
+  }
+
   /* ── Track ── */
   .track {
     display: flex;
@@ -296,6 +549,13 @@
     background: #ffffff30;
     flex-shrink: 0;
   }
+  .block ul li:first-child {
+    color: #ffffff80;
+  }
+  .block ul li:first-child::before {
+    background: #ffffffaa;
+    box-shadow: 0 0 4px #ffffff50;
+  }
 
   /* ── Big background number ── */
   .num {
@@ -341,88 +601,280 @@
   <span>Scroll</span>
 </div>
 
+<div class="spell-tree-btn" id="spellTreeBtn">
+  <span class="btn-icon">✦</span>
+  <span>Spell Tree</span>
+</div>
+
+<!-- ═══════════ SPELL TREE MODAL ═══════════ -->
+<div class="spell-tree-overlay" id="spellTreeOverlay">
+  <div class="spell-tree-modal" id="spellTreeModal">
+    <div class="modal-header">
+      <div class="modal-title">✦ &nbsp; Current Spell Tree</div>
+      <div class="modal-close" id="spellTreeClose">✕</div>
+    </div>
+    <div class="modal-body">
+
+      <!-- AIR -->
+      <div class="spell-element e-air">
+        <div class="element-header">
+          <div class="element-icon">🌬</div>
+          <div>
+            <div class="element-name">Air Magic</div>
+            <div class="element-echo">Flux Echo: Sylphweed — mountain peaks</div>
+          </div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T I</div>
+          <div class="tier-spells">
+            <div class="spell-node unlocked">
+              <div class="spell-name">Air Push</div>
+              <div class="spell-desc">Blast of compressed air that knocks back enemies.</div>
+              <span class="spell-type type-offense">Offense</span>
+            </div>
+            <div class="spell-node unlocked">
+              <div class="spell-name">Feather Fall</div>
+              <div class="spell-desc">Nullifies fall damage for a short duration.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node unlocked">
+              <div class="spell-name">Air Kick</div>
+              <div class="spell-desc">Powerful upward kick — launches a target into the air.</div>
+              <span class="spell-type type-offense">Offense</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-connector">
+          <div class="tier-connector-line"></div>
+          <div class="tier-connector-line" style="margin-left:148px"></div>
+          <div class="tier-connector-line" style="margin-left:148px"></div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T II</div>
+          <div class="tier-spells" style="opacity:0.45">
+            <div class="spell-node">
+              <div class="spell-name">Wind Wall</div>
+              <div class="spell-desc">A barrier of rushing air — deflects projectiles.</div>
+              <span class="spell-type type-defense">Defense</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Gust Dash</div>
+              <div class="spell-desc">Short-range teleport on a wind current.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="element-divider"></div>
+
+      <!-- FIRE -->
+      <div class="spell-element e-fire">
+        <div class="element-header">
+          <div class="element-icon">🔥</div>
+          <div>
+            <div class="element-name">Fire Magic</div>
+            <div class="element-echo">Flux Echo: Ignis Crystal — volcanic hotspots</div>
+          </div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T I</div>
+          <div class="tier-spells">
+            <div class="spell-node unlocked">
+              <div class="spell-name">Spark</div>
+              <div class="spell-desc">Short-range fire cone that ignites enemies.</div>
+              <span class="spell-type type-offense">Offense</span>
+            </div>
+            <div class="spell-node unlocked">
+              <div class="spell-name">Cook in Hand</div>
+              <div class="spell-desc">Instantly cooks held food items.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node unlocked">
+              <div class="spell-name">Hot Skin</div>
+              <div class="spell-desc">Passive heat aura — damages nearby enemies over time.</div>
+              <span class="spell-type type-passive">Passive</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-connector">
+          <div class="tier-connector-line"></div>
+          <div class="tier-connector-line" style="margin-left:148px"></div>
+          <div class="tier-connector-line" style="margin-left:148px"></div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T II</div>
+          <div class="tier-spells" style="opacity:0.45">
+            <div class="spell-node">
+              <div class="spell-name">Fireball</div>
+              <div class="spell-desc">Launches an explosive fireball projectile.</div>
+              <span class="spell-type type-offense">Offense</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Flame Shield</div>
+              <div class="spell-desc">Ignites attackers on hit for a brief window.</div>
+              <span class="spell-type type-defense">Defense</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="element-divider"></div>
+
+      <!-- WATER -->
+      <div class="spell-element e-water">
+        <div class="element-header">
+          <div class="element-icon">💧</div>
+          <div>
+            <div class="element-name">Water Magic</div>
+            <div class="element-echo">Flux Echo: Deep Sea Pearl — deep ocean floor</div>
+          </div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T I</div>
+          <div class="tier-spells" style="opacity:0.35">
+            <div class="spell-node">
+              <div class="spell-name">Healing Sprinkle</div>
+              <div class="spell-desc">Area restoration — heals nearby allies.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Water Spray</div>
+              <div class="spell-desc">Utility stream — knockback &amp; extinguishes fire.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Deep Healing</div>
+              <div class="spell-desc">Sustained ritual — powerful slow heal.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="element-divider"></div>
+
+      <!-- EARTH -->
+      <div class="spell-element e-earth">
+        <div class="element-header">
+          <div class="element-icon">🪨</div>
+          <div>
+            <div class="element-name">Earth Magic</div>
+            <div class="element-echo">Flux Echo: Rhea's Crown — temperate forests</div>
+          </div>
+        </div>
+
+        <div class="tier-row">
+          <div class="tier-label">T I</div>
+          <div class="tier-spells" style="opacity:0.35">
+            <div class="spell-node">
+              <div class="spell-name">Stone Skin</div>
+              <div class="spell-desc">Hardens the caster's body — defense buff.</div>
+              <span class="spell-type type-defense">Defense</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Earth Wall</div>
+              <div class="spell-desc">Raises a barrier of stone from the ground.</div>
+              <span class="spell-type type-defense">Defense</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Earth Clone</div>
+              <div class="spell-desc">Summons a decoy golem entity.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="track" id="track">
   <div class="spacer"></div>
 
-  <!-- ═══════════════════════════════════════════
-       TO ADD A BLOCK:
-       1. Copy a .block div
-       2. Change color class: c-gray / c-blue / c-orange / c-green / c-purple / c-teal / c-red
-       3. Change status class: done / wip / planned
-       4. Edit text & list items
-       Note: update first-child / last-child clip on first and last block if you reorder
-  ════════════════════════════════════════════ -->
-
+  <!-- 01 AIR MAGIC -->
   <div class="block c-gray">
     <div class="block-inner"></div>
     <span class="status wip">In Progress</span>
     <h2>Air Magic</h2>
-    <p class="subtitle">A New Lost Echo</p>
-    <p>The first element — Air — awakens. Rooted in agility and force, Air magic grants its wielder mastery over movement, pushing foes aside and bending the wind to their will. Alongside it, the foundations of Flux are laid.</p>
+    <p class="subtitle">A New Flux Echo</p>
+    <p>The first element awakens. Air magic grants mastery over movement, pushing foes aside and bending the wind to your will. The foundations of Flux are laid here.</p>
     <div class="divider"></div>
     <ul>
+      <li>Flux Echo: Sylphweed — atop mountain peaks</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Flux resource &amp; alignment system</li>
-      <li>Air spells up to Tier II</li>
-      <li>Sylphweed — found atop mountain peaks</li>
       <li>Spell hotbar, radial menu &amp; cast timing</li>
     </ul>
     <div class="num">01</div>
   </div>
 
+  <!-- 02 WATER MAGIC -->
   <div class="block c-teal">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Water Magic</h2>
-    <p class="subtitle">The Second Echo</p>
+    <p class="subtitle">The Second Flux Echo</p>
     <p>Still and deep, Water magic flows between offense and restoration. It heals the wounded, erodes resistance and turns the tide of battle through patience and precision.</p>
     <div class="divider"></div>
     <ul>
+      <li>Flux Echo: Deep Sea Pearl — deep ocean floor</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Healing Sprinkle — area restore</li>
       <li>Water Spray — utility &amp; knockback</li>
-      <li>Deep Healing — sustained ritual</li>
-      <li>Deep Sea Pearl — harvested from the deep ocean floor</li>
     </ul>
     <div class="num">02</div>
   </div>
 
+  <!-- 03 FIRE MAGIC -->
   <div class="block c-orange">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Fire Magic</h2>
-    <p class="subtitle">The Third Echo</p>
+    <p class="subtitle">The Third Flux Echo</p>
     <p>Volatile and relentless, Fire magic burns through defenses and sustains itself through aggression. The fiercer the battle, the stronger the flame.</p>
     <div class="divider"></div>
     <ul>
-      <li>Spark — fire cone burst</li>
-      <li>Cook in Hand — utility</li>
+      <li>Flux Echo: Ignis Crystal — volcanic hotspots</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Hot Skin — passive heat aura</li>
-      <li>Ignis Crystal — near volcanic hotspots &amp; equatorial depths</li>
+      <li>Cook in Hand — utility</li>
     </ul>
     <div class="num">03</div>
   </div>
 
+  <!-- 04 EARTH MAGIC -->
   <div class="block c-green">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Earth Magic</h2>
-    <p class="subtitle">The Fourth Echo</p>
+    <p class="subtitle">The Fourth Flux Echo</p>
     <p>Immovable and enduring, Earth magic is the art of outlasting your enemy. Fortify your body, reshape terrain and let the land itself become your weapon.</p>
     <div class="divider"></div>
     <ul>
+      <li>Flux Echo: Rhea's Crown — temperate forests</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Stone Skin — defense buff</li>
       <li>Earth Wall — terrain barrier</li>
-      <li>Earth Clone — decoy entity</li>
-      <li>Rhea's Crown — a rare mushroom in temperate forests</li>
     </ul>
     <div class="num">04</div>
   </div>
 
+  <!-- 05 TIER EXPANSION I -->
   <div class="block c-gray">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Tier Expansion I</h2>
     <p class="subtitle">Deeper Mastery</p>
-    <p>The four base Echoes grow deeper. Tier III and IV spells are unlocked for Air, Water, Fire and Earth — demanding greater Flux mastery and offering substantially more power.</p>
+    <p>The four base Echoes grow deeper. Tier III and IV spells are unlocked — demanding greater Flux mastery and offering substantially more power.</p>
     <div class="divider"></div>
     <ul>
       <li>Tier III &amp; IV spells for all 4 elements</li>
@@ -433,6 +885,7 @@
     <div class="num">05</div>
   </div>
 
+  <!-- 06 RUNES -->
   <div class="block c-gray">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
@@ -449,54 +902,58 @@
     <div class="num">06</div>
   </div>
 
+  <!-- 07 LIGHTNING MAGIC -->
   <div class="block c-purple">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Lightning Magic</h2>
-    <p class="subtitle">A Derived Echo</p>
+    <p class="subtitle">A Derived Flux Echo</p>
     <p>Born from the union of Air and Fire, Lightning is raw speed made lethal. It strikes before enemies can react and chains between targets with terrifying efficiency.</p>
     <div class="divider"></div>
     <ul>
-      <li>Requires Air + Fire alignment</li>
+      <li>Flux Echo: requires Air + Fire alignment</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Chain lightning — multi-target</li>
       <li>Static field — area denial</li>
-      <li>Lightning Echo activator</li>
     </ul>
     <div class="num">07</div>
   </div>
 
+  <!-- 08 ICE MAGIC -->
   <div class="block c-blue">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Ice Magic</h2>
-    <p class="subtitle">A Derived Echo</p>
+    <p class="subtitle">A Derived Flux Echo</p>
     <p>Born from Water and Air, Ice magic is control made manifest. Freeze enemies in place, shatter them with concussive force and reshape the battlefield with barriers of solid cold.</p>
     <div class="divider"></div>
     <ul>
-      <li>Requires Water + Air alignment</li>
+      <li>Flux Echo: requires Water + Air alignment</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Frost Lance — piercing projectile</li>
       <li>Glacial Shell — ice armor</li>
-      <li>Ice Echo activator</li>
     </ul>
     <div class="num">08</div>
   </div>
 
+  <!-- 09 NATURE MAGIC -->
   <div class="block c-green">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
     <h2>Nature Magic</h2>
-    <p class="subtitle">A Derived Echo</p>
+    <p class="subtitle">A Derived Flux Echo</p>
     <p>Born from Earth and Water, Nature magic is the patient force of growth given purpose. It heals, entangles and summons the living world as an extension of the mage's will.</p>
     <div class="divider"></div>
     <ul>
-      <li>Requires Earth + Water alignment</li>
+      <li>Flux Echo: requires Earth + Water alignment</li>
+      <li>~10–15 spells up to Tier II</li>
       <li>Entangle — root &amp; slow</li>
       <li>Bloom — area regeneration</li>
-      <li>Nature Echo activator</li>
     </ul>
     <div class="num">09</div>
   </div>
 
+  <!-- 10 TIER EXPANSION II -->
   <div class="block c-gray">
     <div class="block-inner"></div>
     <span class="status planned">Planned</span>
@@ -528,6 +985,7 @@
   }
 
   document.addEventListener('mousedown', e => {
+    if (e.target.closest('#spellTreeOverlay')) return;
     down = true;
     startX = e.pageX;
     scrollLeft = window.scrollX;
@@ -540,11 +998,27 @@
   });
   window.addEventListener('scroll', updateProgress);
 
-  // Mouse wheel → horizontal scroll
+  // Mouse wheel → horizontal scroll (only when modal is closed)
   window.addEventListener('wheel', e => {
+    if (overlay.classList.contains('open')) return;
     e.preventDefault();
     window.scrollBy({ left: e.deltaY * 2.2, behavior: 'auto' });
   }, { passive: false });
+
+  // Spell tree modal
+  const overlay = document.getElementById('spellTreeOverlay');
+  const btn     = document.getElementById('spellTreeBtn');
+  const closeBtn = document.getElementById('spellTreeClose');
+  const modal   = document.getElementById('spellTreeModal');
+
+  btn.addEventListener('click', () => overlay.classList.add('open'));
+  closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => {
+    if (!modal.contains(e.target)) overlay.classList.remove('open');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') overlay.classList.remove('open');
+  });
 
   // Scroll blocks into view with fade on load
   const blocks = document.querySelectorAll('.block');
