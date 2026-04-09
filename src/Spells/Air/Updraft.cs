@@ -19,7 +19,7 @@ public class Updraft : Spell
 
     public override IReadOnlyList<string> Prerequisites => ["air_air_kick"];
 
-    public override (int col, int row) TreePosition => (1, 1);
+    public override (int col, int row) TreePosition => (1, 2);
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {

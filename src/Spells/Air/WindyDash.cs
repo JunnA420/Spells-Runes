@@ -19,7 +19,7 @@ public class WindyDash : Spell
 
     public override IReadOnlyList<string> Prerequisites => ["air_feather_fall"];
 
-    public override (int col, int row) TreePosition => (0, 2);
+    public override (int col, int row) TreePosition => (0, 3);
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {

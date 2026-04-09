@@ -2,6 +2,7 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 using Vintagestory.API.MathTools;
+using SpellsAndRunes.Blocks;
 using SpellsAndRunes.Commands;
 using SpellsAndRunes.Flux;
 using SpellsAndRunes.HUD;
@@ -19,7 +20,8 @@ public class SpellsAndRunesMod : ModSystem
     private HudRadialMenu? radialMenu;
     private GuiDialogSpellbook? spellbookDialog;
     private SpellConeRenderer?  coneRenderer;
-    private SparkGlowRenderer? sparkGlow;
+    private SparkGlowRenderer?     sparkGlow;
+    public  SylphweedGlowRenderer? SylphGlow { get; private set; }
 
     private IClientNetworkChannel?  clientChannel;
     private IServerNetworkChannel? serverChannel;
@@ -29,6 +31,7 @@ public class SpellsAndRunesMod : ModSystem
     public override void Start(ICoreAPI api)
     {
         api.RegisterEntityBehaviorClass("fluxBehavior", typeof(EntityBehaviorFlux));
+        api.RegisterBlockEntityClass("sylphweed", typeof(Blocks.BlockEntitySylphweed));
         SpellRegistry.RegisterAll();
     }
 
@@ -306,6 +309,8 @@ public class SpellsAndRunesMod : ModSystem
         coneRenderer = new SpellConeRenderer(api, radialMenu);
         sparkGlow    = new SparkGlowRenderer(api);
         api.Event.RegisterRenderer(sparkGlow, EnumRenderStage.AfterOIT, "sparkglow");
+        SylphGlow    = new SylphweedGlowRenderer(api);
+        api.Event.RegisterRenderer(SylphGlow, EnumRenderStage.AfterOIT, "sylphweedglow");
 
         api.Event.RegisterGameTickListener(_ => coneRenderer.OnGameTick(_), 50);
 
@@ -402,6 +407,7 @@ public class SpellsAndRunesMod : ModSystem
         radialMenu?.Dispose();
         spellbookDialog?.Dispose();
         sparkGlow?.Dispose();
+        SylphGlow?.Dispose();
         base.Dispose();
     }
 }

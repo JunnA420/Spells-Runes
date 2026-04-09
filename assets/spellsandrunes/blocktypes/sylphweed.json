@@ -1,0 +1,52 @@
+{
+	"code": "sylphweed",
+	"class": "Block",
+	"creativeinventory": {
+		"general": ["*"],
+		"flora": ["*"]
+	},
+	"shape": {
+		"base": "spellsandrunes:block/sylphweed"
+	},
+	"blockmaterial": "Plant",
+	"renderpass": "OpaqueNoCull",
+	"renderAlphaTest": 0.05,
+	"sideopaque": {
+		"all": false
+	},
+	"sidesolid": {
+		"all": false
+	},
+	"lightAbsorption": 0,
+	"sunlight_propagates": true,
+	"resistance": 0.5,
+	"collisionbox": null,
+	"replaceable": 3000,
+	"sounds": {
+		"place": "block/plant",
+		"break": "block/plant",
+		"hit": "block/plant"
+	},
+	"drops": [
+		{
+			"code": "sylphweed",
+			"type": "block"
+		}
+	],
+	"combustibleProps": {
+		"burnTemperature": 600,
+		"burnDuration": 10
+	},
+	"vertexFlags": {
+		"zOffset": 2
+	},
+	"materialDensity": 400,
+	"frostable": true,
+	"lightHsv": [0, 0, 2],
+	"ambientSound": {
+		"sound": "game:environment/wind",
+		"range": 8,
+		"volume": 0.7
+	},
+	"entityClass": "sylphweed"
+}

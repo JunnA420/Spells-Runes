@@ -1,0 +1,461 @@
+{
+	"editor": {
+		"backDropShape": "",
+		"collapsedPaths": "",
+		"allAngles": false,
+		"entityTextureMode": false,
+		"singleTexture": false,
+		"vsFormatConverted": false
+	},
+	"textureWidth": 64,
+	"textureHeight": 64,
+	"textureSizes": {
+		"sylphweed.png": [64, 64]
+	},
+	"textures": {
+		"sylphweed.png": "block/sylphweed"
+	},
+	"elements": [
+		{
+			"name": "Plant 2a",
+			"from": [13, 0, 8],
+			"to": [13, 0, 8],
+			"rotationOrigin": [13, 0, 8],
+			"rotationY": 45,
+			"children": [
+				{
+					"name": "Lower Leafs",
+					"from": [-3.4245, 5.9653, 2.85],
+					"to": [-3.4245, 5.9653, 2.85],
+					"rotationOrigin": [-3.4245, 5.9653, 2.85],
+					"children": [
+						{
+							"name": "Plant 2b",
+							"from": [0.11773, -1.60862, -1.74886],
+							"to": [0.11773, 3.39138, 1.25114],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [24, 20, 27, 25], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [24, 25, 27, 30], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -12.54829,
+							"rotationY": 66.51993,
+							"rotationZ": 143.41944,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [0.41523, 0.67653, -3.6],
+							"to": [0.41523, 3.67653, -1.6],
+							"rotationOrigin": [0.6, 2.1, -2.6],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [18, 30, 20, 33], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [30, 18, 32, 21], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 2, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 2], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 8.43787,
+							"rotationY": 55.63485,
+							"rotationZ": 105.03702,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [0.48495, 0.54078, -3.15408],
+							"to": [0.48495, 3.54078, -1.15408],
+							"rotationOrigin": [0.6, 1.1, -2.6],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [20, 30, 22, 33], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [30, 21, 32, 24], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 2, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 2], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -155.91717,
+							"rotationY": 44.77551,
+							"rotationZ": -94.09971,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-2.79328, -1.06219, -6.40048],
+							"to": [-2.79328, 1.93781, -4.40048],
+							"rotationOrigin": [-2.7, 0, -5.6],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [30, 0, 32, 3], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [30, 3, 32, 6], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 2, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 2], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -8.75812,
+							"rotationY": 40.90789,
+							"rotationZ": 117.31694,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-6.15316, -1.557, -7.83112],
+							"to": [-6.15316, 3.443, -4.83112],
+							"rotationOrigin": [-5.6, 0, -6],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [0, 27, 3, 32], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [27, 0, 30, 5], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 11.87689,
+							"rotationY": -12.7671,
+							"rotationZ": 158.94636,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-0.05991, -2.00114, -13.16879],
+							"to": [-0.05991, 2.99886, -10.16879],
+							"rotationOrigin": [0.5, 0.3, -12.9],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [3, 27, 6, 32], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [27, 5, 30, 10], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 14.60239,
+							"rotationY": -62.13613,
+							"rotationZ": 143.01228,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-0.01857, 0.35351, -10.24258],
+							"to": [-0.01857, 3.35351, -8.24258],
+							"rotationOrigin": [0.3, 2.1, -9.6],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [30, 6, 32, 9], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [30, 9, 32, 12], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 2, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 2], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationY": -52.5,
+							"rotationZ": 112.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [4.60354, -0.39093, -6.36619],
+							"to": [4.60354, 2.60907, -4.36619],
+							"rotationOrigin": [4.1, 1.2, -5.8],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [30, 12, 32, 15], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [30, 15, 32, 18], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 2, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 2], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -180,
+							"rotationY": -32.5,
+							"rotationZ": -67.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [6.4, -1.4, -6.2],
+							"to": [6.4, 3.6, -3.2],
+							"rotationOrigin": [6.4, 0.1, -5.2],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [24, 10, 27, 15], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [24, 15, 27, 20], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 174.76381,
+							"rotationY": 14.0761,
+							"rotationZ": -46.8531,
+							"shade": false,
+							"renderPass": 2
+						}
+					]
+				},
+				{
+					"name": "Top Leafs",
+					"from": [-3.18699, 12.4219, 0.50331],
+					"to": [-3.18699, 12.4219, 0.50331],
+					"rotationOrigin": [-3.18699, 12.4219, 0.50331],
+					"children": [
+						{
+							"name": "Plant 2b",
+							"from": [-0.04305, -2.55609, -1.57072],
+							"to": [-0.04305, 2.44391, 1.42928],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [15, 27, 18, 32], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [27, 15, 30, 20], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 52.5,
+							"rotationY": -90,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-2.59574, -0.96127, -4.41669],
+							"to": [-2.59574, 4.03873, -1.41669],
+							"rotationOrigin": [-0.64771, 0, -2.91669],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [18, 22, 21, 27], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [21, 22, 24, 27], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationY": 45,
+							"rotationZ": 52.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-1.41301, -1.5219, -5.00331],
+							"to": [-1.41301, 3.4781, -2.00331],
+							"rotationOrigin": [-1.41301, -1.5219, -4.00331],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [0, 22, 3, 27], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [3, 22, 6, 27], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationZ": 52.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-1.01301, -2.5219, -6.40331],
+							"to": [-1.01301, 2.4781, -3.40331],
+							"rotationOrigin": [-1.01301, -1.5219, -5.40331],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [24, 0, 27, 5], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [24, 5, 27, 10], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationY": -45,
+							"rotationZ": 52.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-0.4991, -1.6341, -6.00331],
+							"to": [-0.4991, 3.3659, -3.00331],
+							"rotationOrigin": [-0.41301, -1.5219, -5.00331],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [27, 10, 30, 15], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [12, 27, 15, 32], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -52.5,
+							"rotationY": 90,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-1.15812, -1.91329, -10.05222],
+							"to": [-1.15812, 3.08671, -7.05222],
+							"rotationOrigin": [0.0594, 0, -6.45222],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [12, 22, 15, 27], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [15, 22, 18, 27], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -180,
+							"rotationY": -45,
+							"rotationZ": -127.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [-2.49496, -0.17108, -4.94059],
+							"to": [-2.49496, 4.82892, -1.94059],
+							"rotationOrigin": [0.0594, 0, -3.62379],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [6, 22, 9, 27], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [9, 22, 12, 27], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -180,
+							"rotationY": 47.5,
+							"rotationZ": -127.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [1.58699, -1.5219, -5.00331],
+							"to": [1.58699, 3.4781, -2.00331],
+							"rotationOrigin": [1.58699, -1.5219, -4.00331],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [6, 27, 9, 32], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 5], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [9, 27, 12, 32], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationZ": -52.5,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [0.57037, -3.5, -4.90331],
+							"to": [0.57037, -0.4, -2.00331],
+							"rotationOrigin": [0.57037, -1.5, -3.50331],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [18, 27, 21, 30], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [27, 20, 30, 23], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationZ": -90,
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Top",
+							"from": [0.12037, -0.05, -3.50331],
+							"to": [0.12037, -0.05, -3.50331],
+							"rotationOrigin": [0.12037, -0.05, -3.50331],
+							"children": [
+								{
+									"name": "Plant 2b",
+									"from": [0, -1.55, -1.45],
+									"to": [0, 1.55, 1.45],
+									"rotationOrigin": [0, 0, 0],
+									"faces": {
+										"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+										"east": {"texture": "#sylphweed.png", "uv": [21, 27, 24, 30], "autoUv": false, "snapUv": false},
+										"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+										"west": {"texture": "#sylphweed.png", "uv": [27, 23, 30, 26], "autoUv": false, "snapUv": false},
+										"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+										"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+									},
+									"rotationX": 90,
+									"rotationZ": -135,
+									"shade": false,
+									"renderPass": 2
+								},
+								{
+									"name": "Plant 2b",
+									"from": [0, -1.55, -1.45],
+									"to": [0, 1.55, 1.45],
+									"rotationOrigin": [0, 0, 0],
+									"faces": {
+										"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+										"east": {"texture": "#sylphweed.png", "uv": [27, 26, 30, 29], "autoUv": false, "snapUv": false},
+										"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "autoUv": false, "snapUv": false},
+										"west": {"texture": "#sylphweed.png", "uv": [27, 29, 30, 32], "autoUv": false, "snapUv": false},
+										"up": {"texture": "#sylphweed.png", "uv": [0, 3, 0, 0], "autoUv": false, "snapUv": false},
+										"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 3], "rotation": 180, "autoUv": false, "snapUv": false}
+									},
+									"rotationX": 90,
+									"rotationZ": 132.5,
+									"shade": false,
+									"renderPass": 2
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Root",
+					"from": [-8, 0, -3],
+					"to": [-8, 0, -3],
+					"rotationOrigin": [-8, 0, -3],
+					"children": [
+						{
+							"name": "Plant 2a_geo",
+							"from": [-1, 0, 0],
+							"to": [11, 10.9, 0],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [12, 0, 24, 11], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 11], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [24, 11, 12, 22], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 11], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [12, 0, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [12, 0, 0, 0], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"shade": false,
+							"renderPass": 2
+						},
+						{
+							"name": "Plant 2b",
+							"from": [5, 0, -6],
+							"to": [5, 10.9, 6],
+							"rotationOrigin": [5, 0, 0],
+							"faces": {
+								"north": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 11], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#sylphweed.png", "uv": [0, 0, 12, 11], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 11], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#sylphweed.png", "uv": [0, 11, 12, 22], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#sylphweed.png", "uv": [0, 12, 0, 0], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#sylphweed.png", "uv": [0, 0, 0, 12], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"shade": false,
+							"renderPass": 2
+						}
+					]
+				}
+			]
+		}
+	],
+	"animations": []
+}

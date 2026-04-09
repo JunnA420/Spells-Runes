@@ -245,6 +245,7 @@
   /* One row of nodes */
   .stree-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 24px;
     position: relative;
@@ -257,18 +258,17 @@
     height: 48px;
   }
 
-  /* Tier label on the left */
-  .stree-tier-label {
-    position: absolute;
-    left: 0;
+  /* Tier section header */
+  .stree-tier-header {
+    width: 100%;
     font-size: 8px;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #ffffff18;
-    /* aligned to center of row nodes */
-    top: 50%;
-    transform: translateY(-50%);
+    color: #ffffff20;
+    padding: 0 0 10px 4px;
+    border-bottom: 1px solid #ffffff08;
+    margin-bottom: 16px;
   }
 
   .stree-row-wrap {
@@ -276,7 +276,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding-left: 32px;
   }
 
   /* ── Individual spell node ── */
@@ -609,9 +608,10 @@
     </div>
     <div class="modal-body">
       <div class="stree">
-        <!-- T I core -->
+
+        <!-- TIER I -->
+        <div class="stree-tier-header">Tier I</div>
         <div class="stree-row-wrap">
-          <span class="stree-tier-label">T I</span>
           <div class="stree-row">
             <div class="snode unlocked">
               <div class="snode-circle">🪶</div>
@@ -637,13 +637,6 @@
                 <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-yes">Implemented</span>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="stree-gap"></div>
-        <!-- T I advanced (bridge) -->
-        <div class="stree-row-wrap">
-          <span class="stree-tier-label" style="color:#ffffff28">T I →</span>
-          <div class="stree-row">
             <div class="snode unlocked">
               <div class="snode-circle">💫</div>
               <div class="snode-info">
@@ -668,13 +661,6 @@
                 <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="stree-gap"></div>
-        <!-- Wind Step solo bridge -->
-        <div class="stree-row-wrap">
-          <span class="stree-tier-label" style="color:#ffffff28">T I →</span>
-          <div class="stree-row">
             <div class="snode unlocked">
               <div class="snode-circle">⚔️</div>
               <div class="snode-info">
@@ -686,16 +672,17 @@
           </div>
         </div>
         <div class="stree-gap"></div>
-        <!-- T II -->
+
+        <!-- TIER II -->
+        <div class="stree-tier-header">Tier II</div>
         <div class="stree-row-wrap">
-          <span class="stree-tier-label">T II</span>
           <div class="stree-row">
             <div class="snode planned">
               <div class="snode-circle">👤</div>
               <div class="snode-info">
                 <div class="snode-name">Wind Clone</div>
                 <div class="snode-desc">Shapes compressed air into a copy of the caster. When the clone is struck, it disperses into a blinding smoke veil.</div>
-                <span class="spell-type type-utility">Utility</span>
+                <span class="spell-type type-utility">Utility</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -703,7 +690,7 @@
               <div class="snode-info">
                 <div class="snode-name">Cloning Wind Step</div>
                 <div class="snode-desc">Performs Wind Step, leaving a Wind Clone at the point of departure.</div>
-                <span class="spell-type type-offense">Offense / Utility</span>
+                <span class="spell-type type-offense">Offense / Utility</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -711,7 +698,7 @@
               <div class="snode-info">
                 <div class="snode-name">Triple Wind Slash</div>
                 <div class="snode-desc">Shapes three wind blades in quick succession and launches them forward, each following the last.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -719,21 +706,15 @@
               <div class="snode-info">
                 <div class="snode-name">Storm's Eye</div>
                 <div class="snode-desc">Creates a localized eye of turbulence around a target. The winds within hold them in place.</div>
-                <span class="spell-type type-defense">Control</span><span class="impl-badge impl-no">Not Implemented</span></div>
+                <span class="spell-type type-defense">Control</span><span class="impl-badge impl-no">Not Implemented</span>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="stree-gap"></div>
-        <!-- T III -->
-        <div class="stree-row-wrap">
-          <span class="stree-tier-label">T III</span>
-          <div class="stree-row">
             <div class="snode planned">
               <div class="snode-circle">🌪</div>
               <div class="snode-info">
                 <div class="snode-name">Tornado</div>
                 <div class="snode-desc">Summons a tornado at the target location. The tornado moves on its own and cannot be controlled once cast.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -741,7 +722,7 @@
               <div class="snode-info">
                 <div class="snode-name">Spear in an Eye</div>
                 <div class="snode-desc">Creates a large Storm's Eye, then continuously fires Wind Spears into it. Targets held within are struck repeatedly.</div>
-                <span class="spell-type type-offense">Offense / Control</span>
+                <span class="spell-type type-offense">Offense / Control</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -749,7 +730,7 @@
               <div class="snode-info">
                 <div class="snode-name">Wind Spear</div>
                 <div class="snode-desc">Compresses air into a narrow point and launches it forward at high velocity. Pierces through targets rather than pushing them.</div>
-                <span class="spell-type type-offense">Offense</span>
+                <span class="spell-type type-offense">Offense</span><span class="impl-badge impl-no">Not Implemented</span>
               </div>
             </div>
             <div class="snode planned">
@@ -757,10 +738,12 @@
               <div class="snode-info">
                 <div class="snode-name">Wind Vortex</div>
                 <div class="snode-desc">Surrounds the caster with a sustained sphere of wind while the button is held. Pushes away nearby entities. Releasing the cast collapses the sphere outward.</div>
-                <span class="spell-type type-defense">Defense / Utility</span><span class="impl-badge impl-no">Not Implemented</span></div>
+                <span class="spell-type type-defense">Defense / Utility</span><span class="impl-badge impl-no">Not Implemented</span>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

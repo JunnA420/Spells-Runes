@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using SpellsAndRunes.Spells.Air;
-using SpellsAndRunes.Spells.Fire;
-using SpellsAndRunes.Spells.Water;
-using SpellsAndRunes.Spells.Earth;
+using System.Linq;
+using System.Reflection;
 
 namespace SpellsAndRunes.Spells;
 
@@ -19,25 +17,15 @@ public static class SpellRegistry
         if (registered) return;
         registered = true;
 
-        // Air
-        Register(new FeatherFall());
-        Register(new AirPush());
-        Register(new AirKick());      // Jump Kick — prereq: FeatherFall + AirPush
+        var spellType = typeof(Spell);
+        var types = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && spellType.IsAssignableFrom(t));
 
-        // Fire
-        Register(new HotSkin());
-        Register(new Spark());
-        Register(new CookInHand());   // prereq: HotSkin + Spark
-
-        // Water
-        Register(new Healing());
-        Register(new WaterSpray());
-        Register(new HealingSprinkle()); // prereq: Healing + WaterSpray
-
-        // Earth
-        Register(new StoneSkin());
-        Register(new EarthWall());
-        Register(new EarthClone());   // prereq: StoneSkin + EarthWall
+        foreach (var type in types)
+        {
+            var spell = (Spell)Activator.CreateInstance(type)!;
+            Register(spell);
+        }
     }
 
     public static void Register(Spell spell)

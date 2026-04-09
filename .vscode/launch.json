@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "program": "C:\\Games\\Vintagestory\\Vintagestory.exe",
-      "args": ["--openWorld", "junnas superflat place"],
+      "args": [],
       "cwd": "C:\\Games\\Vintagestory",
       "stopAtEntry": false,
       "preLaunchTask": "build"

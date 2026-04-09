@@ -19,7 +19,7 @@ public class WindStep : Spell
 
     public override IReadOnlyList<string> Prerequisites => ["air_windy_dash", "air_wind_slash"];
 
-    public override (int col, int row) TreePosition => (1, 2);
+    public override (int col, int row) TreePosition => (1, 3);
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {

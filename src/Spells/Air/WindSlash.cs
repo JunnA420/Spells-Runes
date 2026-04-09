@@ -19,7 +19,7 @@ public class WindSlash : Spell
 
     public override IReadOnlyList<string> Prerequisites => ["air_air_push"];
 
-    public override (int col, int row) TreePosition => (2, 2);
+    public override (int col, int row) TreePosition => (2, 3);
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {

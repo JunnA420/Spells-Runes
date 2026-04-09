@@ -31,6 +31,13 @@ public class GuiDialogSpellbook : GuiDialog
     // Tooltip
     private double tooltipX, tooltipY;
 
+    // Spell tree pan state
+    private double treePanX = 0, treePanY = 0;
+    private bool isPanning = false;
+    private double panStartMouseX, panStartMouseY;
+    private double panStartOffsetX, panStartOffsetY;
+    private double treeAreaX, treeAreaY, treeAreaW, treeAreaH; // last drawn area, for clamping
+
     // Memorized tab — spell card list (hit-testing)
     private readonly List<SpellCard> memorizedSpellCards = new();
     private const double CardW = 150, CardH = 38;
@@ -71,8 +78,8 @@ public class GuiDialogSpellbook : GuiDialog
     private const double Pad       = 14;
     private const double BorderR   = 8;
     private const double NodeR     = 26;
-    private const double NodeSpacingX = 100;
-    private const double NodeSpacingY = 90;
+    private const double NodeSpacingX = 130;
+    private const double NodeSpacingY = 115;
 
     // Sidebar tab geometry (vertical list)
     private const double TabH     = 38;
@@ -335,6 +342,9 @@ public class GuiDialogSpellbook : GuiDialog
     {
         spellNodes.Clear();
 
+        // Store area for pan clamping and hit testing
+        treeAreaX = areaX; treeAreaY = areaY; treeAreaW = areaW; treeAreaH = areaH;
+
         var spells = SpellRegistry.All.Values
             .Where(s => s.Element == SelectedElement)
             .ToList();
@@ -350,16 +360,21 @@ public class GuiDialogSpellbook : GuiDialog
         // Center grid within area
         double gridW = cols * NodeSpacingX;
         double gridH = rows * NodeSpacingY;
-        double originX = areaX + areaW / 2 - gridW / 2 + NodeSpacingX / 2;
-        // Rows grow upward: row 0 = bottom
-        double originY = areaY + areaH - NodeSpacingY / 2 - NodeR;
+        double baseOriginX = areaX + areaW / 2 - gridW / 2 + NodeSpacingX / 2;
+        double baseOriginY = areaY + areaH - NodeSpacingY / 2 - NodeR;
+
+        // Apply pan offset
+        double originX = baseOriginX + treePanX;
+        double originY = baseOriginY + treePanY;
 
         // Build node screen positions
         var posMap = new Dictionary<string, (double cx, double cy)>();
         foreach (var spell in spells)
         {
-            double cx = originX + spell.TreePosition.col * NodeSpacingX;
-            double cy = originY - spell.TreePosition.row * NodeSpacingY;
+            int col = spell.TreePosition.col;
+            int row = spell.TreePosition.row;
+            double cx = originX + col * NodeSpacingX;
+            double cy = originY - row * NodeSpacingY;
             posMap[spell.Id] = (cx, cy);
             spellNodes.Add(new SpellNode(spell.Id, cx, cy, NodeR));
         }
@@ -367,6 +382,11 @@ public class GuiDialogSpellbook : GuiDialog
         var entity   = capi.World.Player?.Entity;
         var data     = entity != null ? PlayerSpellData.For(entity) : null;
         var (er, eg, eb) = ElementColor(SelectedElement);
+
+        // Clip drawing to the tree area so nodes don't bleed into sidebar/header
+        ctx.Save();
+        ctx.Rectangle(areaX, areaY, areaW, areaH);
+        ctx.Clip();
 
         // Draw connection lines first (under nodes)
         ctx.LineWidth = 2;
@@ -395,6 +415,8 @@ public class GuiDialogSpellbook : GuiDialog
             bool hovered   = hoveredSpellId == spell.Id;
             DrawSpellNode(ctx, spell, pos.cx, pos.cy, unlocked, available, hovered, er, eg, eb);
         }
+
+        ctx.Restore(); // end clip
     }
 
     private void DrawSpellNode(Context ctx, Spell spell, double cx, double cy,
@@ -709,10 +731,20 @@ public class GuiDialogSpellbook : GuiDialog
         double rx = args.X - SingleComposer.Bounds.absX;
         double ry = args.Y - SingleComposer.Bounds.absY;
 
-        // Update drag position
+        // Update drag position (memorized tab drag)
         if (isDragging)
         {
             dragX = rx; dragY = ry;
+            (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
+            args.Handled = true;
+            return;
+        }
+
+        // Pan spell tree
+        if (isPanning)
+        {
+            treePanX = panStartOffsetX + (rx - panStartMouseX);
+            treePanY = panStartOffsetY + (ry - panStartMouseY);
             (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
             args.Handled = true;
             return;
@@ -806,6 +838,7 @@ public class GuiDialogSpellbook : GuiDialog
                 if (rx >= bx && rx <= bx + ElemBtnW && ry >= elemSelectorY && ry <= elemSelectorY + ElemBtnH)
                 {
                     selectedElementIndex = i;
+                    treePanX = 0; treePanY = 0;
                     (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
                     args.Handled = true; return;
                 }
@@ -821,6 +854,16 @@ public class GuiDialogSpellbook : GuiDialog
                     (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
                     args.Handled = true; return;
                 }
+            }
+
+            // Start pan if click is inside the tree area (but not on a node or element selector)
+            if (rx >= treeAreaX && rx <= treeAreaX + treeAreaW &&
+                ry >= treeAreaY && ry <= treeAreaY + treeAreaH)
+            {
+                isPanning = true;
+                panStartMouseX = rx; panStartMouseY = ry;
+                panStartOffsetX = treePanX; panStartOffsetY = treePanY;
+                args.Handled = true; return;
             }
 
             // Consume remaining clicks in content area to prevent swing
@@ -865,6 +908,13 @@ public class GuiDialogSpellbook : GuiDialog
 
     public override void OnMouseUp(MouseEvent args)
     {
+        if (isPanning)
+        {
+            isPanning = false;
+            args.Handled = true;
+            return;
+        }
+
         if (!isDragging) { base.OnMouseUp(args); return; }
 
         double rx = args.X - SingleComposer.Bounds.absX;
