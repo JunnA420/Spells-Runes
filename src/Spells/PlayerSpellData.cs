@@ -150,6 +150,14 @@ public class PlayerSpellData
         entity.WatchedAttributes.MarkPathDirty(AttrActivators);
     }
 
+    /// <summary>True once the player has smoked Sylphweed — gates all Flux features.</summary>
+    public bool IsFluxUnlocked => HasActivator("sylphweed");
+
+    public void UnlockFlux() => TriggerActivator("sylphweed");
+
+    /// <summary>True if the player has unlocked a specific element tree.</summary>
+    public bool IsElementUnlocked(SpellElement element) => HasActivator($"element_{element.ToString().ToLowerInvariant()}");
+
     // -----------------------------------------------------------------------
     // Hotbar
     // -----------------------------------------------------------------------

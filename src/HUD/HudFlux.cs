@@ -1,6 +1,7 @@
 using System;
 using Cairo;
 using Vintagestory.API.Client;
+using SpellsAndRunes.Spells;
 
 namespace SpellsAndRunes.HUD;
 
@@ -97,6 +98,10 @@ public class HudFlux : HudElement
 
     public override void OnRenderGUI(float deltaTime)
     {
+        var entity = capi.World.Player?.Entity;
+        if (entity == null) return;
+        if (!PlayerSpellData.For(entity).IsFluxUnlocked) return;
+
         (SingleComposer.GetElement("fluxArc") as GuiElementCustomDraw)?.Redraw();
         base.OnRenderGUI(deltaTime);
     }

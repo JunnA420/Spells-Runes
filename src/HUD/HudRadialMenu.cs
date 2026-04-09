@@ -306,6 +306,8 @@ public class IndicatorHud : HudElement
     public override void OnRenderGUI(float deltaTime)
     {
         if (!IsOpened()) { TryOpen(); Compose(); }
+        var entity = capi.World.Player?.Entity;
+        if (entity == null || !PlayerSpellData.For(entity).IsFluxUnlocked) return;
         RedrawIndicator();
         base.OnRenderGUI(deltaTime);
     }

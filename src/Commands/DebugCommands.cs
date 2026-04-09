@@ -51,6 +51,19 @@ public static class DebugCommands
                 .HandleWith(OnStatus)
             .EndSubCommand()
 
+            // /snr unlock-flux
+            .BeginSubCommand("unlock-flux")
+                .WithDescription("Unlock Flux (simulate smoking Sylphweed)")
+                .HandleWith(OnUnlockFlux)
+            .EndSubCommand()
+
+            // /snr unlock-element <element>
+            .BeginSubCommand("unlock-element")
+                .WithDescription("Unlock an element tree (e.g. /snr unlock-element Air)")
+                .WithArgs(api.ChatCommands.Parsers.Word("element"))
+                .HandleWith(OnUnlockElement)
+            .EndSubCommand()
+
             // /snr flux [on|off]
             .BeginSubCommand("flux")
                 .WithDescription("Toggle infinite flux (sets regen to 200/s)")
@@ -121,6 +134,33 @@ public static class DebugCommands
 
         data.Unlock(spellId);
         return TextCommandResult.Success($"Unlocked '{spellId}'.");
+    }
+
+    private static TextCommandResult OnUnlockFlux(TextCommandCallingArgs args)
+    {
+        if (args.Caller.Entity is not { } entity)
+            return TextCommandResult.Error("No player entity found.");
+
+        var data = PlayerSpellData.For(entity);
+        if (data.IsFluxUnlocked)
+            return TextCommandResult.Success("Flux already unlocked.");
+
+        data.UnlockFlux();
+        return TextCommandResult.Success("Flux unlocked.");
+    }
+
+    private static TextCommandResult OnUnlockElement(TextCommandCallingArgs args)
+    {
+        if (args.Caller.Entity is not { } entity)
+            return TextCommandResult.Error("No player entity found.");
+
+        string elementStr = (string)args[0];
+        if (!Enum.TryParse<SpellElement>(elementStr, ignoreCase: true, out var element))
+            return TextCommandResult.Error($"Unknown element '{elementStr}'. Valid: {string.Join(", ", Enum.GetNames<SpellElement>())}");
+
+        var data = PlayerSpellData.For(entity);
+        data.TriggerActivator($"element_{element.ToString().ToLowerInvariant()}");
+        return TextCommandResult.Success($"Element '{element}' unlocked.");
     }
 
     private static TextCommandResult OnActivator(TextCommandCallingArgs args)

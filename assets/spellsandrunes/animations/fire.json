@@ -1,0 +1,123 @@
+{
+  "animations": [
+    {
+      "name": "SparkCast",
+      "code": "sparkcast",
+      "quantityframes": 39,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Hold",
+      "keyframes": [
+        {
+          "frame": 0,
+          "elements": {
+            "UpperArmR": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": 0
+            },
+            "LowerArmR": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": 0
+            },
+            "LowerArmL": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": 0
+            }
+          }
+        },
+        {
+          "frame": 11,
+          "elements": {
+            "LowerArmL": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": -30
+            }
+          }
+        },
+        {
+          "frame": 13,
+          "elements": {
+            "LowerArmR": {
+              "rotationX": -65,
+              "rotationY": 0,
+              "rotationZ": 0
+            },
+            "UpperArmL": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": 0
+            }
+          }
+        },
+        {
+          "frame": 16,
+          "elements": {
+            "UpperArmR": {
+              "rotationX": -5.1761,
+              "rotationY": 12.3257,
+              "rotationZ": -79.1563
+            }
+          }
+        },
+        {
+          "frame": 19,
+          "elements": {
+            "UpperArmL": {
+              "rotationX": 0,
+              "rotationY": 0,
+              "rotationZ": -42.5
+            }
+          }
+        },
+        {
+          "frame": 20,
+          "elements": {
+            "UpperArmR": {
+              "rotationX": -5.1761,
+              "rotationY": 12.3257,
+              "rotationZ": -79.1563
+            }
+          }
+        },
+        {
+          "frame": 25,
+          "elements": {
+            "UpperArmR": {
+              "rotationX": -10.1721,
+              "rotationY": 17.4861,
+              "rotationZ": -72.9908
+            },
+            "LowerArmR": {
+              "rotationX": -62.5,
+              "rotationY": 0,
+              "rotationZ": 0
+            }
+          }
+        },
+        {
+          "frame": 28,
+          "elements": {
+            "LowerArmR": {
+              "rotationX": -22.5,
+              "rotationY": 0,
+              "rotationZ": 0
+            }
+          }
+        },
+        {
+          "frame": 30,
+          "elements": {
+            "UpperArmR": {
+              "rotationX": -5.0917,
+              "rotationY": 6.0142,
+              "rotationZ": -74.0313
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

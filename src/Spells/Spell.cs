@@ -70,6 +70,23 @@ public abstract class Spell
     /// </summary>
     public virtual float CastTime => 1.0f;
 
+    // ---- Animation ----
+
+    /// <summary>
+    /// Animation code to play at cast start (matches filename in assets/spellsandrunes/animations/).
+    /// Null = no animation. Plays for CastTime duration then loops until cancelled.
+    /// </summary>
+    public virtual string? AnimationCode => null;
+
+    /// <summary>
+    /// If true, animation is masked to upper body only (torse, arms, head) —
+    /// legs continue playing locomotion animation normally.
+    /// </summary>
+    public virtual bool AnimationUpperBodyOnly => true;
+
+    /// <summary>Playback speed multiplier for the animation. Default 1.0.</summary>
+    public virtual float AnimationSpeed => 1f;
+
     // ---- Casting ----
 
     /// <summary>

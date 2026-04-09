@@ -1,0 +1,245 @@
+[
+  {
+    "op": "add",
+    "path": "/animations/-",
+    "value": {
+      "name": "Air_Wind_Push",
+      "code": "air_wind_push",
+      "quantityframes": 54,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Stop",
+      "keyframes": [
+        {
+          "frame": 0,
+          "elements": {
+            "UpperTorso": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 8,
+          "elements": {
+            "UpperArmR": { "rotationX": -1.4298, "rotationY": 7.7511, "rotationZ": -22.0917 }
+          }
+        },
+        {
+          "frame": 11,
+          "elements": {
+            "LowerArmR": { "rotationX": -37.5, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 15,
+          "elements": {
+            "UpperTorso": { "rotationX": 0,       "rotationY": 0,       "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": -22.478, "rotationY": 20.4623, "rotationZ": -41.1093 },
+            "UpperArmL":  { "rotationX": -8.5047, "rotationY": -5.2798, "rotationZ": 12.1072 },
+            "LowerArmL":  { "rotationX": 0,       "rotationY": 0,       "rotationZ": -60 }
+          }
+        },
+        {
+          "frame": 30,
+          "elements": {
+            "UpperTorso": { "rotationX": 0,      "rotationY": 15,      "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": -3.2144,"rotationY": 51.2162, "rotationZ": -59.2009 },
+            "LowerArmR":  { "rotationX": -62.5,  "rotationY": 0,       "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": -11.2352,"rotationY": -12.2782,"rotationZ": 61.6896 },
+            "LowerArmL":  { "rotationX": 0,       "rotationY": 0,       "rotationZ": -80 }
+          }
+        },
+        {
+          "frame": 35,
+          "elements": {
+            "UpperTorso": { "rotationX": 0,       "rotationY": 0,      "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": -19.1558,"rotationY": 10.28,  "rotationZ": -67.122 },
+            "LowerArmR":  { "rotationX": 5,        "rotationY": 0,      "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": 3.6787,  "rotationY": -2.4603,"rotationZ": -46.4101 },
+            "LowerArmL":  { "rotationX": 0,        "rotationY": 0,      "rotationZ": -30 }
+          }
+        },
+        {
+          "frame": 40,
+          "elements": {
+            "UpperTorso": { "rotationX": 0,       "rotationY": 0,      "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": -19.1558,"rotationY": 10.28,  "rotationZ": -67.122 },
+            "LowerArmR":  { "rotationX": 5,        "rotationY": 0,      "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": 3.6787,  "rotationY": -2.4603,"rotationZ": -46.4101 },
+            "LowerArmL":  { "rotationX": 0,        "rotationY": 0,      "rotationZ": -30 }
+          }
+        },
+        {
+          "frame": 53,
+          "elements": {
+            "UpperTorso": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        }
+      ]
+    },
+    "file": "game:shapes/entity/humanoid/seraph-faceless.json"
+  },
+  {
+    "op": "add",
+    "path": "/animations/-",
+    "value": {
+      "name": "Air_Wind_Feather_Fall",
+      "code": "air_wind_feather_fall",
+      "quantityframes": 24,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Stop",
+      "keyframes": [
+        {
+          "frame": 0,
+          "elements": {
+            "LowerTorso": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmR":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmL":  { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 10,
+          "elements": {
+            "LowerTorso": { "rotationX": 0,       "rotationY": 0,       "rotationZ": 17.5 },
+            "UpperArmR":  { "rotationX": 65.0244, "rotationY": -12.4306,"rotationZ": -29.4441 },
+            "LowerArmR":  { "rotationX": -81.43,  "rotationY": 0,        "rotationZ": 0 },
+            "UpperArmL":  { "rotationX": -63.141, "rotationY": 13.1374, "rotationZ": -4.4952 },
+            "LowerArmL":  { "rotationX": 89.9999, "rotationY": 1.143,   "rotationZ": 5.9999 },
+            "UpperFootL": { "rotationX": 0,        "rotationY": 0,        "rotationZ": -55 },
+            "LowerFootL": { "rotationX": 0,        "rotationY": 0,        "rotationZ": 77.5 },
+            "UpperFootR": { "rotationX": 0,        "rotationY": 0,        "rotationZ": -67.5 },
+            "LowerFootR": { "rotationX": 0,        "rotationY": 0,        "rotationZ": 92.5 }
+          }
+        },
+        {
+          "frame": 15,
+          "elements": {
+            "UpperArmR": { "rotationX": 5.8837,  "rotationY": 15.6676, "rotationZ": -23.412 },
+            "LowerArmR": { "rotationX": 5,        "rotationY": 0,        "rotationZ": 0 },
+            "UpperArmL": { "rotationX": -4.8754, "rotationY": 6.3867,  "rotationZ": -29.3882 },
+            "LowerArmL": { "rotationX": 7.482,   "rotationY": 0.5216,  "rotationZ": 9.9659 }
+          }
+        },
+        {
+          "frame": 18,
+          "elements": {
+            "UpperArmR": { "rotationX": 5.8837,  "rotationY": 15.6676, "rotationZ": -23.412 },
+            "UpperArmL": { "rotationX": -4.8754, "rotationY": 6.3867,  "rotationZ": -29.3882 }
+          }
+        },
+        {
+          "frame": 19,
+          "elements": {
+            "UpperFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 21,
+          "elements": {
+            "LowerTorso": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerFootR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 23,
+          "elements": {
+            "UpperArmR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "UpperArmL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        }
+      ]
+    },
+    "file": "game:shapes/entity/humanoid/seraph-faceless.json"
+  },
+  {
+    "op": "add",
+    "path": "/animations/-",
+    "value": {
+      "name": "SparkCast",
+      "code": "sparkcast",
+      "quantityframes": 39,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Stop",
+      "keyframes": [
+        {
+          "frame": 0,
+          "elements": {
+            "UpperArmR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmR": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 },
+            "LowerArmL": { "rotationX": 0, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 11,
+          "elements": {
+            "LowerArmL": { "rotationX": 0, "rotationY": 0, "rotationZ": -30 }
+          }
+        },
+        {
+          "frame": 13,
+          "elements": {
+            "LowerArmR": { "rotationX": -65,  "rotationY": 0, "rotationZ": 0 },
+            "UpperArmL": { "rotationX": 0,     "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 16,
+          "elements": {
+            "UpperArmR": { "rotationX": -5.1761, "rotationY": 12.3257, "rotationZ": -79.1563 }
+          }
+        },
+        {
+          "frame": 19,
+          "elements": {
+            "UpperArmL": { "rotationX": 0, "rotationY": 0, "rotationZ": -42.5 }
+          }
+        },
+        {
+          "frame": 20,
+          "elements": {
+            "UpperArmR": { "rotationX": -5.1761, "rotationY": 12.3257, "rotationZ": -79.1563 }
+          }
+        },
+        {
+          "frame": 25,
+          "elements": {
+            "UpperArmR": { "rotationX": -10.1721, "rotationY": 17.4861, "rotationZ": -72.9908 },
+            "LowerArmR": { "rotationX": -62.5,    "rotationY": 0,        "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 28,
+          "elements": {
+            "LowerArmR": { "rotationX": -22.5, "rotationY": 0, "rotationZ": 0 }
+          }
+        },
+        {
+          "frame": 30,
+          "elements": {
+            "UpperArmR": { "rotationX": -5.0917, "rotationY": 6.0142, "rotationZ": -74.0313 }
+          }
+        }
+      ]
+    },
+    "file": "game:shapes/entity/humanoid/seraph-faceless.json"
+  }
+]

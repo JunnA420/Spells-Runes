@@ -105,6 +105,18 @@ public class GuiDialogSpellbook : GuiDialog
     /// <summary>
     /// Builds the element list dynamically from spells registered in SpellRegistry.
     /// </summary>
+    private bool IsFluxUnlocked()
+    {
+        var entity = capi.World.Player?.Entity;
+        return entity != null && PlayerSpellData.For(entity).IsFluxUnlocked;
+    }
+
+    private bool IsElementUnlocked(SpellElement element)
+    {
+        var entity = capi.World.Player?.Entity;
+        return entity != null && PlayerSpellData.For(entity).IsElementUnlocked(element);
+    }
+
     private void RebuildElements()
     {
         Elements = SpellRegistry.All.Values
@@ -166,14 +178,68 @@ public class GuiDialogSpellbook : GuiDialog
         double cy = Pad;
         double cw = w - SidebarW - Pad * 2;
         double ch = h - Pad * 2;
-        DrawContentArea(ctx, cx, cy, cw, ch);
-
-        // Tooltip drawn last (on top)
-        if (hoveredSpellId != null)
+        if (!IsFluxUnlocked())
         {
-            var spell = SpellRegistry.Get(hoveredSpellId);
-            if (spell != null) DrawTooltip(ctx, spell, tooltipX, tooltipY, w, h);
+            DrawFluxLockedOverlay(ctx, cx, cy, cw, ch);
         }
+        else
+        {
+            DrawContentArea(ctx, cx, cy, cw, ch);
+
+            // Tooltip drawn last (on top)
+            if (hoveredSpellId != null)
+            {
+                var spell = SpellRegistry.Get(hoveredSpellId);
+                if (spell != null) DrawTooltip(ctx, spell, tooltipX, tooltipY, w, h);
+            }
+        }
+    }
+
+    private void DrawFluxLockedOverlay(Context ctx, double x, double y, double w, double h)
+    {
+        // Dim background
+        RoundedRect(ctx, x, y, w, h, 4);
+        ctx.SetSourceRGBA(0.03, 0.03, 0.10, 0.85);
+        ctx.Fill();
+
+        // Lock icon — large circle with padlock shape
+        double cx = x + w / 2, cy = y + h / 2 - 30;
+
+        ctx.Arc(cx, cy, 28, 0, 2 * Math.PI);
+        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.12);
+        ctx.Fill();
+        ctx.Arc(cx, cy, 28, 0, 2 * Math.PI);
+        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.45);
+        ctx.LineWidth = 1.5; ctx.Stroke();
+
+        // Shackle
+        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.70);
+        ctx.LineWidth = 3;
+        ctx.Arc(cx, cy - 6, 10, Math.PI, 0);
+        ctx.Stroke();
+
+        // Lock body
+        RoundedRect(ctx, cx - 10, cy - 2, 20, 16, 3);
+        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.55);
+        ctx.Fill();
+
+        // Main text
+        ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Bold);
+        ctx.SetFontSize(16);
+        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.90);
+        string line1 = "Flux is not awakened";
+        var te1 = ctx.TextExtents(line1);
+        ctx.MoveTo(cx - te1.Width / 2 - te1.XBearing, cy + 50);
+        ctx.ShowText(line1);
+
+        // Subtext
+        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
+        ctx.SetFontSize(11);
+        ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.70);
+        string line2 = "Seek out Sylphweed, dry it, grind it, and smoke it.";
+        var te2 = ctx.TextExtents(line2);
+        ctx.MoveTo(cx - te2.Width / 2 - te2.XBearing, cy + 70);
+        ctx.ShowText(line2);
     }
 
     // ---- Sidebar ----
@@ -316,23 +382,45 @@ public class GuiDialogSpellbook : GuiDialog
             double bx = elemSelectorX + i * (ElemBtnW + spacing);
             double by = elemSelectorY;
             bool sel = selectedElementIndex == i, hov = hoveredElement == i;
+            bool elUnlocked = IsElementUnlocked(el);
             var (er, eg, eb) = ElementColor(el);
 
+            // Background — grey if locked
             RoundedRect(ctx, bx, by, ElemBtnW, ElemBtnH, 5);
-            ctx.SetSourceRGBA(sel ? er * 0.30 : hov ? 0.18 : 0.08,
-                              sel ? eg * 0.30 : hov ? 0.30 : 0.08,
-                              sel ? eb * 0.30 : hov ? 0.55 : 0.20, 0.95);
+            if (!elUnlocked)
+                ctx.SetSourceRGBA(0.08, 0.08, 0.10, 0.95);
+            else
+                ctx.SetSourceRGBA(sel ? er * 0.30 : hov ? 0.18 : 0.08,
+                                  sel ? eg * 0.30 : hov ? 0.30 : 0.08,
+                                  sel ? eb * 0.30 : hov ? 0.55 : 0.20, 0.95);
             ctx.Fill();
 
+            // Border
             RoundedRect(ctx, bx, by, ElemBtnW, ElemBtnH, 5);
-            ctx.SetSourceRGBA(er, eg, eb, sel ? 0.95 : 0.35);
+            ctx.SetSourceRGBA(elUnlocked ? er : 0.35, elUnlocked ? eg : 0.35, elUnlocked ? eb : 0.40,
+                              elUnlocked ? (sel ? 0.95 : 0.35) : 0.25);
             ctx.LineWidth = sel ? 1.5 : 1.0; ctx.Stroke();
 
+            // Label
             var te = ctx.TextExtents(el.ToString());
-            ctx.SetSourceRGBA(er, eg, eb, sel ? 1.0 : 0.60);
+            ctx.SetSourceRGBA(elUnlocked ? er : 0.45, elUnlocked ? eg : 0.45, elUnlocked ? eb : 0.50,
+                              elUnlocked ? (sel ? 1.0 : 0.60) : 0.35);
             ctx.MoveTo(bx + ElemBtnW / 2 - te.Width / 2 - te.XBearing,
                        by + ElemBtnH / 2 + te.Height / 2);
             ctx.ShowText(el.ToString());
+
+            // Small lock icon top-right corner if locked
+            if (!elUnlocked)
+            {
+                double lx = bx + ElemBtnW - 10, ly = by + 8;
+                ctx.SetSourceRGBA(0.55, 0.55, 0.60, 0.70);
+                ctx.LineWidth = 1.2;
+                ctx.Arc(lx, ly - 2, 3, Math.PI, 0);
+                ctx.Stroke();
+                RoundedRect(ctx, lx - 3.5, ly - 1, 7, 5, 1);
+                ctx.SetSourceRGBA(0.45, 0.45, 0.50, 0.70);
+                ctx.Fill();
+            }
         }
     }
 
@@ -837,6 +925,7 @@ public class GuiDialogSpellbook : GuiDialog
                 double bx = elemSelectorX + i * (ElemBtnW + 8);
                 if (rx >= bx && rx <= bx + ElemBtnW && ry >= elemSelectorY && ry <= elemSelectorY + ElemBtnH)
                 {
+                    if (!IsElementUnlocked(Elements[i])) { args.Handled = true; return; } // locked
                     selectedElementIndex = i;
                     treePanX = 0; treePanY = 0;
                     (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
@@ -940,7 +1029,7 @@ public class GuiDialogSpellbook : GuiDialog
         args.Handled = true;
     }
 
-    public override string ToggleKeyCombinationCode => "spellsandrunes.spellbook";
+    public override string ToggleKeyCombinationCode => null!; // handled manually in SpellsAndRunesMod
     public override EnumDialogType DialogType => EnumDialogType.Dialog;
 
     // ---- Memorized Spells tab ----

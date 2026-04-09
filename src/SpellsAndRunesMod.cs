@@ -32,6 +32,7 @@ public class SpellsAndRunesMod : ModSystem
     {
         api.RegisterEntityBehaviorClass("fluxBehavior", typeof(EntityBehaviorFlux));
         api.RegisterBlockEntityClass("sylphweed", typeof(Blocks.BlockEntitySylphweed));
+        api.RegisterItemClass("SylphweedPipe", typeof(Blocks.ItemSylphweedPipe));
         SpellRegistry.RegisterAll();
     }
 
@@ -48,6 +49,7 @@ public class SpellsAndRunesMod : ModSystem
             .RegisterMessageType<MsgSpellFx>()
             .RegisterMessageType<MsgFreezeMotion>()
             .RegisterMessageType<MsgLaunchPlayer>()
+            .RegisterMessageType<MsgPlayAnimation>()
             .SetMessageHandler<MsgUnlockSpell>((player, msg) =>
             {
                 var entity = player.Entity;
@@ -87,6 +89,20 @@ public class SpellsAndRunesMod : ModSystem
                 // Notify casting client of cast start with scaled cast time
                 float scaledCastTime = spell.CastTime * spell.GetCastTimeMultiplier(spellLevel);
                 serverChannel?.SendPacket(new MsgStartCast { SpellId = msg.SpellId, CastTime = scaledCastTime }, player);
+
+                // Broadcast animation to all clients
+                if (spell.AnimationCode != null)
+                {
+                    var animMsg = new MsgPlayAnimation
+                    {
+                        EntityId       = entity.EntityId,
+                        AnimationCode  = spell.AnimationCode,
+                        UpperBodyOnly  = spell.AnimationUpperBodyOnly,
+                        AnimationSpeed = spell.AnimationSpeed,
+                    };
+                    foreach (var p in api.World.AllOnlinePlayers)
+                        serverChannel?.SendPacket(animMsg, p as IServerPlayer);
+                }
 
                 // Schedule execution after cast time completes (in milliseconds)
                 int delayMs = (int)(scaledCastTime * 1000);
@@ -247,6 +263,13 @@ public class SpellsAndRunesMod : ModSystem
             .RegisterMessageType<MsgSpellFx>()
             .RegisterMessageType<MsgFreezeMotion>()
             .RegisterMessageType<MsgLaunchPlayer>()
+            .RegisterMessageType<MsgPlayAnimation>()
+            .SetMessageHandler<MsgPlayAnimation>(msg =>
+            {
+                var entity = api.World.GetEntityById(msg.EntityId) as EntityAgent;
+                if (entity == null) return;
+                SpellAnimations.Play(entity, msg.AnimationCode, msg.UpperBodyOnly, msg.AnimationSpeed);
+            })
             .SetMessageHandler<MsgFreezeMotion>(msg =>
             {
                 var entity = api.World.Player?.Entity;
@@ -331,11 +354,15 @@ public class SpellsAndRunesMod : ModSystem
                 spellbookDialog?.ReloadData());
             player.Entity.WatchedAttributes.RegisterModifiedListener("snr:hotbar", () =>
                 spellbookDialog?.ReloadData());
+            player.Entity.WatchedAttributes.RegisterModifiedListener("snr:activators", () =>
+                spellbookDialog?.ReloadData());
         };
 
         // Spellbook toggle
         api.Input.SetHotKeyHandler("spellsandrunes.spellbook", combo =>
         {
+            var entity = api.World.Player?.Entity;
+            if (entity == null || !PlayerSpellData.For(entity).IsFluxUnlocked) return true;
             if (spellbookDialog.IsOpened()) spellbookDialog.TryClose();
             else spellbookDialog.TryOpen();
             return true;
@@ -344,6 +371,8 @@ public class SpellsAndRunesMod : ModSystem
         // Radial: open on press
         api.Input.SetHotKeyHandler("spellsandrunes.radial", combo =>
         {
+            var entity = api.World.Player?.Entity;
+            if (entity == null || !PlayerSpellData.For(entity).IsFluxUnlocked) return true;
             radialMenu.Open();
             return true;
         });

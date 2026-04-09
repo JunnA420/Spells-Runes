@@ -47,6 +47,16 @@ public class MsgLaunchPlayer
     [ProtoMember(4)] public float LookDirZ     { get; set; }
 }
 
+/// <summary>Server → all nearby clients: play a spell animation on an entity.</summary>
+[ProtoContract]
+public class MsgPlayAnimation
+{
+    [ProtoMember(1)] public long   EntityId      { get; set; }
+    [ProtoMember(2)] public string AnimationCode { get; set; } = "";
+    [ProtoMember(3)] public bool   UpperBodyOnly { get; set; } = true;
+    [ProtoMember(4)] public float  AnimationSpeed { get; set; } = 1f;
+}
+
 /// <summary>Server → all nearby clients: a spell visual effect fired at this position/direction.</summary>
 [ProtoContract]
 public class MsgSpellFx

@@ -18,27 +18,50 @@ public class Spark : Spell
     public override float FluxCost => 15f;
     public override float CastTime => 1.0f;
 
+    public override string? AnimationCode => "sparkcast";
+
     public override (int col, int row) TreePosition => (2, 0);
 
     public const float Range        = 6f;
     public const float ConeAngleDeg = 40f;
     public const float Damage       = 4f;
 
+    private static readonly Vec3d Up      = new Vec3d(0, 1, 0);
+    private static readonly float CosAngle = (float)Math.Cos(ConeAngleDeg * Math.PI / 180.0);
+    private static readonly double TanAngle = Math.Tan(ConeAngleDeg * Math.PI / 180.0);
+
+    private static readonly int[] FireColors =
+    {
+        ColorUtil.ColorFromRgba(180, 240, 255, 255),
+        ColorUtil.ColorFromRgba( 60, 210, 255, 255),
+        ColorUtil.ColorFromRgba( 20, 140, 255, 255),
+        ColorUtil.ColorFromRgba(  5,  80, 255, 255),
+        ColorUtil.ColorFromRgba(  0,  30, 220, 240),
+        ColorUtil.ColorFromRgba(  0,  10, 180, 220),
+    };
+
+    [ThreadStatic] private static SimpleParticleProperties? _pool;
+    private static SimpleParticleProperties Pool => _pool ??= new SimpleParticleProperties();
+
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
-        var origin   = caster.SidedPos.XYZ.Add(0, 0.9, 0);
-        var lookDir  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
-        float range  = Range * GetRangeMultiplier(spellLevel);
-        float cosAngle = (float)Math.Cos(ConeAngleDeg * Math.PI / 180.0);
+        var   origin   = caster.SidedPos.XYZ.Add(0, 0.9, 0);
+        var   lookDir  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
+        float range    = Range * GetRangeMultiplier(spellLevel);
+        float dmg      = Damage * GetDamageMultiplier(spellLevel);
 
-        float dmg = Damage * GetDamageMultiplier(spellLevel);
         world.GetEntitiesAround(origin, range + 1, range + 1, e =>
         {
             if (e.EntityId == caster.EntityId) return false;
-            if (e is not EntityAgent) return false;
-            Vec3d toEntity = e.SidedPos.XYZ.Add(0, e.LocalEyePos.Y * 0.5, 0) - origin;
+            if (e is not EntityAgent)          return false;
+
+            Vec3d targetPos = e.SidedPos.XYZ.Add(0, e.LocalEyePos.Y * 0.5, 0);
+            Vec3d toEntity  = targetPos - origin;
             if (toEntity.Length() > range) return false;
-            if (lookDir.Dot(toEntity.Clone().Normalize()) < cosAngle) return false;
+            if (lookDir.Dot(toEntity.Normalize()) < CosAngle) return false;
+            BlockSelection? bsel = null; EntitySelection? esel = null;
+            world.RayTraceForSelection(origin, targetPos, ref bsel, ref esel);
+            if (bsel != null) return false;
 
             e.ReceiveDamage(new DamageSource
             {
@@ -54,138 +77,110 @@ public class Spark : Spell
 
     public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float? scaledRange = null)
     {
-        float range  = scaledRange ?? Range;
-        Vec3d right  = lookDir.Cross(new Vec3d(0, 1, 0)).Normalize();
-        Vec3d upPerp = lookDir.Cross(right).Normalize();
-        var   rng    = world.Rand;
-        double tanA  = Math.Tan(ConeAngleDeg * Math.PI / 180.0);
+        float  range = scaledRange ?? Range;
+        Vec3d  right  = lookDir.Cross(Up).Normalize();
+        Vec3d  upPerp = lookDir.Cross(right).Normalize();
+        var    rng    = world.Rand;
+        int    mult   = 1 + (spellLevel - 1) / 4;
+        var    p      = Pool;
 
-        // ColorFromRgba returns RGBA but VS particle system expects BGRA — swap R and B
-        int[] fireColors = {
-            ColorUtil.ColorFromRgba(180, 240, 255, 255),  // white-hot
-            ColorUtil.ColorFromRgba( 60, 210, 255, 255),  // bright yellow
-            ColorUtil.ColorFromRgba( 20, 140, 255, 255),  // orange-yellow
-            ColorUtil.ColorFromRgba(  5,  80, 255, 255),  // orange
-            ColorUtil.ColorFromRgba(  0,  30, 220, 240),  // deep orange-red
-            ColorUtil.ColorFromRgba(  0,  10, 180, 220),  // red
-        };
+        p.ParticleModel     = EnumParticleModel.Quad;
+        p.ShouldDieInLiquid = true;
+        p.MinQuantity       = 1;
+        p.AddQuantity       = 0;
 
-        // Particle count scales with spell level: 1x @ lvl1-4, 2x @ lvl5-8, 3x @ lvl9-10
-        int mult = 1 + (spellLevel - 1) / 4;
+        // ── 1. Dense spark shower ─────────────────────────────────────────────────
+        p.WithTerrainCollision = true;
+        p.AddVelocity          = new Vec3f(0.4f, 0.3f, 0.4f);
+        p.AddPos               = new Vec3d(0.05, 0.05, 0.05);
 
-        // ── 1. Dense spark shower — scatter sideways, land and linger ───────────
         for (int i = 0; i < 140 * mult; i++)
         {
-            double t      = rng.NextDouble();
-            double dist   = range * t;
-            double spread = tanA * dist;
-            double a      = rng.NextDouble() * 2 * Math.PI;
-            double r      = Math.Sqrt(rng.NextDouble()) * spread;
-
-            Vec3d pos = origin
-                      + lookDir * dist
-                      + right   * (Math.Cos(a) * r)
-                      + upPerp  * (Math.Sin(a) * r);
-
+            double t       = rng.NextDouble();
+            double dist    = range * t;
+            double spread  = TanAngle * dist;
+            double a       = rng.NextDouble() * 2 * Math.PI;
+            double r       = Math.Sqrt(rng.NextDouble()) * spread;
+            double cosA    = Math.Cos(a);
+            double sinA    = Math.Sin(a);
             double scatterA = rng.NextDouble() * 2 * Math.PI;
             double scatterS = 2.0 + rng.NextDouble() * 4.0;
-            int    col      = fireColors[rng.Next(fireColors.Length)];
+            double cosSA   = Math.Cos(scatterA);
+            double sinSA   = Math.Sin(scatterA);
+            bool   linger  = rng.NextDouble() < 0.4;
 
-            // Sparks that land: slow ones with high gravity linger on ground
-            bool linger = rng.NextDouble() < 0.4;
+            Vec3d pos = origin + lookDir * dist + right * (cosA * r) + upPerp * (sinA * r);
 
-            world.SpawnParticles(new SimpleParticleProperties
-            {
-                MinPos        = new Vec3d(pos.X, pos.Y, pos.Z),
-                AddPos        = new Vec3d(0.05, 0.05, 0.05),
-                MinVelocity   = new Vec3f(
-                    (float)(lookDir.X * 5.0 + Math.Cos(scatterA) * right.X * scatterS + Math.Sin(scatterA) * upPerp.X * scatterS),
-                    (float)(lookDir.Y * 2.0 + Math.Sin(scatterA) * scatterS * 0.5 + (linger ? 1.0 : 0.2)),
-                    (float)(lookDir.Z * 5.0 + Math.Cos(scatterA) * right.Z * scatterS + Math.Sin(scatterA) * upPerp.Z * scatterS)),
-                AddVelocity   = new Vec3f(0.4f, 0.3f, 0.4f),
-                MinQuantity   = 1,
-                LifeLength    = linger
-                    ? 0.8f  + (float)(rng.NextDouble() * 1.2f)   // lingers 0.8–2s
-                    : 0.05f + (float)(rng.NextDouble() * 0.08f), // fast flying spark
-                MinSize       = linger ? 0.06f : 0.03f,
-                MaxSize       = linger ? 0.18f : 0.12f,
-                GravityEffect = linger ? 1.5f : 0.6f,
-                Color         = col,
-                ParticleModel        = EnumParticleModel.Quad,
-                WithTerrainCollision = true,
-                ShouldDieInLiquid    = true,
-            });
+            p.MinPos      = new Vec3d(pos.X, pos.Y, pos.Z);
+            p.MinVelocity = new Vec3f(
+                (float)(lookDir.X * 5.0 + cosSA * right.X * scatterS + sinSA * upPerp.X * scatterS),
+                (float)(lookDir.Y * 2.0 + sinSA * scatterS * 0.5 + (linger ? 1.0 : 0.2)),
+                (float)(lookDir.Z * 5.0 + cosSA * right.Z * scatterS + sinSA * upPerp.Z * scatterS));
+            p.LifeLength    = linger ? 0.8f + (float)(rng.NextDouble() * 1.2f) : 0.05f + (float)(rng.NextDouble() * 0.08f);
+            p.MinSize       = linger ? 0.06f : 0.03f;
+            p.MaxSize       = linger ? 0.18f : 0.12f;
+            p.GravityEffect = linger ? 1.5f  : 0.6f;
+            p.Color         = FireColors[rng.Next(FireColors.Length)];
+
+            world.SpawnParticles(p);
         }
 
-        // ── 2. Burst ring at origin — initial strike flash ───────────────────────
+        // ── 2. Burst ring at origin ───────────────────────────────────────────────
+        p.AddVelocity = new Vec3f(0.4f, 0.3f, 0.4f);
+        p.AddPos      = new Vec3d(0.04, 0.04, 0.04);
+        p.MinSize     = 0.08f;
+        p.MaxSize     = 0.22f;
+        p.GravityEffect = 1.2f;
+
         for (int i = 0; i < 28 * mult; i++)
         {
-            double a        = i * 2.0 * Math.PI / 28 + rng.NextDouble() * 0.15;
+            double a       = i * 2.0 * Math.PI / 28 + rng.NextDouble() * 0.15;
+            double cosA    = Math.Cos(a);
+            double sinA    = Math.Sin(a);
             double outSpeed = 5.0 + rng.NextDouble() * 5.0;
-            Vec3d  pos      = origin
-                            + right   * (Math.Cos(a) * 0.12)
-                            + upPerp  * (Math.Sin(a) * 0.12);
-            int    col      = fireColors[rng.Next(fireColors.Length)];
 
-            world.SpawnParticles(new SimpleParticleProperties
-            {
-                MinPos        = new Vec3d(pos.X, pos.Y, pos.Z),
-                AddPos        = new Vec3d(0.04, 0.04, 0.04),
-                MinVelocity   = new Vec3f(
-                    (float)(lookDir.X * 4.0 + Math.Cos(a) * right.X * outSpeed + Math.Sin(a) * upPerp.X * outSpeed),
-                    (float)(Math.Sin(a) * outSpeed * 0.4 + 0.8),
-                    (float)(lookDir.Z * 4.0 + Math.Cos(a) * right.Z * outSpeed + Math.Sin(a) * upPerp.Z * outSpeed)),
-                AddVelocity   = new Vec3f(0.4f, 0.3f, 0.4f),
-                MinQuantity   = 1,
-                LifeLength    = 0.4f + (float)(rng.NextDouble() * 0.6f),
-                MinSize       = 0.08f,
-                MaxSize       = 0.22f,
-                GravityEffect = 1.2f,
-                Color         = col,
-                ParticleModel        = EnumParticleModel.Quad,
-                WithTerrainCollision = true,
-                ShouldDieInLiquid    = true,
-            });
+            Vec3d pos = origin + right * (cosA * 0.12) + upPerp * (sinA * 0.12);
+
+            p.MinPos      = new Vec3d(pos.X, pos.Y, pos.Z);
+            p.MinVelocity = new Vec3f(
+                (float)(lookDir.X * 4.0 + cosA * right.X * outSpeed + sinA * upPerp.X * outSpeed),
+                (float)(sinA * outSpeed * 0.4 + 0.8),
+                (float)(lookDir.Z * 4.0 + cosA * right.Z * outSpeed + sinA * upPerp.Z * outSpeed));
+            p.LifeLength = 0.4f + (float)(rng.NextDouble() * 0.6f);
+            p.Color      = FireColors[rng.Next(FireColors.Length)];
+
+            world.SpawnParticles(p);
         }
 
-        // ── 3. Falling ember sparks — bright tiny quads that drop with gravity ──
+        // ── 3. Falling ember sparks ───────────────────────────────────────────────
+        p.AddVelocity   = new Vec3f(0.3f, 0.2f, 0.3f);
+        p.AddPos        = new Vec3d(0.05, 0.05, 0.05);
+        p.MinSize       = 0.04f;
+        p.MaxSize       = 0.10f;
+        p.GravityEffect = 1.5f;
+
+        int whiteColor  = ColorUtil.ColorFromRgba(180, 240, 255, 255);
+        int orangeColor = ColorUtil.ColorFromRgba( 10,  80, 255, 255);
+
         for (int i = 0; i < 50 * mult; i++)
         {
             double t      = rng.NextDouble();
             double dist   = range * t;
-            double spread = tanA * dist;
+            double spread = TanAngle * dist;
             double a      = rng.NextDouble() * 2 * Math.PI;
             double r      = Math.Sqrt(rng.NextDouble()) * spread;
 
-            Vec3d pos = origin
-                      + lookDir * dist
-                      + right   * (Math.Cos(a) * r)
-                      + upPerp  * (Math.Sin(a) * r);
+            Vec3d pos = origin + lookDir * dist + right * (Math.Cos(a) * r) + upPerp * (Math.Sin(a) * r);
 
-            bool isWhite = rng.NextDouble() < 0.3;
-            int col = isWhite
-                ? ColorUtil.ColorFromRgba(180, 240, 255, 255)  // white-hot (B,G,R,A)
-                : ColorUtil.ColorFromRgba( 10,  80, 255, 255); // orange ember
+            p.MinPos      = new Vec3d(pos.X, pos.Y, pos.Z);
+            p.MinVelocity = new Vec3f(
+                (float)(lookDir.X * 2.0 + (rng.NextDouble() - 0.5) * 1.0),
+                (float)(0.5 + rng.NextDouble() * 1.0),
+                (float)(lookDir.Z * 2.0 + (rng.NextDouble() - 0.5) * 1.0));
+            p.LifeLength = 0.6f + (float)(rng.NextDouble() * 0.8f);
+            p.Color      = rng.NextDouble() < 0.3 ? whiteColor : orangeColor;
 
-            world.SpawnParticles(new SimpleParticleProperties
-            {
-                MinPos        = new Vec3d(pos.X, pos.Y, pos.Z),
-                AddPos        = new Vec3d(0.05, 0.05, 0.05),
-                MinVelocity   = new Vec3f(
-                    (float)(lookDir.X * 2.0 + (rng.NextDouble() - 0.5) * 1.0),
-                    (float)(0.5 + rng.NextDouble() * 1.0),
-                    (float)(lookDir.Z * 2.0 + (rng.NextDouble() - 0.5) * 1.0)),
-                AddVelocity   = new Vec3f(0.3f, 0.2f, 0.3f),
-                MinQuantity   = 1,
-                LifeLength    = 0.6f + (float)(rng.NextDouble() * 0.8f),
-                MinSize       = 0.04f,
-                MaxSize       = 0.10f,
-                GravityEffect = 1.5f,
-                Color         = col,
-                ParticleModel        = EnumParticleModel.Quad,
-                WithTerrainCollision = true,
-                ShouldDieInLiquid    = true,
-            });
+            world.SpawnParticles(p);
         }
     }
 }

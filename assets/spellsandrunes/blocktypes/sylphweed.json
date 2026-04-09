@@ -29,13 +29,20 @@
 	},
 	"drops": [
 		{
-			"code": "sylphweed",
-			"type": "block"
+			"type": "item",
+			"code": "spellsandrunes:sylphweed",
+			"quantity": { "avg": 1 }
 		}
 	],
 	"combustibleProps": {
 		"burnTemperature": 600,
-		"burnDuration": 10
+		"burnDuration": 10,
+		"meltingPoint": 200,
+		"meltingDuration": 20,
+		"smeltingType": "bake",
+		"smeltedRatio": 1,
+		"smeltedStack": { "type": "item", "code": "spellsandrunes:sylphweed-dried" },
+		"requiresContainer": false
 	},
 	"vertexFlags": {
 		"zOffset": 2
