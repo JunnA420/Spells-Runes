@@ -43,30 +43,6 @@ Once done, Flux is permanently unlocked. Open the **Spellbook** with `K`, unlock
 
 ---
 
-## Development
-
-```
-junna / blitz  ->  dev  ->  master
-```
-
-- `master` — stable releases
-- `dev` — integration, tested before merge
-- `junna` / `blitz` — personal branches, PR into dev
-
----
-
-## Building
-
-Requires [Vintage Story](https://www.vintagestory.at/) installed at `C:\Games\Vintagestory`.
-
-```bash
-dotnet build SpellsAndRunes.csproj -c Release
-```
-
-Output is copied automatically to `%APPDATA%\VintagestoryData\Mods\`.
-
----
-
 ## Authors
 
 - JunnA
