@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spells & Runes — Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --skew: 8deg;
+  }
+
+  body {
+    background: #111114;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100vh;
+    cursor: grab;
+    user-select: none;
+    scrollbar-width: none;
+  }
+  body::-webkit-scrollbar { display: none; }
+  body.grabbing { cursor: grabbing; }
+
+  /* ── Noise overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  /* ── Edge fade ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(to right,  #111114 0%, transparent 12%),
+      linear-gradient(to left,   #111114 0%, transparent 12%);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* ── Top label ── */
+  .label {
+    position: fixed;
+    top: 32px;
+    left: 40px;
+    z-index: 150;
+    pointer-events: none;
+  }
+  .label-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #ffffff40;
+  }
+  .label-sub {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff20;
+    margin-top: 4px;
+  }
+
+  /* ── Progress bar at top ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ffffff00, #ffffff60, #ffffff00);
+    z-index: 150;
+    transition: width 0.1s;
+    pointer-events: none;
+  }
+
+  /* ── Scroll hint ── */
+  .hint {
+    position: fixed;
+    bottom: 32px;
+    right: 40px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ffffff25;
+    z-index: 150;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hint-arrow {
+    display: inline-block;
+    animation: nudge 2s ease-in-out infinite;
+  }
+  @keyframes nudge {
+    0%, 100% { transform: translateX(0); }
+    50%       { transform: translateX(6px); }
+  }
+
+  /* ── Track ── */
+  .track {
+    display: flex;
+    align-items: stretch;
+    height: 100vh;
+    width: max-content;
+    padding-right: 8vw;
+  }
+
+  .spacer {
+    width: 8vw;
+    flex-shrink: 0;
+  }
+
+  /* ── Block ── */
+  .block {
+    position: relative;
+    width: 500px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px 80px 72px;
+    margin-right: -32px;
+    clip-path: polygon(9% 0%, 100% 0%, 91% 100%, 0% 100%);
+    transition: filter 0.3s, transform 0.3s;
+    overflow: hidden;
+  }
+  .block:first-child {
+    clip-path: polygon(0% 0%, 100% 0%, 91% 100%, 0% 100%);
+    padding-left: 52px;
+  }
+  .block:last-child {
+    clip-path: polygon(9% 0%, 100% 0%, 100% 100%, 0% 100%);
+    margin-right: 0;
+    padding-right: 52px;
+  }
+  .block:hover {
+    filter: brightness(1.15);
+    z-index: 10;
+  }
+
+  /* Shine sweep on hover */
+  .block::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent 40%, #ffffff0a 50%, transparent 60%);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+  .block:hover::after { left: 160%; }
+
+  /* Inner gradient overlay for depth */
+  .block-inner {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #ffffff0a 0%, transparent 50%, #00000020 100%);
+    pointer-events: none;
+  }
+
+  /* ── Colors ── */
+  .c-gray   { background: #252528; }
+  .c-blue   { background: #152d6e; }
+  .c-orange { background: #8c3d10; }
+  .c-green  { background: #1a5c1a; }
+  .c-purple { background: #361466; }
+  .c-teal   { background: #0e4f4f; }
+  .c-red    { background: #6e1010; }
+
+  /* ── Status badge ── */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    width: fit-content;
+    position: relative;
+    z-index: 1;
+  }
+  .status::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status.done {
+    background: #ffffff18;
+    color: #ffffffcc;
+    border: 1px solid #ffffff20;
+  }
+  .status.done::before { background: #7fff7f; box-shadow: 0 0 6px #7fff7f; }
+
+  .status.wip {
+    background: #f0a03022;
+    color: #ffd580cc;
+    border: 1px solid #f0a03040;
+  }
+  .status.wip::before {
+    background: #ffc040;
+    box-shadow: 0 0 6px #ffc040;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  .status.planned {
+    background: #ffffff08;
+    color: #ffffff40;
+    border: 1px solid #ffffff10;
+  }
+  .status.planned::before { background: #ffffff30; }
+
+  /* ── Content ── */
+  .block h2 {
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 14px;
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+    position: relative;
+    z-index: 1;
+  }
+  .block p {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #ffffff70;
+    max-width: 280px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .block p.subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #ffffff35;
+    margin-top: -10px;
+    margin-bottom: 16px;
+    max-width: none;
+  }
+
+  /* Divider */
+  .divider {
+    width: 32px;
+    height: 1px;
+    background: #ffffff25;
+    margin: 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .block ul {
+    padding-left: 0;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+  }
+  .block ul li {
+    font-size: 11.5px;
+    color: #ffffff55;
+    padding: 5px 0;
+    border-bottom: 1px solid #ffffff08;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .block ul li::before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #ffffff30;
+    flex-shrink: 0;
+  }
+
+  /* ── Big background number ── */
+  .num {
+    position: absolute;
+    bottom: -10px;
+    right: 40px;
+    font-size: 120px;
+    font-weight: 900;
+    color: #ffffff05;
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: -4px;
+    z-index: 0;
+  }
+
+  /* ── Vertical line connector ── */
+  .block::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1px;
+    height: 40%;
+    transform: translateY(-50%);
+    background: linear-gradient(to bottom, transparent, #ffffff15, transparent);
+    pointer-events: none;
+  }
+  .block:first-child::before { display: none; }
+
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<div class="label">
+  <div class="label-title">Spells &amp; Runes</div>
+  <div class="label-sub">Development Roadmap</div>
+</div>
+
+<div class="hint">
+  <span class="hint-arrow">→</span>
+  <span>Scroll</span>
+</div>
+
+<div class="track" id="track">
+  <div class="spacer"></div>
+
+  <!-- ═══════════════════════════════════════════
+       TO ADD A BLOCK:
+       1. Copy a .block div
+       2. Change color class: c-gray / c-blue / c-orange / c-green / c-purple / c-teal / c-red
+       3. Change status class: done / wip / planned
+       4. Edit text & list items
+       Note: update first-child / last-child clip on first and last block if you reorder
+  ════════════════════════════════════════════ -->
+
+  <div class="block c-gray">
+    <div class="block-inner"></div>
+    <span class="status wip">In Progress</span>
+    <h2>Air Magic</h2>
+    <p class="subtitle">A New Lost Echo</p>
+    <p>The first element — Air — awakens. Rooted in agility and force, Air magic grants its wielder mastery over movement, pushing foes aside and bending the wind to their will. Alongside it, the foundations of Flux are laid.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Flux resource &amp; alignment system</li>
+      <li>Air spells up to Tier II</li>
+      <li>Sylphweed — the Air Echo activator</li>
+      <li>Spell hotbar, radial menu &amp; cast timing</li>
+    </ul>
+    <div class="num">01</div>
+  </div>
+
+  <div class="block c-teal">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Water Magic</h2>
+    <p class="subtitle">The Second Echo</p>
+    <p>Still and deep, Water magic flows between offense and restoration. It heals the wounded, erodes resistance and turns the tide of battle through patience and precision.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Healing Sprinkle — area restore</li>
+      <li>Water Spray — utility &amp; knockback</li>
+      <li>Deep Healing — sustained ritual</li>
+      <li>Water Echo activator</li>
+    </ul>
+    <div class="num">02</div>
+  </div>
+
+  <div class="block c-orange">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Fire Magic</h2>
+    <p class="subtitle">The Third Echo</p>
+    <p>Volatile and relentless, Fire magic burns through defenses and sustains itself through aggression. The fiercer the battle, the stronger the flame.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Spark — fire cone burst</li>
+      <li>Cook in Hand — utility</li>
+      <li>Hot Skin — passive heat aura</li>
+      <li>Fire Echo activator</li>
+    </ul>
+    <div class="num">03</div>
+  </div>
+
+  <div class="block c-green">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Earth Magic</h2>
+    <p class="subtitle">The Fourth Echo</p>
+    <p>Immovable and enduring, Earth magic is the art of outlasting your enemy. Fortify your body, reshape terrain and let the land itself become your weapon.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Stone Skin — defense buff</li>
+      <li>Earth Wall — terrain barrier</li>
+      <li>Earth Clone — decoy entity</li>
+      <li>Earth Echo activator</li>
+    </ul>
+    <div class="num">04</div>
+  </div>
+
+  <div class="block c-gray">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Tier Expansion I</h2>
+    <p class="subtitle">Deeper Mastery</p>
+    <p>The four base Echoes grow deeper. Tier III and IV spells are unlocked for Air, Water, Fire and Earth — demanding greater Flux mastery and offering substantially more power.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Tier III &amp; IV spells for all 4 elements</li>
+      <li>Advanced Flux alignment mechanics</li>
+      <li>New activator rituals per element</li>
+      <li>Spell combo system — early access</li>
+    </ul>
+    <div class="num">05</div>
+  </div>
+
+  <div class="block c-purple">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Lightning Magic</h2>
+    <p class="subtitle">A Derived Echo</p>
+    <p>Born from the union of Air and Fire, Lightning is raw speed made lethal. It strikes before enemies can react and chains between targets with terrifying efficiency.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Requires Air + Fire alignment</li>
+      <li>Chain lightning — multi-target</li>
+      <li>Static field — area denial</li>
+      <li>Lightning Echo activator</li>
+    </ul>
+    <div class="num">07</div>
+  </div>
+
+  <div class="block c-blue">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Ice Magic</h2>
+    <p class="subtitle">A Derived Echo</p>
+    <p>Born from Water and Air, Ice magic is control made manifest. Freeze enemies in place, shatter them with concussive force and reshape the battlefield with barriers of solid cold.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Requires Water + Air alignment</li>
+      <li>Frost Lance — piercing projectile</li>
+      <li>Glacial Shell — ice armor</li>
+      <li>Ice Echo activator</li>
+    </ul>
+    <div class="num">08</div>
+  </div>
+
+  <div class="block c-green">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Nature Magic</h2>
+    <p class="subtitle">A Derived Echo</p>
+    <p>Born from Earth and Water, Nature magic is the patient force of growth given purpose. It heals, entangles and summons the living world as an extension of the mage's will.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Requires Earth + Water alignment</li>
+      <li>Entangle — root &amp; slow</li>
+      <li>Bloom — area regeneration</li>
+      <li>Nature Echo activator</li>
+    </ul>
+    <div class="num">09</div>
+  </div>
+
+  <div class="block c-gray">
+    <div class="block-inner"></div>
+    <span class="status planned">Planned</span>
+    <h2>Tier Expansion II</h2>
+    <p class="subtitle">The Upper Limit</p>
+    <p>Tier V and beyond — the rarest and most demanding spells in the game. Few mages will reach this level. Fewer still will survive long enough to use them.</p>
+    <div class="divider"></div>
+    <ul>
+      <li>Tier V spells — one per element</li>
+      <li>Ultimate abilities with long cast times</li>
+      <li>Flux overload &amp; burnout system</li>
+      <li>Mastery titles &amp; visual effects</li>
+    </ul>
+    <div class="num">10</div>
+  </div>
+
+</div>
+
+<script>
+  // Drag to scroll
+  const body  = document.body;
+  const prog  = document.getElementById('progress');
+  let down = false, startX, scrollLeft;
+
+  function updateProgress() {
+    const max = document.documentElement.scrollWidth - window.innerWidth;
+    const pct = max > 0 ? (window.scrollX / max) * 100 : 0;
+    prog.style.width = pct + '%';
+  }
+
+  document.addEventListener('mousedown', e => {
+    down = true;
+    startX = e.pageX;
+    scrollLeft = window.scrollX;
+    body.classList.add('grabbing');
+  });
+  document.addEventListener('mouseup',   () => { down = false; body.classList.remove('grabbing'); });
+  document.addEventListener('mousemove', e => {
+    if (!down) return;
+    window.scrollTo(scrollLeft - (e.pageX - startX), 0);
+  });
+  window.addEventListener('scroll', updateProgress);
+
+  // Mouse wheel → horizontal scroll
+  window.addEventListener('wheel', e => {
+    e.preventDefault();
+    window.scrollBy({ left: e.deltaY * 2.2, behavior: 'auto' });
+  }, { passive: false });
+
+  // Scroll blocks into view with fade on load
+  const blocks = document.querySelectorAll('.block');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.style.opacity = '1';
+        en.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  blocks.forEach(b => {
+    b.style.opacity = '0';
+    b.style.transform = 'translateY(16px)';
+    b.style.transition = 'opacity 0.5s ease, transform 0.5s ease, filter 0.3s';
+    io.observe(b);
+  });
+</script>
+</body>
+</html>
