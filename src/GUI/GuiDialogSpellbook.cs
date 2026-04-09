@@ -17,36 +17,47 @@ public class GuiDialogSpellbook : GuiDialog
     private const int TabSpells    = 0;
     private const int TabMemorized = 1;
 
+    // Live layout — reloaded from JSON every time the dialog opens
+    private SpellbookLayout L = new();
+
+    // Dialog size is fixed (matches book_bg.png)
+    private const double DialogW = 940, DialogH = 600;
+
+    // Elements
     private SpellElement[] Elements = Array.Empty<SpellElement>();
     private int selectedElementIndex = 0;
     private SpellElement SelectedElement => Elements.Length > 0 ? Elements[selectedElementIndex] : SpellElement.Air;
 
+    private static readonly SpellElement[] ElemOrder   = { SpellElement.Fire, SpellElement.Water, SpellElement.Earth, SpellElement.Air };
+    private static readonly string[]       ElemTabKeys = { "fire", "water", "earth", "air" };
+
     // Spell tree
     private readonly List<SpellNode> spellNodes = new();
     private string? hoveredSpellId = null;
-    private double tooltipX, tooltipY;
 
-    // Memorized tab
+    // Memorized
     private readonly List<SpellCard> memorizedSpellCards = new();
-    private const double CardW = 195, CardH = 32;
-    private const double SlotR = 26;
     private readonly (double cx, double cy)[] hotbarSlotPos = new (double, double)[3];
 
     // Drag & drop
-    private string? dragSpellId = null;
-    private int    dragFromSlot = -1;
-    private double dragX, dragY;
-    private bool   isDragging = false;
+    private string? dragSpellId  = null;
+    private int     dragFromSlot = -1;
+    private double  dragX, dragY;
+    private bool    isDragging   = false;
 
-    // Sprites
+    // ---- Sprites ----
     private ImageSurface? bookBgSurface;
-    private readonly ImageSurface?[] sectionTabActive   = new ImageSurface?[4];
-    private readonly ImageSurface?[] sectionTabInactive = new ImageSurface?[4];
-    private readonly double[]        sTabDispH          = new double[4];
-    private readonly double[]        sTabDispHInact     = new double[4];
-    private double STabMaxH => sTabDispH.Length > 0 ? sTabDispH.Max() : 35;
+    private ImageSurface? closeBookmarkSurface;
+    private readonly ImageSurface?[] mainTabActive   = new ImageSurface?[4];
+    private readonly ImageSurface?[] mainTabInactive = new ImageSurface?[4];
+    private readonly double[]        mainTabDispH    = new double[4];
+    private readonly double[]        mainTabDispHI   = new double[4];
+    private readonly ImageSurface?[] elemTabActive   = new ImageSurface?[4];
+    private readonly ImageSurface?[] elemTabInactive = new ImageSurface?[4];
+    private readonly double[]        elemTabDispH    = new double[4];
+    private readonly double[]        elemTabDispHI   = new double[4];
 
-    // Colors (parchment style)
+    // ---- Colors ----
     private static readonly double[] ColorText    = { 0.18, 0.12, 0.06, 1.00 };
     private static readonly double[] ColorSubtext = { 0.40, 0.30, 0.18, 0.85 };
     private static readonly double[] ColorBorder  = { 0.55, 0.38, 0.14, 1.00 };
@@ -54,41 +65,26 @@ public class GuiDialogSpellbook : GuiDialog
 
     private static (double r, double g, double b) ElementColor(SpellElement el) => el switch
     {
-        SpellElement.Air   => (0.30, 0.55, 0.80),
         SpellElement.Fire  => (0.75, 0.25, 0.06),
         SpellElement.Water => (0.12, 0.40, 0.70),
         SpellElement.Earth => (0.25, 0.50, 0.15),
+        SpellElement.Air   => (0.30, 0.55, 0.80),
         _                  => (0.45, 0.38, 0.28),
     };
 
-    // Dialog matches book_bg.png
-    private const double DialogW = 940;
-    private const double DialogH = 600;
+    // ---- Computed from layout ----
+    private double ETabW    => L.ETabW();
+    private double ETabMaxH => elemTabDispH.Any(d => d > 0) ? elemTabDispH.Max() : 36;
 
-    // Page layout
-    private const double LPageX = 30,  LPageY = 55, LPageW = 358, LPageH = 490;
-    private const double RPageX = 472, RPageY = 55, RPageW = 438, RPageH = 490;
-    private const double STabDispW = RPageW / 4.0;
-
-    // Node geometry
-    private const double NodeR        = 22;
-    private const double NodeSpacingX = 88;
-    private const double NodeSpacingY = 80;
-
-    // Arrow navigation
-    private const double ArrowW = 28, ArrowH = 22;
-    private double arrowPrevX, arrowPrevY, arrowNextX, arrowNextY;
-
-    // Close button
-    private double closeX, closeY, closeW = 120, closeH = 26;
-
-    // Tab hit regions
-    private readonly double[] tabX    = new double[4];
-    private readonly double[] tabY    = new double[4];
-    private readonly double[] tabW    = new double[4];
-    private readonly double[] tabHArr = new double[4];
-    private int  hoveredTab   = -1;
-    private bool closeHovered = false;
+    // Hit regions (populated during draw)
+    private readonly double[] mainTabY    = new double[4];
+    private readonly double[] mainTabH    = new double[4];
+    private readonly double[] elemTabX    = new double[4];
+    private readonly double[] elemTabY    = new double[4];
+    private readonly double[] elemTabHHit = new double[4];
+    private int  hoveredMainTab = -1;
+    private int  hoveredElemTab = -1;
+    private bool closeHovered   = false;
 
     // ---- Constructor ----
 
@@ -100,6 +96,13 @@ public class GuiDialogSpellbook : GuiDialog
         ComposeDialog();
     }
 
+    public override void OnGuiOpened()
+    {
+        L = SpellbookLayout.Load();
+        RecomputeTabSizes();
+        base.OnGuiOpened();
+    }
+
     private void RebuildElements()
     {
         Elements = SpellRegistry.All.Values
@@ -109,32 +112,45 @@ public class GuiDialogSpellbook : GuiDialog
 
     public void ReloadData()
     {
-        if (IsOpened())
-            (SingleComposer?.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
+        if (IsOpened()) Redraw();
     }
 
-    // ---- Textures ----
+    private void Redraw() =>
+        (SingleComposer?.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
+
+    // ---- Asset loading ----
 
     private void LoadTextures()
     {
-        bookBgSurface = LoadSurface("textures/gui/book_bg.png");
+        bookBgSurface        = LoadSurface("textures/gui/book_bg.png");
+        closeBookmarkSurface = LoadSurface("textures/gui/close_bookmark.png");
 
-        string[] activeNames   = { "tab_spells_active",   "tab_memorized_active", "tab_lore_active",   "tab_runes_active"   };
-        string?[] inactiveNames = { "tab_spells_inactive", null,                   null,                "tab_runes_inactive" };
-
-        var fallback = LoadSurface("textures/gui/tab_spells_inactive.png");
-
+        string[] mainNames = { "spells", "memorized", "lore", "runes" };
         for (int i = 0; i < 4; i++)
         {
-            sectionTabActive[i]   = LoadSurface($"textures/gui/{activeNames[i]}.png");
-            sectionTabInactive[i] = inactiveNames[i] != null
-                ? (LoadSurface($"textures/gui/{inactiveNames[i]}.png") ?? fallback)
-                : fallback;
+            mainTabActive[i]   = LoadSurface($"textures/gui/main_tab_{mainNames[i]}_active.png");
+            mainTabInactive[i] = LoadSurface($"textures/gui/main_tab_{mainNames[i]}_inactive.png");
+            elemTabActive[i]   = LoadSurface($"textures/gui/elem_tab_{ElemTabKeys[i]}_active.png");
+            elemTabInactive[i] = LoadSurface($"textures/gui/elem_tab_{ElemTabKeys[i]}_inactive.png");
+        }
+        RecomputeTabSizes();
+    }
 
-            var asurf = sectionTabActive[i];
-            sTabDispH[i] = asurf != null ? STabDispW * asurf.Height / asurf.Width : 30;
-            var isurf = sectionTabInactive[i];
-            sTabDispHInact[i] = isurf != null ? STabDispW * isurf.Height / isurf.Width : 25;
+    /// Recomputes sprite display sizes from current L values — no image reload needed.
+    private void RecomputeTabSizes()
+    {
+        double tw = ETabW;
+        for (int i = 0; i < 4; i++)
+        {
+            var a = mainTabActive[i];
+            mainTabDispH[i]  = a != null ? L.MTabW * a.Height / a.Width : 38;
+            var n = mainTabInactive[i];
+            mainTabDispHI[i] = n != null ? L.MTabW * n.Height / n.Width : 34;
+
+            var ea = elemTabActive[i];
+            elemTabDispH[i]  = ea != null ? tw * ea.Height / ea.Width : 36;
+            var ei = elemTabInactive[i];
+            elemTabDispHI[i] = ei != null ? tw * ei.Height / ei.Width : 32;
         }
     }
 
@@ -166,7 +182,6 @@ public class GuiDialogSpellbook : GuiDialog
     {
         double w = bounds.InnerWidth, h = bounds.InnerHeight;
 
-        // Book background
         if (bookBgSurface != null)
         {
             ctx.Save();
@@ -176,7 +191,8 @@ public class GuiDialogSpellbook : GuiDialog
             ctx.Restore();
         }
 
-        DrawSectionTabs(ctx);
+        DrawCloseBookmark(ctx);
+        DrawMainTabs(ctx);
 
         switch (currentTab)
         {
@@ -192,66 +208,148 @@ public class GuiDialogSpellbook : GuiDialog
                 DrawComingSoon(ctx);
                 break;
         }
+    }
 
-        if (hoveredSpellId != null)
+    // ---- Close bookmark ----
+
+    private void DrawCloseBookmark(Context ctx)
+    {
+        double x = L.CloseBookX, y = L.CloseBookY, bw = L.CloseBookW, bh = L.CloseBookH;
+
+        if (closeBookmarkSurface != null)
         {
-            var spell = SpellRegistry.Get(hoveredSpellId);
-            if (spell != null) DrawTooltip(ctx, spell, tooltipX, tooltipY, w, h);
+            ctx.Save();
+            ctx.Rectangle(x, y, bw, bh);
+            ctx.Clip();
+            ctx.Translate(x, y);
+            ctx.Scale(bw / closeBookmarkSurface.Width, bh / closeBookmarkSurface.Height);
+            ctx.SetSourceSurface(closeBookmarkSurface, 0, 0);
+            ctx.PaintWithAlpha(closeHovered ? 1.0 : 0.85);
+            ctx.Restore();
+        }
+        else
+        {
+            RoundedRect(ctx, x, y, bw, bh, 4);
+            ctx.SetSourceRGBA(closeHovered ? 0.55 : 0.35, closeHovered ? 0.12 : 0.08, 0.04, 0.80);
+            ctx.Fill();
+            ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
+            ctx.SetFontSize(16);
+            ctx.SetSourceRGBA(1, 1, 1, 0.85);
+            var te = ctx.TextExtents("X");
+            ctx.MoveTo(x + bw / 2 - te.Width / 2 - te.XBearing,
+                       y + bh / 2 + te.Height / 2 - 1);
+            ctx.ShowText("X");
         }
     }
 
-    // ---- Section tabs ----
+    // ---- Main tabs (vertical) ----
 
-    private void DrawSectionTabs(Context ctx)
+    private void DrawMainTabs(Context ctx)
     {
-        double maxH = STabMaxH;
+        double ty = L.MTabStartY;
+        double[] ys = new double[4];
+        double[] hs = new double[4];
+        for (int i = 0; i < 4; i++)
+        {
+            bool active = currentTab == i;
+            ys[i] = ty;
+            hs[i] = active ? mainTabDispH[i] : mainTabDispHI[i];
+            mainTabY[i] = ty;
+            mainTabH[i] = hs[i];
+            ty += hs[i] + L.MTabGap;
+        }
 
-        // Draw inactive tabs first, then active on top
         for (int pass = 0; pass < 2; pass++)
         {
-            for (int i = 0; i < TabNames.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
                 bool active = currentTab == i;
-                if ((pass == 0) == active) continue; // pass 0 = inactive, pass 1 = active
+                if ((pass == 0) == active) continue;
 
-                double tx    = RPageX + i * STabDispW;
-                double dispH = active ? sTabDispH[i] : sTabDispHInact[i];
-                double ty    = RPageY + maxH - dispH; // align bottom edges
-                var    surf  = active ? sectionTabActive[i] : sectionTabInactive[i];
-
-                tabX[i] = tx; tabY[i] = ty; tabW[i] = STabDispW; tabHArr[i] = dispH;
+                var    surf  = active ? mainTabActive[i] : mainTabInactive[i];
+                double dispH = hs[i];
 
                 if (surf != null)
                 {
                     ctx.Save();
-                    // Clip to tab rectangle to prevent bleed
-                    ctx.Rectangle(tx, ty, STabDispW, dispH);
+                    ctx.Rectangle(L.MTabX, ys[i], L.MTabW, dispH);
                     ctx.Clip();
-                    ctx.Translate(tx, ty);
-                    ctx.Scale(STabDispW / surf.Width, dispH / surf.Height);
+                    ctx.Translate(L.MTabX, ys[i]);
+                    ctx.Scale(L.MTabW / surf.Width, dispH / surf.Height);
                     ctx.SetSourceSurface(surf, 0, 0);
                     ctx.Paint();
                     ctx.Restore();
                 }
                 else
                 {
-                    RoundedRect(ctx, tx + 1, ty, STabDispW - 2, dispH, 4);
-                    ctx.SetSourceRGBA(active ? 0.68 : 0.48, active ? 0.52 : 0.38,
-                                      active ? 0.22 : 0.18, active ? 0.85 : 0.50);
+                    RoundedRect(ctx, L.MTabX, ys[i], L.MTabW, dispH, 4);
+                    ctx.SetSourceRGBA(active ? 0.70 : 0.50, active ? 0.54 : 0.40,
+                                      active ? 0.24 : 0.20, active ? 0.90 : 0.55);
                     ctx.Fill();
-                }
-
-                // Label overlay (for fallback tabs that don't have baked label)
-                bool isFallback = !active && (i == 1 || i == 2); // memorized/lore use spells_inactive fallback
-                if (isFallback)
-                {
                     ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
-                    ctx.SetFontSize(8);
-                    ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.70);
+                    ctx.SetFontSize(10);
+                    ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.85);
                     var te = ctx.TextExtents(TabNames[i]);
-                    ctx.MoveTo(tx + STabDispW / 2 - te.Width / 2 - te.XBearing,
-                               ty + dispH / 2 + te.Height / 2 - 1);
+                    ctx.MoveTo(L.MTabX + L.MTabW / 2 - te.Width / 2 - te.XBearing,
+                               ys[i] + dispH / 2 + te.Height / 2 - 1);
                     ctx.ShowText(TabNames[i]);
+                }
+            }
+        }
+    }
+
+    // ---- Element tabs (horizontal) ----
+
+    private void DrawElementTabs(Context ctx)
+    {
+        double tw   = ETabW;
+        double maxH = ETabMaxH;
+
+        for (int pass = 0; pass < 2; pass++)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                var    el     = ElemOrder[i];
+                bool   active = SelectedElement == el;
+                if ((pass == 0) == active) continue;
+
+                bool   exists = Elements.Contains(el);
+                double tx     = L.RPageX + i * (tw + L.ETabGap);
+                double dispH  = active ? elemTabDispH[i] : elemTabDispHI[i];
+                double ty     = L.RPageY + maxH - dispH;
+                var    surf   = active ? elemTabActive[i] : elemTabInactive[i];
+
+                elemTabX[i]    = tx;
+                elemTabY[i]    = ty;
+                elemTabHHit[i] = dispH;
+
+                double alpha = exists ? 1.0 : 0.35;
+
+                if (surf != null)
+                {
+                    ctx.Save();
+                    ctx.Rectangle(tx, ty, tw, dispH);
+                    ctx.Clip();
+                    ctx.Translate(tx, ty);
+                    ctx.Scale(tw / surf.Width, dispH / surf.Height);
+                    ctx.SetSourceSurface(surf, 0, 0);
+                    ctx.PaintWithAlpha(alpha);
+                    ctx.Restore();
+                }
+                else
+                {
+                    var (er, eg, eb) = ElementColor(el);
+                    RoundedRect(ctx, tx, ty, tw, dispH, 4);
+                    ctx.SetSourceRGBA(er * (active ? 0.60 : 0.35), eg * (active ? 0.60 : 0.35),
+                                      eb * (active ? 0.60 : 0.35), active ? 0.90 * alpha : 0.50 * alpha);
+                    ctx.Fill();
+                    ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
+                    ctx.SetFontSize(9);
+                    ctx.SetSourceRGBA(1, 1, 1, exists ? 0.88 : 0.40);
+                    var te = ctx.TextExtents(el.ToString());
+                    ctx.MoveTo(tx + tw / 2 - te.Width / 2 - te.XBearing,
+                               ty + dispH / 2 + te.Height / 2 - 1);
+                    ctx.ShowText(el.ToString());
                 }
             }
         }
@@ -261,91 +359,109 @@ public class GuiDialogSpellbook : GuiDialog
 
     private void DrawSpellsLeftPage(Context ctx)
     {
-        double x = LPageX, y = LPageY;
+        double x = L.LContentX, cw = L.LContentW;
+        double y = L.LPageY;
+        var (er, eg, eb) = ElementColor(SelectedElement);
 
         ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Bold);
-        ctx.SetFontSize(15);
-        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.85);
-        string title = "Spells & Runes";
-        var te = ctx.TextExtents(title);
-        ctx.MoveTo(x + LPageW / 2 - te.Width / 2 - te.XBearing, y + 26);
-        ctx.ShowText(title);
-        DrawDivider(ctx, x + 10, y + 33, LPageW - 20);
+        ctx.SetFontSize(18);
+        ctx.SetSourceRGBA(er * 0.65, eg * 0.65, eb * 0.65, 0.90);
+        string elName = SelectedElement.ToString();
+        var te = ctx.TextExtents(elName);
+        ctx.MoveTo(x + cw / 2 - te.Width / 2 - te.XBearing, y + 28);
+        ctx.ShowText(elName);
+        DrawDivider(ctx, x + 4, y + 34, cw - 8);
 
-        // Flavor text / element description placeholder
-        ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Normal);
-        ctx.SetFontSize(11);
-        ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.65);
-        string flavor = "Select an element on the right page\nto view its spell tree.";
-        double fy = y + 60;
-        foreach (var line in flavor.Split('\n'))
+        if (hoveredSpellId != null)
         {
-            var lte = ctx.TextExtents(line);
-            ctx.MoveTo(x + LPageW / 2 - lte.Width / 2 - lte.XBearing, fy);
-            ctx.ShowText(line);
-            fy += 16;
+            var spell = SpellRegistry.Get(hoveredSpellId);
+            if (spell != null)
+                DrawSpellInfoPanel(ctx, spell, x, y + 44, cw, L.LPageH - 44 - 62);
+        }
+        else
+        {
+            ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Normal);
+            ctx.SetFontSize(10);
+            ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.55);
+            string hint = "Hover a spell\nto see details.";
+            double hy = y + 80;
+            foreach (var line in hint.Split('\n'))
+            {
+                var lte = ctx.TextExtents(line);
+                ctx.MoveTo(x + cw / 2 - lte.Width / 2 - lte.XBearing, hy);
+                ctx.ShowText(line);
+                hy += 16;
+            }
         }
 
-        closeW = LPageW - 40; closeX = x + 20; closeY = y + LPageH - 34;
-        DrawCloseButton(ctx);
+        DrawElementXpBar(ctx, x + 4, y + L.LPageH - 56, cw - 8, SelectedElement);
+    }
+
+    private void DrawSpellInfoPanel(Context ctx, Spell spell, double x, double y, double cw, double maxH)
+    {
+        var (er, eg, eb) = ElementColor(spell.Element);
+
+        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
+        ctx.SetFontSize(13);
+        ctx.SetSourceRGBA(er * 0.70, eg * 0.70, eb * 0.70, 1.0);
+        var nte = ctx.TextExtents(spell.Name);
+        ctx.MoveTo(x + cw / 2 - nte.Width / 2 - nte.XBearing, y + 14);
+        ctx.ShowText(spell.Name);
+        DrawDivider(ctx, x + 8, y + 18, cw - 16);
+
+        ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Normal);
+        ctx.SetFontSize(10);
+        ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.82);
+
+        var words = spell.Description.Split(' ');
+        var lines = new List<string>();
+        string cur = "";
+        foreach (var word in words)
+        {
+            string test = cur.Length == 0 ? word : cur + " " + word;
+            if (ctx.TextExtents(test).Width > cw - 16) { lines.Add(cur); cur = word; }
+            else cur = test;
+        }
+        if (cur.Length > 0) lines.Add(cur);
+
+        double dy = y + 34;
+        foreach (var line in lines)
+        {
+            if (dy + 12 > y + maxH) break;
+            ctx.MoveTo(x + 8, dy); ctx.ShowText(line); dy += 14;
+        }
+
+        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
+        ctx.SetFontSize(9);
+        ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.85);
+        ctx.MoveTo(x + 8, dy + 14);
+        ctx.ShowText($"Flux: {spell.FluxCost}   Cost: {(int)spell.Tier} SP");
+        ctx.MoveTo(x + 8, dy + 26);
+        ctx.ShowText(spell.Element.ToString());
+
+        var entity = capi.World.Player?.Entity;
+        var data   = entity != null ? PlayerSpellData.For(entity) : null;
+        bool unlocked = data?.IsUnlocked(spell.Id) ?? false;
+        if (unlocked && data != null)
+        {
+            int lvl    = data.GetSpellLevel(spell.Id);
+            int xpIn   = data.GetSpellXpInLevel(spell.Id);
+            int xpNext = PlayerSpellData.XpForLevel(lvl);
+            DrawDivider(ctx, x + 8, dy + 34, cw - 16);
+            ctx.SetSourceRGBA(er * 0.65, eg * 0.65, eb * 0.65, 0.90);
+            ctx.MoveTo(x + 8, dy + 48);
+            ctx.ShowText($"Level {lvl}   {xpIn}/{xpNext} XP");
+        }
     }
 
     // ---- Spells tab — right page ----
 
     private void DrawSpellsRightPage(Context ctx)
     {
-        double maxH  = STabMaxH;
-        double cTop  = RPageY + maxH + 6;
-        double footH = 58;
-        double cBot  = RPageY + RPageH - footH;
-
-        // Element name header
-        var (er, eg, eb) = ElementColor(SelectedElement);
-        ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Bold);
-        ctx.SetFontSize(20);
-        ctx.SetSourceRGBA(er * 0.60, eg * 0.60, eb * 0.60, 0.88);
-        string elName = SelectedElement.ToString();
-        var te = ctx.TextExtents(elName);
-        double hdrY = cTop + 18;
-        ctx.MoveTo(RPageX + RPageW / 2 - te.Width / 2 - te.XBearing, hdrY);
-        ctx.ShowText(elName);
-        DrawDivider(ctx, RPageX + 20, hdrY + 6, RPageW - 40);
-
-        // Spell tree
-        double treeY = hdrY + 14;
-        DrawSpellTree(ctx, RPageX + 4, treeY, RPageW - 8, cBot - treeY - 4);
-
-        // Divider above footer
-        DrawDivider(ctx, RPageX + 20, cBot + 2, RPageW - 40);
-
-        // XP bar in footer
-        DrawElementXpBar(ctx, RPageX + 20, cBot + 8, RPageW - 40, SelectedElement);
-
-        // Navigation arrows (bottom corners)
-        arrowPrevX = RPageX + 8;
-        arrowNextX = RPageX + RPageW - 8 - ArrowW;
-        arrowPrevY = arrowNextY = RPageY + RPageH - ArrowH - 6;
-
-        DrawArrowBtn(ctx, arrowPrevX, arrowPrevY, false);
-        DrawArrowBtn(ctx, arrowNextX, arrowNextY, true);
-    }
-
-    private void DrawArrowBtn(Context ctx, double x, double y, bool right)
-    {
-        RoundedRect(ctx, x, y, ArrowW, ArrowH, 4);
-        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.18); ctx.Fill();
-        RoundedRect(ctx, x, y, ArrowW, ArrowH, 4);
-        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.38);
-        ctx.LineWidth = 1; ctx.Stroke();
-
-        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
-        ctx.SetFontSize(13);
-        ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.75);
-        string arrow = right ? "▶" : "◀";
-        var te = ctx.TextExtents(arrow);
-        ctx.MoveTo(x + ArrowW / 2 - te.Width / 2 - te.XBearing,
-                   y + ArrowH / 2 + te.Height / 2 - 1);
-        ctx.ShowText(arrow);
+        DrawElementTabs(ctx);
+        double treeY = L.RPageY + ETabMaxH + 10;
+        double treeH = L.RPageH - ETabMaxH - 18;
+        DrawSpellTree(ctx, L.RPageX + 4, treeY, L.RPageW - 8, treeH);
     }
 
     // ---- Spell tree ----
@@ -356,18 +472,18 @@ public class GuiDialogSpellbook : GuiDialog
         var spells = SpellRegistry.All.Values.Where(s => s.Element == SelectedElement).ToList();
         if (spells.Count == 0) return;
 
-        int maxCol = spells.Max(s => s.TreePosition.col);
-        double gridW  = (maxCol + 1) * NodeSpacingX;
-        double originX = areaX + areaW / 2 - gridW / 2 + NodeSpacingX / 2;
-        double originY = areaY + areaH - NodeSpacingY / 2 - NodeR - 8;
+        int    maxCol  = spells.Max(s => s.TreePosition.col);
+        double gridW   = (maxCol + 1) * L.NodeSpacingX;
+        double originX = areaX + areaW / 2 - gridW / 2 + L.NodeSpacingX / 2;
+        double originY = areaY + areaH - L.NodeSpacingY / 2 - L.NodeR - 8;
 
         var posMap = new Dictionary<string, (double cx, double cy)>();
         foreach (var spell in spells)
         {
-            double cx = originX + spell.TreePosition.col * NodeSpacingX;
-            double cy = originY - spell.TreePosition.row * NodeSpacingY;
+            double cx = originX + spell.TreePosition.col * L.NodeSpacingX;
+            double cy = originY - spell.TreePosition.row * L.NodeSpacingY;
             posMap[spell.Id] = (cx, cy);
-            spellNodes.Add(new SpellNode(spell.Id, cx, cy, NodeR));
+            spellNodes.Add(new SpellNode(spell.Id, cx, cy, L.NodeR));
         }
 
         var entity = capi.World.Player?.Entity;
@@ -382,7 +498,7 @@ public class GuiDialogSpellbook : GuiDialog
             {
                 if (!posMap.TryGetValue(prereqId, out var from)) continue;
                 bool pu = data?.IsUnlocked(prereqId) ?? false;
-                bool tu = data?.IsUnlocked(spell.Id) ?? false;
+                bool tu = data?.IsUnlocked(spell.Id)  ?? false;
                 ctx.SetSourceRGBA(er, eg, eb, pu && tu ? 0.50 : 0.12);
                 ctx.MoveTo(from.cx, from.cy); ctx.LineTo(to.cx, to.cy); ctx.Stroke();
             }
@@ -399,10 +515,9 @@ public class GuiDialogSpellbook : GuiDialog
     }
 
     private void DrawSpellNode(Context ctx, Spell spell, double cx, double cy,
-        bool unlocked, bool available, bool hovered,
-        double er, double eg, double eb)
+        bool unlocked, bool available, bool hovered, double er, double eg, double eb)
     {
-        double r = NodeR;
+        double r = L.NodeR;
         if (hovered) { ctx.Arc(cx, cy, r + 5, 0, 2 * Math.PI); ctx.SetSourceRGBA(er, eg, eb, 0.12); ctx.Fill(); }
 
         ctx.Arc(cx, cy, r, 0, 2 * Math.PI);
@@ -412,7 +527,7 @@ public class GuiDialogSpellbook : GuiDialog
 
         ctx.Arc(cx, cy, r, 0, 2 * Math.PI);
         if (unlocked)       ctx.SetSourceRGBA(er, eg, eb, hovered ? 1.0 : 0.75);
-        else if (available)  ctx.SetSourceRGBA(er, eg, eb, hovered ? 0.65 : 0.45);
+        else if (available) ctx.SetSourceRGBA(er, eg, eb, hovered ? 0.65 : 0.45);
         else                ctx.SetSourceRGBA(0.38, 0.30, 0.18, 0.45);
         ctx.LineWidth = unlocked ? 1.8 : 1.1; ctx.Stroke();
 
@@ -442,47 +557,42 @@ public class GuiDialogSpellbook : GuiDialog
         ctx.SetSourceRGBA(0.48, 0.38, 0.22, alpha); ctx.Fill();
     }
 
-    // ---- Memorized — left page (radial slots) ----
+    // ---- Memorized — left page ----
 
     private void DrawMemorizedLeftPage(Context ctx)
     {
-        double x = LPageX, y = LPageY;
+        double x = L.LContentX, cw = L.LContentW;
+        double y = L.LPageY;
 
         ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Bold);
         ctx.SetFontSize(13);
         ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.80);
         string title = "Memorized Spells";
         var te = ctx.TextExtents(title);
-        ctx.MoveTo(x + LPageW / 2 - te.Width / 2 - te.XBearing, y + 26);
-        ctx.ShowText(title);
-        DrawDivider(ctx, x + 10, y + 33, LPageW - 20);
+        ctx.MoveTo(x + cw / 2 - te.Width / 2 - te.XBearing, y + 26); ctx.ShowText(title);
+        DrawDivider(ctx, x + 4, y + 33, cw - 8);
 
         ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
         ctx.SetFontSize(9);
         ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.60);
         string hint = "Drag spells from the right page";
         var hte = ctx.TextExtents(hint);
-        ctx.MoveTo(x + LPageW / 2 - hte.Width / 2 - hte.XBearing, y + 50);
-        ctx.ShowText(hint);
+        ctx.MoveTo(x + cw / 2 - hte.Width / 2 - hte.XBearing, y + 50); ctx.ShowText(hint);
 
-        // Radial circle
-        double radCX = x + LPageW / 2;
-        double radCY = y + LPageH / 2 + 10;
-        double radR  = 90;
+        double radCX = x + cw / 2;
+        double radCY = y + L.LPageH / 2 + 10;
+        double radR  = 80;
 
-        // Draw circle guide (faint)
         ctx.Arc(radCX, radCY, radR, 0, 2 * Math.PI);
         ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.10);
         ctx.LineWidth = 1; ctx.Stroke();
 
-        // 3 slot positions: top, bottom-right, bottom-left
-        double[] angles = { -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI / 3, -Math.PI / 2 + 4 * Math.PI / 3 };
+        double[] angles     = { -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI / 3, -Math.PI / 2 + 4 * Math.PI / 3 };
         string[] slotLabels = { "[1]", "[2]", "[3]" };
 
         var entity = capi.World.Player?.Entity;
         var data   = entity != null ? PlayerSpellData.For(entity) : null;
 
-        // Connection lines
         ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.18);
         ctx.LineWidth = 1;
         for (int i = 0; i < 3; i++)
@@ -499,36 +609,33 @@ public class GuiDialogSpellbook : GuiDialog
             double scy = radCY + radR * Math.Sin(angles[i]);
             hotbarSlotPos[i] = (scx, scy);
 
-            bool isTarget = isDragging && HitTestSlot(i, dragX, dragY);
-            string? slotSpellId = data?.GetHotbarSlot(i);
+            bool isTarget  = isDragging && HitTestSlot(i, dragX, dragY);
+            string? slotId = data?.GetHotbarSlot(i);
 
-            ctx.Arc(scx, scy, SlotR, 0, 2 * Math.PI);
+            ctx.Arc(scx, scy, L.SlotR, 0, 2 * Math.PI);
             ctx.SetSourceRGBA(0.80, 0.75, 0.60, 0.22); ctx.Fill();
-            ctx.Arc(scx, scy, SlotR, 0, 2 * Math.PI);
+            ctx.Arc(scx, scy, L.SlotR, 0, 2 * Math.PI);
             ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], isTarget ? 0.90 : 0.42);
             ctx.LineWidth = isTarget ? 2.5 : 1.5; ctx.Stroke();
 
-            // Slot number
             ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
             ctx.SetFontSize(8);
             ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.40);
             var nle = ctx.TextExtents(slotLabels[i]);
-            ctx.MoveTo(scx - nle.Width / 2 - nle.XBearing, scy + SlotR + 11);
-            ctx.ShowText(slotLabels[i]);
+            ctx.MoveTo(scx - nle.Width / 2 - nle.XBearing, scy + L.SlotR + 11); ctx.ShowText(slotLabels[i]);
 
-            if (slotSpellId != null)
+            if (slotId != null)
             {
-                var spell = SpellRegistry.Get(slotSpellId);
+                var spell = SpellRegistry.Get(slotId);
                 if (spell != null)
                 {
                     var (er, eg, eb) = ElementColor(spell.Element);
-                    DrawSpellIconInCircle(ctx, spell, scx, scy, SlotR - 3, er, eg, eb);
+                    DrawSpellIconInCircle(ctx, spell, scx, scy, L.SlotR - 3, er, eg, eb);
                     ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
                     ctx.SetFontSize(8);
                     ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.75);
                     var snte = ctx.TextExtents(spell.Name);
-                    ctx.MoveTo(scx - snte.Width / 2 - snte.XBearing, scy + SlotR + 22);
-                    ctx.ShowText(spell.Name);
+                    ctx.MoveTo(scx - snte.Width / 2 - snte.XBearing, scy + L.SlotR + 22); ctx.ShowText(spell.Name);
                 }
             }
             else
@@ -539,22 +646,15 @@ public class GuiDialogSpellbook : GuiDialog
                 ctx.MoveTo(scx, scy - 6); ctx.LineTo(scx, scy + 6); ctx.Stroke();
             }
         }
-
-        closeW = LPageW - 40; closeX = x + 20; closeY = y + LPageH - 34;
-        DrawCloseButton(ctx);
     }
 
-    // ---- Memorized — right page (spell list) ----
+    // ---- Memorized — right page ----
 
     private void DrawMemorizedRightPage(Context ctx)
     {
         memorizedSpellCards.Clear();
 
-        double maxH  = STabMaxH;
-        double x     = RPageX + 8;
-        double y     = RPageY + maxH + 10;
-        double w     = RPageW - 16;
-        double h     = RPageH - maxH - 14;
+        double x = L.RPageX + 8, y = L.RPageY + 10, w = L.RPageW - 16, h = L.RPageH - 18;
 
         var entity = capi.World.Player?.Entity;
         var data   = entity != null ? PlayerSpellData.For(entity) : null;
@@ -582,153 +682,78 @@ public class GuiDialogSpellbook : GuiDialog
             return;
         }
 
-        int    cols     = Math.Max(1, (int)((w + 6) / (CardW + 6)));
-        double gridW    = cols * CardW + (cols - 1) * 6;
-        double startX   = x + w / 2 - gridW / 2;
+        int    cols   = Math.Max(1, (int)((w + 6) / (L.CardW + 6)));
+        double gridW  = cols * L.CardW + (cols - 1) * 6;
+        double startX = x + w / 2 - gridW / 2;
 
         for (int ci = 0; ci < unlockedIds.Count; ci++)
         {
             int    col   = ci % cols, row = ci / cols;
-            double cx    = startX + col * (CardW + 6);
-            double cardY = listY + row * (CardH + 6);
-            if (cardY + CardH > y + h) break;
+            double cx    = startX + col * (L.CardW + 6);
+            double cardY = listY + row * (L.CardH + 6);
+            if (cardY + L.CardH > y + h) break;
 
             var spell = SpellRegistry.Get(unlockedIds[ci]);
             if (spell == null) continue;
 
             bool beingDragged = isDragging && dragSpellId == spell.Id && dragFromSlot == -1;
-            var (er, eg, eb) = ElementColor(spell.Element);
-            memorizedSpellCards.Add(new SpellCard(spell.Id, cx, cardY, CardW, CardH));
+            var (er, eg, eb)  = ElementColor(spell.Element);
+            memorizedSpellCards.Add(new SpellCard(spell.Id, cx, cardY, L.CardW, L.CardH));
 
-            RoundedRect(ctx, cx, cardY, CardW, CardH, 5);
+            RoundedRect(ctx, cx, cardY, L.CardW, L.CardH, 5);
             ctx.SetSourceRGBA(er * 0.10 + 0.74, eg * 0.10 + 0.70, eb * 0.10 + 0.54,
                               beingDragged ? 0.18 : 0.72);
             ctx.Fill();
-            RoundedRect(ctx, cx, cardY, CardW, CardH, 5);
+            RoundedRect(ctx, cx, cardY, L.CardW, L.CardH, 5);
             ctx.SetSourceRGBA(er, eg, eb, beingDragged ? 0.12 : 0.42);
             ctx.LineWidth = 1.2; ctx.Stroke();
 
             if (!beingDragged)
             {
-                ctx.Arc(cx + 11, cardY + CardH / 2, 4, 0, 2 * Math.PI);
+                ctx.Arc(cx + 11, cardY + L.CardH / 2, 4, 0, 2 * Math.PI);
                 ctx.SetSourceRGBA(er, eg, eb, 0.75); ctx.Fill();
                 ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
                 ctx.SetFontSize(10);
                 ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.88);
-                ctx.MoveTo(cx + 21, cardY + CardH / 2 - 2); ctx.ShowText(spell.Name);
+                ctx.MoveTo(cx + 21, cardY + L.CardH / 2 - 2); ctx.ShowText(spell.Name);
                 ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
                 ctx.SetFontSize(8);
                 ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.65);
-                ctx.MoveTo(cx + 21, cardY + CardH / 2 + 10);
+                ctx.MoveTo(cx + 21, cardY + L.CardH / 2 + 10);
                 ctx.ShowText($"{spell.FluxCost} Flux · {spell.Element}");
             }
         }
 
-        // Floating drag card
         if (isDragging && dragSpellId != null)
         {
             var dspell = SpellRegistry.Get(dragSpellId);
             if (dspell != null)
             {
                 var (er, eg, eb) = ElementColor(dspell.Element);
-                double dx = dragX - CardW / 2, dy = dragY - CardH / 2;
-                RoundedRect(ctx, dx, dy, CardW, CardH, 5);
+                double dx = dragX - L.CardW / 2, dy = dragY - L.CardH / 2;
+                RoundedRect(ctx, dx, dy, L.CardW, L.CardH, 5);
                 ctx.SetSourceRGBA(er * 0.10 + 0.74, eg * 0.10 + 0.70, eb * 0.10 + 0.54, 0.95); ctx.Fill();
-                RoundedRect(ctx, dx, dy, CardW, CardH, 5);
+                RoundedRect(ctx, dx, dy, L.CardW, L.CardH, 5);
                 ctx.SetSourceRGBA(er, eg, eb, 0.80); ctx.LineWidth = 2; ctx.Stroke();
-                ctx.Arc(dx + 11, dy + CardH / 2, 4, 0, 2 * Math.PI);
+                ctx.Arc(dx + 11, dy + L.CardH / 2, 4, 0, 2 * Math.PI);
                 ctx.SetSourceRGBA(er, eg, eb, 1.0); ctx.Fill();
                 ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold);
                 ctx.SetFontSize(10);
                 ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 1.0);
-                ctx.MoveTo(dx + 21, dy + CardH / 2 + 4); ctx.ShowText(dspell.Name);
+                ctx.MoveTo(dx + 21, dy + L.CardH / 2 + 4); ctx.ShowText(dspell.Name);
             }
         }
     }
 
     private void DrawComingSoon(Context ctx)
     {
-        double maxH = STabMaxH;
         ctx.SelectFontFace("Serif", FontSlant.Italic, FontWeight.Normal);
         ctx.SetFontSize(14);
         ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.65);
         string ph = TabNames[currentTab] + " — coming soon";
         var te = ctx.TextExtents(ph);
-        double midX = RPageX + RPageW / 2, midY = RPageY + maxH + (RPageH - maxH) / 2;
+        double midX = L.RPageX + L.RPageW / 2, midY = L.RPageY + L.RPageH / 2;
         ctx.MoveTo(midX - te.Width / 2 - te.XBearing, midY); ctx.ShowText(ph);
-    }
-
-    // ---- Tooltip ----
-
-    private void DrawTooltip(Context ctx, Spell spell, double mx, double my, double dw, double dh)
-    {
-        const double tw = 185, pad = 10;
-        var entity     = capi.World.Player?.Entity;
-        var data       = entity != null ? PlayerSpellData.For(entity) : null;
-        bool unlocked    = data?.IsUnlocked(spell.Id) ?? false;
-        int  spellLevel  = unlocked && data != null ? data.GetSpellLevel(spell.Id) : 0;
-        int  spellXp     = unlocked && data != null ? data.GetSpellXpInLevel(spell.Id) : 0;
-        int  spellXpNext = PlayerSpellData.XpForLevel(spellLevel);
-        float misscast   = Spell.MisscastChanceForLevel(spellLevel);
-
-        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal);
-        ctx.SetFontSize(10);
-
-        var words = spell.Description.Split(' ');
-        var lines = new List<string>();
-        string cur = "";
-        foreach (var word in words)
-        {
-            string test = cur.Length == 0 ? word : cur + " " + word;
-            if (ctx.TextExtents(test).Width > tw - pad * 2) { lines.Add(cur); cur = word; }
-            else cur = test;
-        }
-        if (cur.Length > 0) lines.Add(cur);
-
-        double lineH = 13, levelRows = unlocked ? 2 : 0;
-        double th = pad * 2 + 16 + lines.Count * lineH + 18 + levelRows * 13;
-        double tx = mx + 14, ty = my - th / 2;
-        if (tx + tw > dw - 4) tx = mx - tw - 14;
-        ty = Math.Clamp(ty, 4, dh - th - 4);
-
-        RoundedRect(ctx, tx, ty, tw, th, 6);
-        ctx.SetSourceRGBA(0.97, 0.93, 0.84, 0.97); ctx.Fill();
-        RoundedRect(ctx, tx, ty, tw, th, 6);
-        var (er, eg, eb) = ElementColor(spell.Element);
-        ctx.SetSourceRGBA(er, eg, eb, 0.65); ctx.LineWidth = 1.5; ctx.Stroke();
-
-        double iy = ty + pad;
-        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold); ctx.SetFontSize(12);
-        ctx.SetSourceRGBA(er * 0.65, eg * 0.65, eb * 0.65, 1.0);
-        ctx.MoveTo(tx + pad, iy + 11); ctx.ShowText(spell.Name); iy += 15;
-        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.35); ctx.LineWidth = 1;
-        ctx.MoveTo(tx + pad, iy); ctx.LineTo(tx + tw - pad, iy); ctx.Stroke(); iy += 6;
-
-        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal); ctx.SetFontSize(10);
-        ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.88);
-        foreach (var line in lines) { ctx.MoveTo(tx + pad, iy + 11); ctx.ShowText(line); iy += lineH; }
-        iy += 4;
-
-        ctx.SetFontSize(9); ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.88);
-        ctx.MoveTo(tx + pad, iy + 10); ctx.ShowText($"Flux: {spell.FluxCost}   Cost: {(int)spell.Tier} SP"); iy += 14;
-
-        if (unlocked)
-        {
-            ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], 0.22); ctx.LineWidth = 1;
-            ctx.MoveTo(tx + pad, iy + 2); ctx.LineTo(tx + tw - pad, iy + 2); ctx.Stroke(); iy += 6;
-            ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold); ctx.SetFontSize(9);
-            ctx.SetSourceRGBA(er * 0.65, eg * 0.65, eb * 0.65, 0.90);
-            ctx.MoveTo(tx + pad, iy + 10); ctx.ShowText($"Spell Lvl {spellLevel}");
-            string xpStr = spellLevel >= 10 ? "MAX" : $"{spellXp}/{spellXpNext} XP";
-            ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Normal); ctx.SetFontSize(9);
-            ctx.SetSourceRGBA(ColorSubtext[0], ColorSubtext[1], ColorSubtext[2], 0.80);
-            var xpte = ctx.TextExtents(xpStr);
-            ctx.MoveTo(tx + tw - pad - xpte.Width - xpte.XBearing, iy + 10); ctx.ShowText(xpStr); iy += 13;
-            string missStr = misscast <= 0f ? "No misscast" : $"Misscast: {(int)(misscast * 100)}%";
-            ctx.SetSourceRGBA(misscast <= 0f ? 0.20 : 0.60, misscast <= 0f ? 0.48 : 0.15,
-                              misscast <= 0f ? 0.12 : 0.04, 0.85);
-            ctx.MoveTo(tx + pad, iy + 10); ctx.ShowText(missStr);
-        }
     }
 
     // ---- XP bar ----
@@ -775,23 +800,6 @@ public class GuiDialogSpellbook : GuiDialog
         ctx.LineWidth = 1; ctx.Stroke();
     }
 
-    // ---- Close button ----
-
-    private void DrawCloseButton(Context ctx)
-    {
-        RoundedRect(ctx, closeX, closeY, closeW, closeH, 5);
-        ctx.SetSourceRGBA(closeHovered ? 0.42 : 0.25, closeHovered ? 0.10 : 0.06, 0.03, 0.65); ctx.Fill();
-        RoundedRect(ctx, closeX, closeY, closeW, closeH, 5);
-        ctx.SetSourceRGBA(ColorBorder[0], ColorBorder[1], ColorBorder[2], closeHovered ? 0.75 : 0.38);
-        ctx.LineWidth = 1; ctx.Stroke();
-        ctx.SelectFontFace("Sans", FontSlant.Normal, FontWeight.Bold); ctx.SetFontSize(11);
-        ctx.SetSourceRGBA(ColorText[0], ColorText[1], ColorText[2], 0.80);
-        var cte = ctx.TextExtents("Close");
-        ctx.MoveTo(closeX + closeW / 2 - cte.Width / 2 - cte.XBearing,
-                   closeY + closeH / 2 + cte.Height / 2 - 1);
-        ctx.ShowText("Close");
-    }
-
     // ---- Helpers ----
 
     private static void DrawSpellIconInCircle(Context ctx, Spell spell, double cx, double cy, double r,
@@ -836,36 +844,50 @@ public class GuiDialogSpellbook : GuiDialog
         double ry = args.Y - SingleComposer.Bounds.absY;
 
         if (isDragging)
+        { dragX = rx; dragY = ry; Redraw(); args.Handled = true; return; }
+
+        int     prevMain  = hoveredMainTab;
+        int     prevElem  = hoveredElemTab;
+        bool    prevClose = closeHovered;
+        string? prevSpell = hoveredSpellId;
+
+        hoveredMainTab = -1; hoveredElemTab = -1; closeHovered = false; hoveredSpellId = null;
+
+        if (rx >= L.CloseBookX && rx <= L.CloseBookX + L.CloseBookW &&
+            ry >= L.CloseBookY && ry <= L.CloseBookY + L.CloseBookH)
         {
-            dragX = rx; dragY = ry;
-            (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
-            args.Handled = true; return;
+            closeHovered = true;
         }
-
-        int prevTab = hoveredTab; bool prevClose = closeHovered; string? prevSpell = hoveredSpellId;
-        hoveredTab = -1; closeHovered = false; hoveredSpellId = null;
-
-        if (rx >= closeX && rx <= closeX + closeW && ry >= closeY && ry <= closeY + closeH)
-        { closeHovered = true; }
         else
         {
-            for (int i = 0; i < TabNames.Length; i++)
-                if (rx >= tabX[i] && rx <= tabX[i] + tabW[i] && ry >= tabY[i] && ry <= tabY[i] + tabHArr[i])
-                { hoveredTab = i; break; }
+            for (int i = 0; i < 4; i++)
+                if (rx >= L.MTabX && rx <= L.MTabX + L.MTabW &&
+                    ry >= mainTabY[i] && ry <= mainTabY[i] + mainTabH[i])
+                { hoveredMainTab = i; break; }
 
-            if (hoveredTab == -1 && currentTab == TabSpells)
+            if (hoveredMainTab == -1 && currentTab == TabSpells)
+            {
+                double tw = ETabW;
+                for (int i = 0; i < 4; i++)
+                    if (rx >= elemTabX[i] && rx <= elemTabX[i] + tw &&
+                        ry >= elemTabY[i] && ry <= elemTabY[i] + elemTabHHit[i])
+                    { hoveredElemTab = i; break; }
+            }
+
+            if (hoveredMainTab == -1 && hoveredElemTab == -1 && currentTab == TabSpells)
             {
                 foreach (var node in spellNodes)
                 {
                     double dx = rx - node.Cx, dy = ry - node.Cy;
                     if (dx * dx + dy * dy <= node.R * node.R)
-                    { hoveredSpellId = node.SpellId; tooltipX = rx; tooltipY = ry; break; }
+                    { hoveredSpellId = node.SpellId; break; }
                 }
             }
         }
 
-        if (hoveredTab != prevTab || closeHovered != prevClose || hoveredSpellId != prevSpell)
-            (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
+        if (hoveredMainTab != prevMain || hoveredElemTab != prevElem ||
+            closeHovered != prevClose || hoveredSpellId != prevSpell)
+            Redraw();
     }
 
     public override void OnMouseDown(MouseEvent args)
@@ -873,49 +895,38 @@ public class GuiDialogSpellbook : GuiDialog
         double rx = args.X - SingleComposer.Bounds.absX;
         double ry = args.Y - SingleComposer.Bounds.absY;
 
-        // Close
-        if (rx >= closeX && rx <= closeX + closeW && ry >= closeY && ry <= closeY + closeH)
+        if (rx >= L.CloseBookX && rx <= L.CloseBookX + L.CloseBookW &&
+            ry >= L.CloseBookY && ry <= L.CloseBookY + L.CloseBookH)
         { TryClose(); args.Handled = true; return; }
 
-        // Section tabs
-        for (int i = 0; i < TabNames.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
-            if (rx >= tabX[i] && rx <= tabX[i] + tabW[i] && ry >= tabY[i] && ry <= tabY[i] + tabHArr[i])
-            {
-                currentTab = i;
-                (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
-                args.Handled = true; return;
-            }
+            if (rx >= L.MTabX && rx <= L.MTabX + L.MTabW &&
+                ry >= mainTabY[i] && ry <= mainTabY[i] + mainTabH[i])
+            { currentTab = i; Redraw(); args.Handled = true; return; }
         }
 
         if (currentTab == TabSpells)
         {
-            // Prev/Next arrows
-            if (Elements.Length > 1)
+            double tw = ETabW;
+            for (int i = 0; i < 4; i++)
             {
-                if (rx >= arrowPrevX && rx <= arrowPrevX + ArrowW && ry >= arrowPrevY && ry <= arrowPrevY + ArrowH)
+                if (rx >= elemTabX[i] && rx <= elemTabX[i] + tw &&
+                    ry >= elemTabY[i] && ry <= elemTabY[i] + elemTabHHit[i])
                 {
-                    selectedElementIndex = (selectedElementIndex - 1 + Elements.Length) % Elements.Length;
-                    (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
-                    args.Handled = true; return;
-                }
-                if (rx >= arrowNextX && rx <= arrowNextX + ArrowW && ry >= arrowNextY && ry <= arrowNextY + ArrowH)
-                {
-                    selectedElementIndex = (selectedElementIndex + 1) % Elements.Length;
-                    (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
+                    int idx = Array.IndexOf(Elements, ElemOrder[i]);
+                    if (idx >= 0) { selectedElementIndex = idx; Redraw(); }
                     args.Handled = true; return;
                 }
             }
 
-            // Spell node unlock
             foreach (var node in spellNodes)
             {
                 double dx = rx - node.Cx, dy = ry - node.Cy;
                 if (dx * dx + dy * dy <= node.R * node.R)
                 {
                     channel.SendPacket(new MsgUnlockSpell { SpellId = node.SpellId });
-                    (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
-                    args.Handled = true; return;
+                    Redraw(); args.Handled = true; return;
                 }
             }
         }
@@ -925,28 +936,20 @@ public class GuiDialogSpellbook : GuiDialog
             var entity = capi.World.Player?.Entity;
             var data   = entity != null ? PlayerSpellData.For(entity) : null;
 
-            // Drag from slot
             for (int i = 0; i < 3; i++)
             {
                 if (HitTestSlot(i, rx, ry))
                 {
                     string? ss = data?.GetHotbarSlot(i);
                     if (ss != null)
-                    {
-                        isDragging = true; dragSpellId = ss; dragFromSlot = i; dragX = rx; dragY = ry;
-                        args.Handled = true; return;
-                    }
+                    { isDragging = true; dragSpellId = ss; dragFromSlot = i; dragX = rx; dragY = ry; args.Handled = true; return; }
                 }
             }
 
-            // Drag from card
             foreach (var card in memorizedSpellCards)
             {
                 if (rx >= card.X && rx <= card.X + card.W && ry >= card.Y && ry <= card.Y + card.H)
-                {
-                    isDragging = true; dragSpellId = card.SpellId; dragFromSlot = -1; dragX = rx; dragY = ry;
-                    args.Handled = true; return;
-                }
+                { isDragging = true; dragSpellId = card.SpellId; dragFromSlot = -1; dragX = rx; dragY = ry; args.Handled = true; return; }
             }
         }
 
@@ -970,8 +973,7 @@ public class GuiDialogSpellbook : GuiDialog
             channel.SendPacket(new MsgSetHotbarSlot { Slot = dragFromSlot, SpellId = "" });
 
         isDragging = false; dragSpellId = null; dragFromSlot = -1;
-        (SingleComposer.GetElement("spellbookCanvas") as GuiElementCustomDraw)?.Redraw();
-        args.Handled = true;
+        Redraw(); args.Handled = true;
     }
 
     public override string ToggleKeyCombinationCode => "spellsandrunes.spellbook";
@@ -982,7 +984,7 @@ public class GuiDialogSpellbook : GuiDialog
         if (slot < 0 || slot >= 3) return false;
         var (cx, cy) = hotbarSlotPos[slot];
         double dx = rx - cx, dy = ry - cy;
-        return dx * dx + dy * dy <= (SlotR + 8) * (SlotR + 8);
+        return dx * dx + dy * dy <= (L.SlotR + 8) * (L.SlotR + 8);
     }
 
     private int FindHotbarSlotAtPos(double rx, double ry)

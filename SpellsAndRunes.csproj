@@ -19,15 +19,15 @@
   
   <ItemGroup>
     <Reference Include="VintagestoryAPI">
-      <HintPath>D:\VintageCrack\Vintagestory\VintagestoryAPI.dll</HintPath>
+      <HintPath>D:\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="cairo-sharp">
-      <HintPath>D:\VintageCrack\Vintagestory\Lib\cairo-sharp.dll</HintPath>
+      <HintPath>D:\Vintagestory\Lib\cairo-sharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>D:\VintageCrack\Vintagestory\Lib\protobuf-net.dll</HintPath>
+      <HintPath>D:\Vintagestory\Lib\protobuf-net.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
