@@ -155,14 +155,14 @@
   }
 
   .spell-tree-modal {
-    width: 860px;
-    max-height: 80vh;
-    background: #13131a;
-    border: 1px solid #ffffff18;
+    width: 780px;
+    max-height: 82vh;
+    background: #0f0f14;
+    border: 1px solid #ffffff14;
     border-radius: 4px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #ffffff15 transparent;
+    scrollbar-color: #ffffff12 transparent;
     transform: translateY(16px);
     transition: transform 0.25s;
     cursor: default;
@@ -170,26 +170,26 @@
   .spell-tree-overlay.open .spell-tree-modal { transform: translateY(0); }
 
   .modal-header {
-    padding: 24px 32px 20px;
-    border-bottom: 1px solid #ffffff10;
+    padding: 20px 28px 16px;
+    border-bottom: 1px solid #ffffff0e;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
-    background: #13131a;
+    background: #0f0f14;
     z-index: 1;
   }
   .modal-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #ffffff50;
+    color: #ffffff45;
   }
   .modal-close {
-    font-size: 18px;
-    color: #ffffff30;
+    font-size: 16px;
+    color: #ffffff25;
     cursor: pointer;
     line-height: 1;
     padding: 4px 8px;
@@ -198,165 +198,159 @@
   }
   .modal-close:hover { color: #ffffffaa; background: #ffffff10; }
 
-  .modal-body { padding: 32px; }
+  .modal-body { padding: 28px 28px 32px; }
 
-  /* ── Spell element section ── */
-  .spell-element {
-    margin-bottom: 40px;
-  }
-  .spell-element:last-child { margin-bottom: 0; }
-
-  .element-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .element-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  .element-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #ffffff60;
-  }
-  .element-echo {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #ffffff25;
-    margin-top: 2px;
-  }
-
-  .e-air    .element-icon { background: #253a52; }
-  .e-fire   .element-icon { background: #4a1a06; }
-  .e-water  .element-icon { background: #0a2a3a; }
-  .e-earth  .element-icon { background: #162a12; }
-
-  /* ── Spell tier row ── */
-  .tier-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0;
-    margin-bottom: 8px;
-    position: relative;
-  }
-
-  .tier-label {
-    width: 56px;
-    flex-shrink: 0;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #ffffff20;
-    padding-top: 14px;
-    padding-right: 12px;
-    text-align: right;
-  }
-
-  .tier-spells {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    flex: 1;
-    position: relative;
-  }
-
-  /* Connector line from tier label to spells */
-  .tier-row::before {
-    content: '';
-    position: absolute;
-    left: 52px;
-    top: 22px;
-    width: 16px;
-    height: 1px;
-    background: #ffffff12;
-  }
-
-  /* ── Spell node ── */
-  .spell-node {
-    background: #1e1e28;
-    border: 1px solid #ffffff12;
-    border-radius: 3px;
-    padding: 10px 16px;
-    min-width: 140px;
-    position: relative;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .spell-node:hover {
-    border-color: #ffffff30;
-    background: #252530;
-  }
-
-  .spell-node.unlocked {
-    border-color: #ffffff25;
-  }
-  .spell-node.unlocked::after {
-    content: '';
-    position: absolute;
-    top: 8px; right: 8px;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: #7fff7f;
-    box-shadow: 0 0 5px #7fff7f;
-  }
-
-  .spell-name {
-    font-size: 12px;
-    font-weight: 700;
-    color: #ffffffcc;
-    margin-bottom: 3px;
-  }
-  .spell-desc {
-    font-size: 10.5px;
-    color: #ffffff40;
-    line-height: 1.5;
-  }
+  /* ── Spell type badges ── */
   .spell-type {
     display: inline-block;
-    font-size: 8.5px;
+    font-size: 8px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 2px 6px;
     border-radius: 1px;
-    margin-top: 6px;
+    margin-top: 5px;
   }
-  .type-offense  { background: #6e101022; color: #ff7070; border: 1px solid #6e101040; }
-  .type-utility  { background: #10406e22; color: #70b4ff; border: 1px solid #10406e40; }
-  .type-passive  { background: #1a5c1a22; color: #70ff90; border: 1px solid #1a5c1a40; }
-  .type-defense  { background: #4a2a0a22; color: #ffa050; border: 1px solid #4a2a0a40; }
+  .type-offense  { background: #6e101018; color: #ff7070; border: 1px solid #6e101035; }
+  .type-utility  { background: #10406e18; color: #70b4ff; border: 1px solid #10406e35; }
+  .type-passive  { background: #1a5c1a18; color: #70ff90; border: 1px solid #1a5c1a35; }
+  .type-defense  { background: #4a2a0a18; color: #ffa050; border: 1px solid #4a2a0a35; }
 
-  /* ── Tree connector lines between tiers ── */
-  .tier-connector {
+  /* ── Skill tree layout ── */
+  .stree {
+    position: relative;
     display: flex;
-    margin-left: 68px;
-    margin-bottom: 0;
-    padding-bottom: 8px;
-    gap: 8px;
-  }
-  .tier-connector-line {
-    width: 1px;
-    height: 16px;
-    background: #ffffff10;
-    margin-left: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 12px 0 8px;
   }
 
-  /* Element divider */
-  .element-divider {
-    height: 1px;
-    background: linear-gradient(to right, #ffffff08, transparent);
-    margin: 40px 0;
+  /* SVG connector layer — sits behind nodes */
+  .stree-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .stree-svg line {
+    stroke: #ffffff18;
+    stroke-width: 1.5;
+  }
+
+  /* One row of nodes */
+  .stree-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+  }
+
+  /* Vertical spacer between rows — where lines live */
+  .stree-gap {
+    height: 48px;
+  }
+
+  /* Tier label on the left */
+  .stree-tier-label {
+    position: absolute;
+    left: 0;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff18;
+    /* aligned to center of row nodes */
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .stree-row-wrap {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-left: 32px;
+  }
+
+  /* ── Individual spell node ── */
+  .snode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 120px;
+    cursor: default;
+  }
+
+  .snode-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff18;
+    background: #1a1a24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
+  }
+  .snode:hover .snode-circle {
+    border-color: #ffffff40;
+    background: #22222e;
+    box-shadow: 0 0 14px #ffffff0c;
+  }
+
+  /* Unlocked glow */
+  .snode.unlocked .snode-circle {
+    border-color: #ffffff35;
+    box-shadow: 0 0 10px #ffffff10;
+  }
+  .snode.unlocked .snode-circle::after {
+    content: '';
+    position: absolute;
+    top: 5px; right: 5px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #7fff7f;
+    box-shadow: 0 0 6px #7fff7f;
+  }
+
+  /* Planned/locked dim */
+  .snode.planned .snode-circle {
+    opacity: 0.4;
+  }
+  .snode.planned .snode-info { opacity: 0.35; }
+
+  .snode-info {
+    text-align: center;
+  }
+  .snode-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffffcc;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .snode-desc {
+    font-size: 9.5px;
+    color: #ffffff35;
+    line-height: 1.45;
+  }
+
+  /* Empty state */
+  .stree-empty {
+    font-size: 11px;
+    color: #ffffff20;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 40px 0;
   }
 
   /* ── Track ── */
@@ -609,44 +603,58 @@
       <div class="modal-close" data-overlay="overlay-air">✕</div>
     </div>
     <div class="modal-body">
-      <div class="spell-element e-air">
-        <div class="tier-row">
-          <div class="tier-label">T I</div>
-          <div class="tier-spells">
-            <div class="spell-node unlocked">
-              <div class="spell-name">Air Push</div>
-              <div class="spell-desc">Blast of compressed air that knocks back enemies.</div>
-              <span class="spell-type type-offense">Offense</span>
+      <div class="stree" id="stree-air">
+        <svg class="stree-svg" id="svg-air"></svg>
+        <!-- T I -->
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T I</span>
+          <div class="stree-row" id="air-t1">
+            <div class="snode unlocked" data-id="air-push">
+              <div class="snode-circle">💨</div>
+              <div class="snode-info">
+                <div class="snode-name">Air Push</div>
+                <div class="snode-desc">Knocks back enemies with a burst of air</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
             </div>
-            <div class="spell-node unlocked">
-              <div class="spell-name">Feather Fall</div>
-              <div class="spell-desc">Nullifies fall damage for a short duration.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode unlocked" data-id="feather-fall">
+              <div class="snode-circle">🪶</div>
+              <div class="snode-info">
+                <div class="snode-name">Feather Fall</div>
+                <div class="snode-desc">Nullifies fall damage briefly</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
-            <div class="spell-node unlocked">
-              <div class="spell-name">Air Kick</div>
-              <div class="spell-desc">Powerful upward kick — launches a target into the air.</div>
-              <span class="spell-type type-offense">Offense</span>
+            <div class="snode unlocked" data-id="air-kick">
+              <div class="snode-circle">🦵</div>
+              <div class="snode-info">
+                <div class="snode-name">Air Kick</div>
+                <div class="snode-desc">Launches a target upward</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="tier-connector">
-          <div class="tier-connector-line"></div>
-          <div class="tier-connector-line" style="margin-left:148px"></div>
-          <div class="tier-connector-line" style="margin-left:148px"></div>
-        </div>
-        <div class="tier-row">
-          <div class="tier-label">T II</div>
-          <div class="tier-spells" style="opacity:0.45">
-            <div class="spell-node">
-              <div class="spell-name">Wind Wall</div>
-              <div class="spell-desc">A barrier of rushing air — deflects projectiles.</div>
-              <span class="spell-type type-defense">Defense</span>
+        <div class="stree-gap"></div>
+        <!-- T II -->
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T II</span>
+          <div class="stree-row" id="air-t2">
+            <div class="snode planned" data-id="wind-wall">
+              <div class="snode-circle">🌀</div>
+              <div class="snode-info">
+                <div class="snode-name">Wind Wall</div>
+                <div class="snode-desc">Deflects projectiles</div>
+                <span class="spell-type type-defense">Defense</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Gust Dash</div>
-              <div class="spell-desc">Short-range teleport on a wind current.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode planned" data-id="gust-dash">
+              <div class="snode-circle">⚡</div>
+              <div class="snode-info">
+                <div class="snode-name">Gust Dash</div>
+                <div class="snode-desc">Short-range wind teleport</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
           </div>
         </div>
@@ -663,24 +671,33 @@
       <div class="modal-close" data-overlay="overlay-water">✕</div>
     </div>
     <div class="modal-body">
-      <div class="spell-element e-water">
-        <div class="tier-row">
-          <div class="tier-label">T I</div>
-          <div class="tier-spells" style="opacity:0.45">
-            <div class="spell-node">
-              <div class="spell-name">Healing Sprinkle</div>
-              <div class="spell-desc">Area restoration — heals nearby allies.</div>
-              <span class="spell-type type-utility">Utility</span>
+      <div class="stree">
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T I</span>
+          <div class="stree-row">
+            <div class="snode planned">
+              <div class="snode-circle">💦</div>
+              <div class="snode-info">
+                <div class="snode-name">Healing Sprinkle</div>
+                <div class="snode-desc">Heals nearby allies in an area</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Water Spray</div>
-              <div class="spell-desc">Utility stream — knockback &amp; extinguishes fire.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode planned">
+              <div class="snode-circle">🌊</div>
+              <div class="snode-info">
+                <div class="snode-name">Water Spray</div>
+                <div class="snode-desc">Knockback &amp; extinguishes fire</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Deep Healing</div>
-              <div class="spell-desc">Sustained ritual — powerful slow heal.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode planned">
+              <div class="snode-circle">🫧</div>
+              <div class="snode-info">
+                <div class="snode-name">Deep Healing</div>
+                <div class="snode-desc">Sustained ritual — slow powerful heal</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
           </div>
         </div>
@@ -697,44 +714,56 @@
       <div class="modal-close" data-overlay="overlay-fire">✕</div>
     </div>
     <div class="modal-body">
-      <div class="spell-element e-fire">
-        <div class="tier-row">
-          <div class="tier-label">T I</div>
-          <div class="tier-spells">
-            <div class="spell-node unlocked">
-              <div class="spell-name">Spark</div>
-              <div class="spell-desc">Short-range fire cone that ignites enemies.</div>
-              <span class="spell-type type-offense">Offense</span>
+      <div class="stree" id="stree-fire">
+        <svg class="stree-svg" id="svg-fire"></svg>
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T I</span>
+          <div class="stree-row" id="fire-t1">
+            <div class="snode unlocked">
+              <div class="snode-circle">✨</div>
+              <div class="snode-info">
+                <div class="snode-name">Spark</div>
+                <div class="snode-desc">Fire cone that ignites enemies</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
             </div>
-            <div class="spell-node unlocked">
-              <div class="spell-name">Cook in Hand</div>
-              <div class="spell-desc">Instantly cooks held food items.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode unlocked">
+              <div class="snode-circle">🍖</div>
+              <div class="snode-info">
+                <div class="snode-name">Cook in Hand</div>
+                <div class="snode-desc">Instantly cooks held food</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
-            <div class="spell-node unlocked">
-              <div class="spell-name">Hot Skin</div>
-              <div class="spell-desc">Passive heat aura — damages nearby enemies over time.</div>
-              <span class="spell-type type-passive">Passive</span>
+            <div class="snode unlocked">
+              <div class="snode-circle">🌡</div>
+              <div class="snode-info">
+                <div class="snode-name">Hot Skin</div>
+                <div class="snode-desc">Heat aura damages nearby foes</div>
+                <span class="spell-type type-passive">Passive</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="tier-connector">
-          <div class="tier-connector-line"></div>
-          <div class="tier-connector-line" style="margin-left:148px"></div>
-          <div class="tier-connector-line" style="margin-left:148px"></div>
-        </div>
-        <div class="tier-row">
-          <div class="tier-label">T II</div>
-          <div class="tier-spells" style="opacity:0.45">
-            <div class="spell-node">
-              <div class="spell-name">Fireball</div>
-              <div class="spell-desc">Launches an explosive fireball projectile.</div>
-              <span class="spell-type type-offense">Offense</span>
+        <div class="stree-gap"></div>
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T II</span>
+          <div class="stree-row" id="fire-t2">
+            <div class="snode planned">
+              <div class="snode-circle">🔴</div>
+              <div class="snode-info">
+                <div class="snode-name">Fireball</div>
+                <div class="snode-desc">Explosive fireball projectile</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Flame Shield</div>
-              <div class="spell-desc">Ignites attackers on hit for a brief window.</div>
-              <span class="spell-type type-defense">Defense</span>
+            <div class="snode planned">
+              <div class="snode-circle">🛡</div>
+              <div class="snode-info">
+                <div class="snode-name">Flame Shield</div>
+                <div class="snode-desc">Ignites attackers on hit</div>
+                <span class="spell-type type-defense">Defense</span>
+              </div>
             </div>
           </div>
         </div>
@@ -751,28 +780,76 @@
       <div class="modal-close" data-overlay="overlay-earth">✕</div>
     </div>
     <div class="modal-body">
-      <div class="spell-element e-earth">
-        <div class="tier-row">
-          <div class="tier-label">T I</div>
-          <div class="tier-spells" style="opacity:0.45">
-            <div class="spell-node">
-              <div class="spell-name">Stone Skin</div>
-              <div class="spell-desc">Hardens the caster's body — defense buff.</div>
-              <span class="spell-type type-defense">Defense</span>
+      <div class="stree">
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label">T I</span>
+          <div class="stree-row">
+            <div class="snode planned">
+              <div class="snode-circle">🪨</div>
+              <div class="snode-info">
+                <div class="snode-name">Stone Skin</div>
+                <div class="snode-desc">Hardens body — defense buff</div>
+                <span class="spell-type type-defense">Defense</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Earth Wall</div>
-              <div class="spell-desc">Raises a barrier of stone from the ground.</div>
-              <span class="spell-type type-defense">Defense</span>
+            <div class="snode planned">
+              <div class="snode-circle">🧱</div>
+              <div class="snode-info">
+                <div class="snode-name">Earth Wall</div>
+                <div class="snode-desc">Raises a stone barrier from the ground</div>
+                <span class="spell-type type-defense">Defense</span>
+              </div>
             </div>
-            <div class="spell-node">
-              <div class="spell-name">Earth Clone</div>
-              <div class="spell-desc">Summons a decoy golem entity.</div>
-              <span class="spell-type type-utility">Utility</span>
+            <div class="snode planned">
+              <div class="snode-circle">🗿</div>
+              <div class="snode-info">
+                <div class="snode-name">Earth Clone</div>
+                <div class="snode-desc">Summons a decoy golem</div>
+                <span class="spell-type type-utility">Utility</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTNING -->
+<div class="spell-tree-overlay" id="overlay-lightning">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">⚡ &nbsp; Lightning Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-lightning">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="stree-empty">Not yet designed — requires Air + Fire mastery</div>
+    </div>
+  </div>
+</div>
+
+<!-- ICE -->
+<div class="spell-tree-overlay" id="overlay-ice">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">❄ &nbsp; Ice Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-ice">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="stree-empty">Not yet designed — requires Water + Air mastery</div>
+    </div>
+  </div>
+</div>
+
+<!-- NATURE -->
+<div class="spell-tree-overlay" id="overlay-nature">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">🌿 &nbsp; Nature Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-nature">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="stree-empty">Not yet designed — requires Earth + Water mastery</div>
     </div>
   </div>
 </div>
@@ -891,9 +968,8 @@
     <ul>
       <li>Flux Echo: requires Air + Fire alignment</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Chain lightning — multi-target</li>
-      <li>Static field — area denial</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-lightning">✦ Spell Tree</div>
     <div class="num">07</div>
   </div>
 
@@ -908,9 +984,8 @@
     <ul>
       <li>Flux Echo: requires Water + Air alignment</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Frost Lance — piercing projectile</li>
-      <li>Glacial Shell — ice armor</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-ice">✦ Spell Tree</div>
     <div class="num">08</div>
   </div>
 
@@ -925,9 +1000,8 @@
     <ul>
       <li>Flux Echo: requires Earth + Water alignment</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Entangle — root &amp; slow</li>
-      <li>Bloom — area regeneration</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-nature">✦ Spell Tree</div>
     <div class="num">09</div>
   </div>
 
@@ -1009,6 +1083,58 @@
     if (e.key === 'Escape') {
       document.querySelectorAll('.spell-tree-overlay.open').forEach(o => o.classList.remove('open'));
     }
+  });
+
+  // Draw SVG connector lines between tree rows
+  // Called when a modal opens so layout is settled
+  function drawTreeLines(streeId, svgId, topRowId, botRowId) {
+    const stree  = document.getElementById(streeId);
+    const svg    = document.getElementById(svgId);
+    const topRow = document.getElementById(topRowId);
+    const botRow = document.getElementById(botRowId);
+    if (!stree || !svg || !topRow || !botRow) return;
+
+    svg.innerHTML = '';
+    const treeRect = stree.getBoundingClientRect();
+
+    const topCircles = topRow.querySelectorAll('.snode-circle');
+    const botCircles = botRow.querySelectorAll('.snode-circle');
+
+    // Each bottom node connects to every top node (full web) — or just center of top row
+    botCircles.forEach(bot => {
+      const br = bot.getBoundingClientRect();
+      const bx = br.left + br.width / 2 - treeRect.left;
+      const by = br.top - treeRect.top;
+
+      // Connect to nearest top node
+      let nearest = null, nearestDist = Infinity;
+      topCircles.forEach(top => {
+        const tr = top.getBoundingClientRect();
+        const tx = tr.left + tr.width / 2 - treeRect.left;
+        const dist = Math.abs(tx - bx);
+        if (dist < nearestDist) { nearestDist = dist; nearest = top; }
+      });
+      if (!nearest) return;
+
+      const nr = nearest.getBoundingClientRect();
+      const nx = nr.left + nr.width / 2 - treeRect.left;
+      const ny = nr.top + nr.height - treeRect.top;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', nx); line.setAttribute('y1', ny);
+      line.setAttribute('x2', bx); line.setAttribute('y2', by);
+      svg.appendChild(line);
+    });
+  }
+
+  // Wire up open buttons to also draw lines
+  document.querySelectorAll('.block-spell-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        drawTreeLines('stree-air',  'svg-air',  'air-t1',  'air-t2');
+        drawTreeLines('stree-fire', 'svg-fire', 'fire-t1', 'fire-t2');
+      });
+    });
   });
 
   // Scroll blocks into view with fade on load
