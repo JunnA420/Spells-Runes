@@ -108,34 +108,32 @@
     50%       { transform: translateX(6px); }
   }
 
-  /* ── Spell tree button ── */
-  .spell-tree-btn {
-    position: fixed;
-    bottom: 32px;
-    left: 40px;
-    z-index: 150;
-    cursor: pointer;
-    display: flex;
+  /* ── Per-block spell tree button ── */
+  .block-spell-btn {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 10px;
+    gap: 6px;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: #ffffff40;
+    color: #ffffff35;
     background: #ffffff08;
-    border: 1px solid #ffffff15;
-    padding: 8px 16px;
+    border: 1px solid #ffffff12;
+    padding: 5px 12px;
     border-radius: 2px;
+    cursor: pointer;
     transition: all 0.2s;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
     user-select: none;
   }
-  .spell-tree-btn:hover {
+  .block-spell-btn:hover {
     color: #ffffffaa;
     background: #ffffff14;
     border-color: #ffffff30;
   }
-  .spell-tree-btn .btn-icon { font-size: 13px; }
 
   /* ── Spell tree modal ── */
   .spell-tree-overlay {
@@ -601,30 +599,17 @@
   <span>Scroll</span>
 </div>
 
-<div class="spell-tree-btn" id="spellTreeBtn">
-  <span class="btn-icon">✦</span>
-  <span>Spell Tree</span>
-</div>
+<!-- ═══════════ PER-ELEMENT SPELL TREE MODALS ═══════════ -->
 
-<!-- ═══════════ SPELL TREE MODAL ═══════════ -->
-<div class="spell-tree-overlay" id="spellTreeOverlay">
-  <div class="spell-tree-modal" id="spellTreeModal">
+<!-- AIR -->
+<div class="spell-tree-overlay" id="overlay-air">
+  <div class="spell-tree-modal">
     <div class="modal-header">
-      <div class="modal-title">✦ &nbsp; Current Spell Tree</div>
-      <div class="modal-close" id="spellTreeClose">✕</div>
+      <div class="modal-title">🌬 &nbsp; Air Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-air">✕</div>
     </div>
     <div class="modal-body">
-
-      <!-- AIR -->
       <div class="spell-element e-air">
-        <div class="element-header">
-          <div class="element-icon">🌬</div>
-          <div>
-            <div class="element-name">Air Magic</div>
-            <div class="element-echo">Flux Echo: Sylphweed — mountain peaks</div>
-          </div>
-        </div>
-
         <div class="tier-row">
           <div class="tier-label">T I</div>
           <div class="tier-spells">
@@ -645,13 +630,11 @@
             </div>
           </div>
         </div>
-
         <div class="tier-connector">
           <div class="tier-connector-line"></div>
           <div class="tier-connector-line" style="margin-left:148px"></div>
           <div class="tier-connector-line" style="margin-left:148px"></div>
         </div>
-
         <div class="tier-row">
           <div class="tier-label">T II</div>
           <div class="tier-spells" style="opacity:0.45">
@@ -668,19 +651,53 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <div class="element-divider"></div>
-
-      <!-- FIRE -->
-      <div class="spell-element e-fire">
-        <div class="element-header">
-          <div class="element-icon">🔥</div>
-          <div>
-            <div class="element-name">Fire Magic</div>
-            <div class="element-echo">Flux Echo: Ignis Crystal — volcanic hotspots</div>
+<!-- WATER -->
+<div class="spell-tree-overlay" id="overlay-water">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">💧 &nbsp; Water Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-water">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="spell-element e-water">
+        <div class="tier-row">
+          <div class="tier-label">T I</div>
+          <div class="tier-spells" style="opacity:0.45">
+            <div class="spell-node">
+              <div class="spell-name">Healing Sprinkle</div>
+              <div class="spell-desc">Area restoration — heals nearby allies.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Water Spray</div>
+              <div class="spell-desc">Utility stream — knockback &amp; extinguishes fire.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
+            <div class="spell-node">
+              <div class="spell-name">Deep Healing</div>
+              <div class="spell-desc">Sustained ritual — powerful slow heal.</div>
+              <span class="spell-type type-utility">Utility</span>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- FIRE -->
+<div class="spell-tree-overlay" id="overlay-fire">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔥 &nbsp; Fire Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-fire">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="spell-element e-fire">
         <div class="tier-row">
           <div class="tier-label">T I</div>
           <div class="tier-spells">
@@ -701,13 +718,11 @@
             </div>
           </div>
         </div>
-
         <div class="tier-connector">
           <div class="tier-connector-line"></div>
           <div class="tier-connector-line" style="margin-left:148px"></div>
           <div class="tier-connector-line" style="margin-left:148px"></div>
         </div>
-
         <div class="tier-row">
           <div class="tier-label">T II</div>
           <div class="tier-spells" style="opacity:0.45">
@@ -724,56 +739,22 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <div class="element-divider"></div>
-
-      <!-- WATER -->
-      <div class="spell-element e-water">
-        <div class="element-header">
-          <div class="element-icon">💧</div>
-          <div>
-            <div class="element-name">Water Magic</div>
-            <div class="element-echo">Flux Echo: Deep Sea Pearl — deep ocean floor</div>
-          </div>
-        </div>
-
-        <div class="tier-row">
-          <div class="tier-label">T I</div>
-          <div class="tier-spells" style="opacity:0.35">
-            <div class="spell-node">
-              <div class="spell-name">Healing Sprinkle</div>
-              <div class="spell-desc">Area restoration — heals nearby allies.</div>
-              <span class="spell-type type-utility">Utility</span>
-            </div>
-            <div class="spell-node">
-              <div class="spell-name">Water Spray</div>
-              <div class="spell-desc">Utility stream — knockback &amp; extinguishes fire.</div>
-              <span class="spell-type type-utility">Utility</span>
-            </div>
-            <div class="spell-node">
-              <div class="spell-name">Deep Healing</div>
-              <div class="spell-desc">Sustained ritual — powerful slow heal.</div>
-              <span class="spell-type type-utility">Utility</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="element-divider"></div>
-
-      <!-- EARTH -->
+<!-- EARTH -->
+<div class="spell-tree-overlay" id="overlay-earth">
+  <div class="spell-tree-modal">
+    <div class="modal-header">
+      <div class="modal-title">🪨 &nbsp; Earth Magic — Spell Tree</div>
+      <div class="modal-close" data-overlay="overlay-earth">✕</div>
+    </div>
+    <div class="modal-body">
       <div class="spell-element e-earth">
-        <div class="element-header">
-          <div class="element-icon">🪨</div>
-          <div>
-            <div class="element-name">Earth Magic</div>
-            <div class="element-echo">Flux Echo: Rhea's Crown — temperate forests</div>
-          </div>
-        </div>
-
         <div class="tier-row">
           <div class="tier-label">T I</div>
-          <div class="tier-spells" style="opacity:0.35">
+          <div class="tier-spells" style="opacity:0.45">
             <div class="spell-node">
               <div class="spell-name">Stone Skin</div>
               <div class="spell-desc">Hardens the caster's body — defense buff.</div>
@@ -792,7 +773,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -814,6 +794,7 @@
       <li>Flux resource &amp; alignment system</li>
       <li>Spell hotbar, radial menu &amp; cast timing</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-air">✦ Spell Tree</div>
     <div class="num">01</div>
   </div>
 
@@ -828,9 +809,8 @@
     <ul>
       <li>Flux Echo: Deep Sea Pearl — deep ocean floor</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Healing Sprinkle — area restore</li>
-      <li>Water Spray — utility &amp; knockback</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-water">✦ Spell Tree</div>
     <div class="num">02</div>
   </div>
 
@@ -845,9 +825,8 @@
     <ul>
       <li>Flux Echo: Ignis Crystal — volcanic hotspots</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Hot Skin — passive heat aura</li>
-      <li>Cook in Hand — utility</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-fire">✦ Spell Tree</div>
     <div class="num">03</div>
   </div>
 
@@ -862,9 +841,8 @@
     <ul>
       <li>Flux Echo: Rhea's Crown — temperate forests</li>
       <li>~10–15 spells up to Tier II</li>
-      <li>Stone Skin — defense buff</li>
-      <li>Earth Wall — terrain barrier</li>
     </ul>
+    <div class="block-spell-btn" data-overlay="overlay-earth">✦ Spell Tree</div>
     <div class="num">04</div>
   </div>
 
@@ -985,7 +963,7 @@
   }
 
   document.addEventListener('mousedown', e => {
-    if (e.target.closest('#spellTreeOverlay')) return;
+    if (e.target.closest('.spell-tree-overlay')) return;
     down = true;
     startX = e.pageX;
     scrollLeft = window.scrollX;
@@ -998,26 +976,39 @@
   });
   window.addEventListener('scroll', updateProgress);
 
-  // Mouse wheel → horizontal scroll (only when modal is closed)
+  // Mouse wheel → horizontal scroll (only when no modal is open)
   window.addEventListener('wheel', e => {
-    if (overlay.classList.contains('open')) return;
+    if (document.querySelector('.spell-tree-overlay.open')) return;
     e.preventDefault();
     window.scrollBy({ left: e.deltaY * 2.2, behavior: 'auto' });
   }, { passive: false });
 
-  // Spell tree modal
-  const overlay = document.getElementById('spellTreeOverlay');
-  const btn     = document.getElementById('spellTreeBtn');
-  const closeBtn = document.getElementById('spellTreeClose');
-  const modal   = document.getElementById('spellTreeModal');
-
-  btn.addEventListener('click', () => overlay.classList.add('open'));
-  closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
-  overlay.addEventListener('click', e => {
-    if (!modal.contains(e.target)) overlay.classList.remove('open');
+  // Per-block spell tree modals
+  document.querySelectorAll('.block-spell-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.overlay;
+      document.getElementById(id).classList.add('open');
+    });
   });
+
+  document.querySelectorAll('.modal-close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', () => {
+      const id = closeBtn.dataset.overlay;
+      document.getElementById(id).classList.remove('open');
+    });
+  });
+
+  document.querySelectorAll('.spell-tree-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (!e.target.closest('.spell-tree-modal')) overlay.classList.remove('open');
+    });
+  });
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') overlay.classList.remove('open');
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.spell-tree-overlay.open').forEach(o => o.classList.remove('open'));
+    }
   });
 
   // Scroll blocks into view with fade on load
