@@ -592,33 +592,79 @@
       <div class="modal-close" data-overlay="overlay-air">✕</div>
     </div>
     <div class="modal-body">
-      <div class="stree" id="stree-air">
-        <!-- T I -->
+      <div class="stree">
+        <!-- T I core -->
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T I</span>
           <div class="stree-row">
-            <div class="snode unlocked" data-id="air-push">
-              <div class="snode-circle">💨</div>
-              <div class="snode-info">
-                <div class="snode-name">Air Push</div>
-                <div class="snode-desc">Knocks back enemies with a burst of air</div>
-                <span class="spell-type type-offense">Offense</span>
-              </div>
-            </div>
-            <div class="snode unlocked" data-id="feather-fall">
+            <div class="snode unlocked">
               <div class="snode-circle">🪶</div>
               <div class="snode-info">
                 <div class="snode-name">Feather Fall</div>
-                <div class="snode-desc">Nullifies fall damage briefly</div>
+                <div class="snode-desc">Cancels all momentum the instant it's cast — a dead stop mid-air. Hit the ground running, not tumbling.</div>
                 <span class="spell-type type-utility">Utility</span>
               </div>
             </div>
-            <div class="snode unlocked" data-id="air-kick">
+            <div class="snode unlocked">
               <div class="snode-circle">🦵</div>
               <div class="snode-info">
-                <div class="snode-name">Air Kick</div>
-                <div class="snode-desc">Launches a target upward</div>
+                <div class="snode-name">Wind Kick</div>
+                <div class="snode-desc">Launches into the air and fires a compressed sphere of air downward. The impact punches targets back with violent force.</div>
                 <span class="spell-type type-offense">Offense</span>
+              </div>
+            </div>
+            <div class="snode unlocked">
+              <div class="snode-circle">💨</div>
+              <div class="snode-info">
+                <div class="snode-name">Wind Push</div>
+                <div class="snode-desc">Releases a rolling wave of pressurized air in front of the caster. Anything in its path gets shoved — hard.</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="stree-gap"></div>
+        <!-- T I advanced (bridge) -->
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label" style="color:#ffffff28">T I →</span>
+          <div class="stree-row">
+            <div class="snode unlocked">
+              <div class="snode-circle">💫</div>
+              <div class="snode-info">
+                <div class="snode-name">Windy Dash</div>
+                <div class="snode-desc">A clean, fast dash in the direction you're moving. No frills. Pure speed.</div>
+                <span class="spell-type type-utility">Mobility</span>
+              </div>
+            </div>
+            <div class="snode unlocked">
+              <div class="snode-circle">🌪</div>
+              <div class="snode-info">
+                <div class="snode-name">Updraft</div>
+                <div class="snode-desc">Thrusts the caster in whatever direction they're looking using a raw burst of air. A weapon, an escape, or both.</div>
+                <span class="spell-type type-utility">Mobility</span>
+              </div>
+            </div>
+            <div class="snode unlocked">
+              <div class="snode-circle">🌬</div>
+              <div class="snode-info">
+                <div class="snode-name">Wind Slash</div>
+                <div class="snode-desc">Sends a single arc of compressed wind flying toward the target. Fast, precise, satisfying.</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="stree-gap"></div>
+        <!-- Wind Step solo bridge -->
+        <div class="stree-row-wrap">
+          <span class="stree-tier-label" style="color:#ffffff28">T I →</span>
+          <div class="stree-row">
+            <div class="snode unlocked">
+              <div class="snode-circle">⚔️</div>
+              <div class="snode-info">
+                <div class="snode-name">Wind Step</div>
+                <div class="snode-desc">The caster accelerates to violent speed in an instant — carving through anything in their path with a wind blade on contact. The line between movement and attack.</div>
+                <span class="spell-type type-offense">Offense / Mobility</span>
               </div>
             </div>
           </div>
@@ -628,20 +674,36 @@
         <div class="stree-row-wrap">
           <span class="stree-tier-label">T II</span>
           <div class="stree-row">
-            <div class="snode planned" data-id="wind-wall">
-              <div class="snode-circle">🌀</div>
+            <div class="snode planned">
+              <div class="snode-circle">👤</div>
               <div class="snode-info">
-                <div class="snode-name">Wind Wall</div>
-                <div class="snode-desc">Deflects projectiles</div>
-                <span class="spell-type type-defense">Defense</span>
+                <div class="snode-name">Wind Clone</div>
+                <div class="snode-desc">Summons a duplicate of the caster. When the clone takes a hit, it detonates into a blinding smoke veil — buying time, breaking focus.</div>
+                <span class="spell-type type-utility">Utility</span>
               </div>
             </div>
-            <div class="snode planned" data-id="gust-dash">
-              <div class="snode-circle">⚡</div>
+            <div class="snode planned">
+              <div class="snode-circle">🌀</div>
               <div class="snode-info">
-                <div class="snode-name">Gust Dash</div>
-                <div class="snode-desc">Short-range wind teleport</div>
-                <span class="spell-type type-utility">Utility</span>
+                <div class="snode-name">Cloning Wind Step</div>
+                <div class="snode-desc">Performs Wind Step as usual — but leaves behind an air clone at the point of departure. Confusion and aggression in a single motion.</div>
+                <span class="spell-type type-offense">Offense / Utility</span>
+              </div>
+            </div>
+            <div class="snode planned">
+              <div class="snode-circle">💢</div>
+              <div class="snode-info">
+                <div class="snode-name">Triple Wind Slash</div>
+                <div class="snode-desc">Three slashes. One breath. Fired in rapid succession — the last one hits before the first one fades.</div>
+                <span class="spell-type type-offense">Offense</span>
+              </div>
+            </div>
+            <div class="snode planned">
+              <div class="snode-circle">👁</div>
+              <div class="snode-info">
+                <div class="snode-name">Storm's Eye</div>
+                <div class="snode-desc">Locks one or more targets inside a localized eye of turbulence. They can't move. You can.</div>
+                <span class="spell-type type-defense">Control</span>
               </div>
             </div>
           </div>
