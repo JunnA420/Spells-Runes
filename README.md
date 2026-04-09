@@ -1,119 +1,75 @@
 # Spells & Runes
 
-A fast-paced elemental magic mod for Vintage Story. Cast spells with a flux-based mana system and chain abilities into quick combos. Master multiple elements, each with their own spell tree — built for fluid, dynamic combat.
-
-## Features
-
-- **Flux system** — mana resource that regenerates over time, consumed on cast
-- **Spell trees** — unlock spells per element, level them up through use
-- **Radial spell selector** — quick hotbar with up to 3 memorized spells
-- **Cast bar** — channeled spells with cast times
+A fast-paced elemental magic mod for Vintage Story. Cast spells using a flux-based mana system, chain abilities into combos, and master multiple elements each with their own unlockable spell tree.
 
 ---
 
-## Spell Trees
+## Roadmap
 
-Each element has its own tree. Unlock the two base spells to access the combined spell in the center.
-
-Legend: `⚔ Offense` `🛡 Defense` `✦ Enchantment`
+**[View full roadmap with spell trees and progress](https://junnA420.github.io/Spells-Runes/roadmap.html)**
 
 ---
 
-### 🌬 Air
+## Getting Started
 
-```
-[Feather Fall ✦]           [Air Push ⚔]
-  Halt your fall               Cone knockback
-  15 flux · 0.5s               25 flux · 1.5s
-        \                       /
-         \                     /
-          \                   /
-           [  Air Kick ⚔  ]
-           Launch + projectile
-           30 flux · 3.0s
-```
+Flux is locked until you awaken it. Find **Sylphweed** — a rare glowing plant — and process it:
+
+1. Pick Sylphweed and dry it in an **oven**
+2. Grind the dried herb in a **quern**
+3. Smoke the ground herb using the **Sylphweed Pipe**
+
+Once done, Flux is permanently unlocked. Open the **Spellbook** with `K`, unlock spells, and assign them to the **Radial Menu** with `R`.
 
 ---
 
-### 🔥 Fire
+## Core Systems
 
-```
-[Hot Skin 🛡]              [Spark ⚔]
-  Burn on contact             Fire damage bolt
-  18 flux                     15 flux
-        \                       /
-         \                     /
-          \                   /
-           [ Cook in Hand ✦ ]
-           Instantly cook held item
-           12 flux
-```
+**Flux** — mana resource, regenerates 1/s, max 100. Displayed as an arc in the bottom-left corner. Hidden until awakened.
+
+**Spell trees** — each element has its own tree unlocked independently. Spells level up through use, reducing cost and cast time at higher levels.
+
+**Radial menu** — hold `R` to open, release over a spell to select. Up to 8 slots.
+
+**Cast bar** — channeled spells show a progress bar. Right-click cancels.
+
+**Animations** — spell casts play upper-body animations blended on top of locomotion.
 
 ---
 
-### 💧 Water
+## Elements
 
-```
-[Healing ✦]               [Water Spray ⚔]
-  Mend your wounds            Knockback jet
-  20 flux                     18 flux
-        \                       /
-         \                     /
-          \                   /
-           [Healing Sprinkle ✦]
-           AoE heal around you
-           25 flux
-```
-
----
-
-### 🪨 Earth
-
-```
-[Stone Skin 🛡]            [Earth Wall 🛡]
-  Reduce damage               Raise a barrier
-  14 flux                     20 flux
-        \                       /
-         \                     /
-          \                   /
-           [ Earth Clone ✦ ]
-           Summon a decoy
-           22 flux
-```
-
----
-
-### ⚡ Element Combinations *(planned)*
-
-Mastering two elements unlocks a combined spell tree with unique abilities.
-
-| Elements | Combined |
+| Element | Status |
 |---|---|
-| 🌬 Air + 🔥 Fire | ⚡ Lightning |
-| 🌬 Air + 💧 Water | 🧊 Ice |
-| 💧 Water + 🪨 Earth | 🌿 Plant |
+| Air | Implemented |
+| Fire | Partial |
+| Water | Placeholder |
+| Earth | Placeholder |
 
 ---
 
 ## Branch Flow
 
 ```
-junna / blitz  →  dev  →  master
+junna / blitz  ->  dev  ->  master
 ```
 
-- `master` — stable releases only
-- `dev` — integration branch, tested before merge to master
-- `junna` / `blitz` — personal dev branches, PR into dev
+- `master` — stable releases
+- `dev` — integration, tested before merge
+- `junna` / `blitz` — personal branches, PR into dev
+
+---
 
 ## Building
 
-Requires [Vintage Story](https://www.vintagestory.at/) installed at `C:\Games\Vintagestory`.
+Requires [Vintage Story](https://www.vintagestory.at/) at `C:\Games\Vintagestory`.
 
 ```bash
 dotnet build SpellsAndRunes.csproj -c Release
 ```
 
-Output zip is automatically copied to `%APPDATA%\VintagestoryData\Mods\`.
+Output is copied automatically to `%APPDATA%\VintagestoryData\Mods\`.
+
+---
 
 ## Authors
 
