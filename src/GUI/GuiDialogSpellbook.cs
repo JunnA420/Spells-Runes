@@ -406,29 +406,29 @@ public class GuiDialogSpellbook : GuiDialog
         // Glow for hovered
         if (hovered)
         {
-            ctx.Arc(cx, cy, r + 5, 0, 2 * Math.PI);
+            ctx.Rectangle(cx - r - 5, cy - r - 5, (r + 5) * 2, (r + 5) * 2);
             ctx.SetSourceRGBA(er, eg, eb, 0.18);
             ctx.Fill();
         }
 
         // Node background
-        ctx.Arc(cx, cy, r, 0, 2 * Math.PI);
+        ctx.Rectangle(cx - r, cy - r, r * 2, r * 2);
         if (unlocked)
             ctx.SetSourceRGBA(er * 0.25, eg * 0.25, eb * 0.25, 0.95);
         else if (available)
             ctx.SetSourceRGBA(0.14, 0.14, 0.28, 0.95);
         else
-            ctx.SetSourceRGBA(0.12, 0.12, 0.22, 0.95); // more visible against dark bg
+            ctx.SetSourceRGBA(0.12, 0.12, 0.22, 0.95);
         ctx.Fill();
 
         // Node border
-        ctx.Arc(cx, cy, r, 0, 2 * Math.PI);
+        ctx.Rectangle(cx - r, cy - r, r * 2, r * 2);
         if (unlocked)
             ctx.SetSourceRGBA(er, eg, eb, hovered ? 1.0 : 0.90);
         else if (available)
             ctx.SetSourceRGBA(er, eg, eb, hovered ? 0.70 : 0.55);
         else
-            ctx.SetSourceRGBA(0.50, 0.50, 0.65, hovered ? 0.80 : 0.55); // stronger locked border
+            ctx.SetSourceRGBA(0.50, 0.50, 0.65, hovered ? 0.80 : 0.55);
         ctx.LineWidth = unlocked ? 2.0 : 1.5;
         ctx.Stroke();
 
@@ -451,7 +451,7 @@ public class GuiDialogSpellbook : GuiDialog
             SpellType.Enchantment => (0.80, 0.55, 1.00),
             _                     => (0.70, 0.70, 0.70),
         };
-        ctx.Arc(cx + r * 0.65, cy - r * 0.65, 4, 0, 2 * Math.PI);
+        ctx.Arc(cx + r - 4, cy - r + 4, 4, 0, 2 * Math.PI);
         ctx.SetSourceRGBA(tr, tg, tb, unlocked ? 0.95 : 0.40);
         ctx.Fill();
 

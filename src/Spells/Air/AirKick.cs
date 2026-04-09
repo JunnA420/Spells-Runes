@@ -25,7 +25,7 @@ public class AirKick : Spell
     public override float FluxCost => 30f;
     public override float CastTime => 1.5f;
 
-    public override (int col, int row) TreePosition => (1, 1);
+    public override (int col, int row) TreePosition => (1, 0);
 
     public override IReadOnlyList<string> Prerequisites => new[] { "air_feather_fall", "air_air_push" };
 
