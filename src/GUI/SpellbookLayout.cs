@@ -5,53 +5,86 @@ using System.Text.Json;
 namespace SpellsAndRunes.GUI;
 
 /// <summary>
-/// Live-editable layout config. Edit the JSON at ConfigPath and reopen the spellbook to apply.
+/// User sets only GuiW x GuiH. Everything else is computed by scaling from the
+/// reference resolution (940x600 = native book_bg.png dimensions).
+/// Edit the JSON at ConfigPath and reopen the spellbook to apply changes.
 /// </summary>
 public class SpellbookLayout
 {
+    // ---- User-facing config (only these two values matter) ----
+
+    /// <summary>Width of the spellbook dialog in pixels.</summary>
+    public double GuiW { get; set; } = 940;
+
+    /// <summary>Height of the spellbook dialog in pixels.</summary>
+    public double GuiH { get; set; } = 600;
+
+    // ---- Reference resolution (native book_bg.png size) ----
+    private const double RefW = 940;
+    private const double RefH = 600;
+
+    // ---- Scale helpers ----
+    private double _sx = 1, _sy = 1, _s = 1;
+
+    /// Called each frame with the actual canvas size so elements scale with the book.
+    public void UpdateActualSize(double actualW, double actualH)
+    {
+        _sx = actualW / RefW;
+        _sy = actualH / RefH;
+        _s  = Math.Min(_sx, _sy);
+    }
+
+    public double X(double refVal) => refVal * _sx;
+    public double Y(double refVal) => refVal * _sy;
+    public double D(double refVal) => refVal * _s;  // uniform — for nodes, slots etc.
+
+    // ---- Reference values (940x600 space) ----
+    // These match the visual layout of book_bg.png exactly.
+    // Change these only if you redesign the book background image.
+
     // Left page
-    public double LPageX { get; set; } = 30;
-    public double LPageY { get; set; } = 55;
-    public double LPageW { get; set; } = 358;
-    public double LPageH { get; set; } = 490;
+    public double LPageX => X(30);
+    public double LPageY => Y(55);
+    public double LPageW => X(358);
+    public double LPageH => Y(490);
 
     // Right page
-    public double RPageX { get; set; } = 472;
-    public double RPageY { get; set; } = 55;
-    public double RPageW { get; set; } = 438;
-    public double RPageH { get; set; } = 490;
+    public double RPageX => X(472);
+    public double RPageY => Y(55);
+    public double RPageW => X(438);
+    public double RPageH => Y(490);
 
-    // Main tabs (left side, vertical)
-    public double MTabX      { get; set; } = 8;
-    public double MTabW      { get; set; } = 150;
-    public double MTabStartY { get; set; } = 113;   // Y where first tab starts
-    public double MTabGap    { get; set; } = 5;
+    // Main tabs (left side, vertical — stick out left of book)
+    public double MTabX      => X(8);
+    public double MTabW      => X(150);
+    public double MTabStartY => Y(113);
+    public double MTabGap    => Y(5);
 
-    // Close bookmark
-    public double CloseBookX { get; set; } = 8;
-    public double CloseBookY { get; set; } = 47;
-    public double CloseBookW { get; set; } = 40;
-    public double CloseBookH { get; set; } = 52;
+    // Close bookmark (bottom-left, sticks out below left page)
+    public double CloseBookX => X(8);
+    public double CloseBookY => Y(510);
+    public double CloseBookW => X(30);
+    public double CloseBookH => Y(38);
 
     // Element tabs (right page, horizontal)
-    public double ETabGap { get; set; } = 4;
+    public double ETabGap => X(4);
 
     // Spell tree nodes
-    public double NodeR        { get; set; } = 22;
-    public double NodeSpacingX { get; set; } = 88;
-    public double NodeSpacingY { get; set; } = 80;
+    public double NodeR        => D(22);
+    public double NodeSpacingX => D(88);
+    public double NodeSpacingY => D(80);
 
     // Memorized spell cards
-    public double CardW { get; set; } = 195;
-    public double CardH { get; set; } = 32;
+    public double CardW => D(195);
+    public double CardH => D(32);
 
     // Memorized hotbar slots
-    public double SlotR { get; set; } = 26;
+    public double SlotR => D(26);
 
     // ---- Computed helpers ----
 
-    public double LContentX => MTabX + MTabW + 8;
-    public double LContentW => LPageX + LPageW - LContentX;
+    public double LContentX  => MTabX + MTabW + X(8);
+    public double LContentW  => LPageX + LPageW - LContentX;
     public double ETabW(int numTabs = 4) => (RPageW - (numTabs - 1) * ETabGap) / numTabs;
 
     // ---- Load / Save ----
