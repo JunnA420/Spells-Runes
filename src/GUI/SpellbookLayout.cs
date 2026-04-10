@@ -5,90 +5,155 @@ using System.Text.Json;
 namespace SpellsAndRunes.GUI;
 
 /// <summary>
-/// User sets only GuiW x GuiH. Everything else is computed by scaling from the
-/// reference resolution (940x600 = native book_bg.png dimensions).
+/// Live-editable layout config. All public properties are in reference-space pixels (940×600).
+/// Call UpdateActualSize() each frame before reading any scaled values.
 /// Edit the JSON at ConfigPath and reopen the spellbook to apply changes.
 /// </summary>
 public class SpellbookLayout
 {
-    // ---- User-facing config (only these two values matter) ----
+    // ── Reference resolution (matches book_bg.png native size) ───────────────
+    [System.Text.Json.Serialization.JsonIgnore]
+    public const double RefW = 940;
+    [System.Text.Json.Serialization.JsonIgnore]
+    public const double RefW2 = 600;
 
-    /// <summary>Width of the spellbook dialog in pixels.</summary>
+    // ── User-facing config (only GuiW / GuiH matter for dialog size) ─────────
     public double GuiW { get; set; } = 940;
-
-    /// <summary>Height of the spellbook dialog in pixels.</summary>
     public double GuiH { get; set; } = 600;
 
-    // ---- Reference resolution (native book_bg.png size) ----
-    private const double RefW = 940;
-    private const double RefH = 600;
+    // ── Page bounds (reference pixels, measured from book_bg.png 1536x1024 → 940x600) ──
+    public double LPageX { get; set; } = 154;  // left edge of left page
+    public double LPageY { get; set; } = 111;  // top edge of pages
+    public double LPageW { get; set; } = 315;  // width of left page
+    public double LPageH { get; set; } = 378;  // height of pages
 
-    // ---- Scale helpers ----
-    private double _sx = 1, _sy = 1, _s = 1;
+    public double RPageX { get; set; } = 469;  // right page starts at spine
+    public double RPageY { get; set; } = 111;
+    public double RPageW { get; set; } = 330;  // width of right page
+    public double RPageH { get; set; } = 378;
 
-    /// Called each frame with the actual canvas size so elements scale with the book.
+    // ── Main tabs (left side, vertical — stick out left of book) ─────────────
+    public double MTabX      { get; set; } = 8;
+    public double MTabW      { get; set; } = 140;
+    public double MTabStartY { get; set; } = 130;
+    public double MTabGap    { get; set; } = 5;
+
+    // ── Close bookmark ────────────────────────────────────────────────────────
+    public double CloseBookX { get; set; } = 8;
+    public double CloseBookY { get; set; } = 80;
+    public double CloseBookW { get; set; } = 40;
+    public double CloseBookH { get; set; } = 48;
+
+    // ── Element tabs (right page, horizontal) ────────────────────────────────
+    public double ETabGap { get; set; } = 4;
+
+    // ── Spell tree nodes ─────────────────────────────────────────────────────
+    public double NodeR        { get; set; } = 22;
+    public double NodeSpacingX { get; set; } = 88;
+    public double NodeSpacingY { get; set; } = 80;
+
+    // ── Memorized spell cards ─────────────────────────────────────────────────
+    public double CardW { get; set; } = 195;
+    public double CardH { get; set; } = 32;
+
+    // ── Memorized hotbar slots ────────────────────────────────────────────────
+    public double SlotR { get; set; } = 26;
+
+    // ── Runtime scale (NOT serialized, set each frame) ───────────────────────
+    [System.Text.Json.Serialization.JsonIgnore]
+    private double _sx = 1;
+    [System.Text.Json.Serialization.JsonIgnore]
+    private double _sy = 1;
+    [System.Text.Json.Serialization.JsonIgnore]
+    private double _s  = 1;
+
+    /// <summary>
+    /// Call at the start of every OnDraw with the actual canvas size.
+    /// All X() / Y() / D() calls after this will return scaled values.
+    /// </summary>
     public void UpdateActualSize(double actualW, double actualH)
     {
-        _sx = actualW / RefW;
-        _sy = actualH / RefH;
+        _sx = actualW / GuiW;
+        _sy = actualH / GuiH;
         _s  = Math.Min(_sx, _sy);
     }
 
+    // ── Scale helpers ─────────────────────────────────────────────────────────
+    /// <summary>Scale a horizontal reference value.</summary>
     public double X(double refVal) => refVal * _sx;
+
+    /// <summary>Scale a vertical reference value.</summary>
     public double Y(double refVal) => refVal * _sy;
-    public double D(double refVal) => refVal * _s;  // uniform — for nodes, slots etc.
 
-    // ---- Reference values (940x600 space) ----
-    // These match the visual layout of book_bg.png exactly.
-    // Change these only if you redesign the book background image.
+    /// <summary>Uniform scale — use for radii, font sizes, node spacing etc.</summary>
+    public double D(double refVal) => refVal * _s;
 
-    // Left page
-    public double LPageX => X(30);
-    public double LPageY => Y(55);
-    public double LPageW => X(358);
-    public double LPageH => Y(490);
+    // ── Scaled computed properties ────────────────────────────────────────────
+    // These all go through X() / Y() so they're always correct after UpdateActualSize().
 
-    // Right page
-    public double RPageX => X(472);
-    public double RPageY => Y(55);
-    public double RPageW => X(438);
-    public double RPageH => Y(490);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScLPageX => X(LPageX);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScLPageY => Y(LPageY);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScLPageW => X(LPageW);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScLPageH => Y(LPageH);
 
-    // Main tabs (left side, vertical — stick out left of book)
-    public double MTabX      => X(8);
-    public double MTabW      => X(150);
-    public double MTabStartY => Y(113);
-    public double MTabGap    => Y(5);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScRPageX => X(RPageX);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScRPageY => Y(RPageY);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScRPageW => X(RPageW);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScRPageH => Y(RPageH);
 
-    // Close bookmark (bottom-left, sticks out below left page)
-    public double CloseBookX => X(8);
-    public double CloseBookY => Y(510);
-    public double CloseBookW => X(30);
-    public double CloseBookH => Y(38);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScMTabX      => X(MTabX);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScMTabW      => X(MTabW);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScMTabStartY => Y(MTabStartY);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScMTabGap    => Y(MTabGap);
 
-    // Element tabs (right page, horizontal)
-    public double ETabGap => X(4);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCloseBookX => X(CloseBookX);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCloseBookY => Y(CloseBookY);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCloseBookW => X(CloseBookW);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCloseBookH => Y(CloseBookH);
 
-    // Spell tree nodes
-    public double NodeR        => D(22);
-    public double NodeSpacingX => D(88);
-    public double NodeSpacingY => D(80);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScETabGap => X(ETabGap);
 
-    // Memorized spell cards
-    public double CardW => D(195);
-    public double CardH => D(32);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScNodeR        => D(NodeR);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScNodeSpacingX => D(NodeSpacingX);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScNodeSpacingY => D(NodeSpacingY);
 
-    // Memorized hotbar slots
-    public double SlotR => D(26);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCardW => D(CardW);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScCardH => D(CardH);
 
-    // ---- Computed helpers ----
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double ScSlotR => D(SlotR);
 
-    public double LContentX  => MTabX + MTabW + X(8);
-    public double LContentW  => LPageX + LPageW - LContentX;
-    public double ETabW(int numTabs = 4) => (RPageW - (numTabs - 1) * ETabGap) / numTabs;
+    // ── Derived layout values (scaled) ────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double LContentX => ScMTabX + ScMTabW + X(8);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public double LContentW => ScLPageX + ScLPageW - LContentX;
 
-    // ---- Load / Save ----
+    public double ETabW(int numTabs = 4) => (ScRPageW - (numTabs - 1) * ScETabGap) / numTabs;
 
+    // ── Persistence ───────────────────────────────────────────────────────────
     private static readonly JsonSerializerOptions Opts = new()
     {
         PropertyNameCaseInsensitive = true,
