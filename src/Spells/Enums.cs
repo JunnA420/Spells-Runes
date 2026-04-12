@@ -14,6 +14,7 @@ public enum SpellElement
     Earth,
     Fire,
     Water,
+    Flux,
 }
 
 public enum SpellType
