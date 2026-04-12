@@ -26,6 +26,10 @@ public class HudFlux : HudElement
     private const double SpellPw   = SpellPanelW - 8;
 
     private readonly HudRadialMenu _radial;
+    private double _sc        = 1.0;
+    private double _res       = 1.0;
+    private double _drawScale = 1.0; // physical px per draw unit = effectiveRes
+    private double _vds       = 1.0; // virtual-px scale for bounds = effectiveRes / _sc
 
     public HudFlux(ICoreClientAPI capi, HudRadialMenu radial) : base(capi)
     {
@@ -36,11 +40,29 @@ public class HudFlux : HudElement
 
     private void Compose()
     {
-        double fixedX = -(460.0 / 2 + 80 + CanvasWFull);
+        _sc  = GuiElement.scaled(1.0);
+        _res = capi.Render.FrameHeight / 1080.0;
+        // Clamp effective resolution so physical size = CanvasW * effectiveRes,
+        // completely independent of GUI scale.
+        _drawScale = Math.Clamp(_res, 0.60, 1.40);          // physical px per draw unit
+        _vds       = (_sc > 0) ? _drawScale / _sc : 1.0;   // virtual px scale for bounds
+
+        // Canvas virtual px = CanvasWFull * _vds → physical px = CanvasWFull * _drawScale
+        double cw = CanvasWFull * _vds;
+        double ch = CanvasH     * _vds;
+
+        // Work in physical pixels so position is stable across GUI scale changes.
+        double physHalfW    = capi.Render.FrameWidth  / 2.0;
+        double hudPhysW     = CanvasWFull * _drawScale;
+        double hotbarPhysHW = 230.0 * _sc;                         // hotbar physical half-width
+        double desiredRight = -(hotbarPhysHW + 80.0);              // 80 px gap to hotbar
+        double desiredLeft  = desiredRight - hudPhysW;
+        double clampedLeft  = Math.Max(desiredLeft, -physHalfW + 12.0); // never off left edge
+        double fixedX = clampedLeft / _sc;                         // convert to virtual px
         double fixedY = 0;
 
-        var db = ElementBounds.Fixed(EnumDialogArea.CenterBottom, fixedX, fixedY, CanvasWFull, CanvasH);
-        var cb = ElementBounds.Fixed(0, 0, CanvasWFull, CanvasH);
+        var db = ElementBounds.Fixed(EnumDialogArea.CenterBottom, fixedX, fixedY, cw, ch);
+        var cb = ElementBounds.Fixed(0, 0, cw, ch);
         SingleComposer = capi.Gui
             .CreateCompo("spellsandrunes:hud-flux", db)
             .AddDynamicCustomDraw(cb, Draw, "canvas")
@@ -57,6 +79,10 @@ public class HudFlux : HudElement
 
     private void Draw(Context ctx, ImageSurface surface, ElementBounds bounds)
     {
+        // Scale draw commands so 0..CanvasWFull/CanvasH fills the canvas at any resolution/GuiScale.
+        // Works whether or not VS pre-scales the Cairo context.
+        ctx.Scale(_drawScale, _drawScale);
+
         float  cur  = capi.World.Player?.Entity?.WatchedAttributes.GetFloat("spellsandrunes:flux",    100f) ?? 100f;
         float  max  = capi.World.Player?.Entity?.WatchedAttributes.GetFloat("spellsandrunes:maxflux", 100f) ?? 100f;
         double frac = max > 0 ? Math.Clamp(cur / max, 0.0, 1.0) : 0.0;
@@ -271,7 +297,11 @@ public class HudFlux : HudElement
         var entity = capi.World.Player?.Entity;
         if (entity == null || !PlayerSpellData.For(entity).IsFluxUnlocked) return;
 
-        // Recompose if spell presence changed (to resize the canvas)
+        // Recompose if GuiScale or resolution changed
+        double sc  = GuiElement.scaled(1.0);
+        double res = capi.Render.FrameHeight / 1080.0;
+        if (Math.Abs(sc - _sc) > 0.001 || Math.Abs(res - _res) > 0.001) Compose();
+
         (SingleComposer?.GetElement("canvas") as GuiElementCustomDraw)?.Redraw();
         base.OnRenderGUI(deltaTime);
     }

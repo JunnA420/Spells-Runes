@@ -12,7 +12,7 @@ namespace SpellsAndRunes.GUI;
 public class GuiDialogSpellbook : GuiDialog
 {
     // ── Layout constants ──────────────────────────────────────────────────────
-    private const double DlgW    = 820, DlgH = 560;
+    private double DlgW, DlgH;   // computed from screen size in ComposeDialog()
     private const double TitleH  = 28;
     private const double HeaderH = 22;
     private const double TabH    = 26;
@@ -75,7 +75,6 @@ public class GuiDialogSpellbook : GuiDialog
     // ── Animation & screen coords ─────────────────────────────────────────────
     private double _t = 0;
     private long   _tickId;
-    private double _absX, _absY;
 
     private readonly IClientNetworkChannel _ch;
 
@@ -109,6 +108,12 @@ public class GuiDialogSpellbook : GuiDialog
 
     private void ComposeDialog()
     {
+        double sc     = GuiElement.scaled(1.0);
+        double vw     = capi.Render.FrameWidth  / sc;
+        double vh     = capi.Render.FrameHeight / sc;
+        DlgW = Math.Clamp(vw * 0.90, 600, 820);
+        DlgH = Math.Clamp(vh * 0.88, 420, 560);
+
         var db = ElementBounds.Fixed(EnumDialogArea.CenterMiddle, 0, 0, DlgW, DlgH);
         var cb = ElementBounds.Fixed(0, 0, DlgW, DlgH);
         SingleComposer = capi.Gui
@@ -123,7 +128,6 @@ public class GuiDialogSpellbook : GuiDialog
     // ── Main draw ─────────────────────────────────────────────────────────────
     private void OnDraw(Context ctx, ImageSurface surface, ElementBounds bounds)
     {
-        _absX = bounds.absX; _absY = bounds.absY;
         _nodeR.Clear(); _cardR.Clear();
         _hasAddBtn = false; _hasUnlockBtn = false;
         double W = bounds.InnerWidth, H = bounds.InnerHeight;
@@ -1494,8 +1498,11 @@ public class GuiDialogSpellbook : GuiDialog
     // ── Helpers ───────────────────────────────────────────────────────────────
     private (double lx, double ly) Local(MouseEvent e)
     {
-        double sc = GuiElement.scaled(1.0);
-        return ((e.X - _absX) / sc, (e.Y - _absY) / sc);
+        var el = SingleComposer?.GetElement("canvas");
+        if (el == null) return (-1, -1);
+        // Mouse coords and absX are both in virtual pixels in VS —
+        // no scale division needed; the difference is the virtual-px offset directly.
+        return (e.X - el.Bounds.absX, e.Y - el.Bounds.absY);
     }
 
     private void OrnSep(Context ctx, double x, double y, double w)
