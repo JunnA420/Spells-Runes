@@ -22,6 +22,14 @@ public class MsgCastSpell
     [ProtoMember(2)] public int SpellLevel { get; set; } = 1;
 }
 
+[ProtoContract]
+public class MsgChannelSpell
+{
+    [ProtoMember(1)] public string SpellId { get; set; } = "";
+    [ProtoMember(2)] public bool IsActive { get; set; }
+    [ProtoMember(3)] public int SpellLevel { get; set; } = 1;
+}
+
 /// <summary>Server → casting client: notify cast start (for HUD cast bar).</summary>
 [ProtoContract]
 public class MsgStartCast

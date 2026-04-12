@@ -1,9 +1,0 @@
-{
-	"code": "sylphweed-ground",
-	"class": "Item",
-	"maxstacksize": 16,
-	"renderType": "flat",
-	"texture": { "base": "spellsandrunes:item/sylphweed-ground" },
-	"creativeinventory": { "general": ["*"], "items": ["*"] },
-	"materialDensity": 200
-}

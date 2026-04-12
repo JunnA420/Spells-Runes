@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
+using Vintagestory.API.MathTools;
 
 namespace SpellsAndRunes.Spells;
 
@@ -86,6 +87,29 @@ public abstract class Spell
 
     /// <summary>Playback speed multiplier for the animation. Default 1.0.</summary>
     public virtual float AnimationSpeed => 1f;
+
+    // ---- Origin ----
+
+    /// <summary>
+    /// Offsets applied when computing the spell's world-space origin point.
+    /// Forward/Side are relative to the caster's look direction.
+    /// Up is added on top of eye height.
+    /// </summary>
+    public virtual SpellOriginConfig Origin => default;
+
+    /// <summary>
+    /// Returns the world-space origin for this spell based on Origin config.
+    /// </summary>
+    protected Vec3d GetOrigin(EntityAgent caster)
+    {
+        var cfg   = Origin;
+        var look  = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
+        var right = look.Cross(new Vec3d(0, 1, 0)).Normalize();
+        return caster.SidedPos.XYZ
+            .Add(0, caster.LocalEyePos.Y + cfg.Up, 0)
+            .Add(look  * cfg.Forward)
+            .Add(right * cfg.Side);
+    }
 
     // ---- Casting ----
 

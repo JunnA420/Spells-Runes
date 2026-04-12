@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
@@ -56,8 +55,7 @@ public class SylphweedGlowRenderer : IRenderer
 
     private class PlantEntry
     {
-        [Required]
-        public Vec3d       BasePos;
+        public Vec3d       BasePos = new Vec3d();
         public FloatCube[] Cubes = new FloatCube[3];
         public int         LightIndex;
     }
