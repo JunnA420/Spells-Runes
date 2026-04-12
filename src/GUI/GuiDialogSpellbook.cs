@@ -75,6 +75,9 @@ public class GuiDialogSpellbook : GuiDialog
     // ── Animation & screen coords ─────────────────────────────────────────────
     private double _t = 0;
     private long   _tickId;
+    // ── Grain cache ───────────────────────────────────────────────────────────
+    private ImageSurface? _grainSurf = null;
+    private double        _grainW = 0, _grainH = 0;
 
     private readonly IClientNetworkChannel _ch;
 
@@ -86,7 +89,7 @@ public class GuiDialogSpellbook : GuiDialog
         _tickId = capi.World.RegisterGameTickListener(_ => {
             _t = capi.ElapsedMilliseconds / 1000.0;
             if (IsOpened()) Redraw();
-        }, 1000 / 30);
+        }, 1000 / 20);
     }
 
     public override string ToggleKeyCombinationCode => null!;
@@ -103,7 +106,25 @@ public class GuiDialogSpellbook : GuiDialog
     public override void Dispose()
     {
         capi.World.UnregisterGameTickListener(_tickId);
+        _grainSurf?.Dispose();
+        _grainSurf = null;
         base.Dispose();
+    }
+
+    private ImageSurface BuildGrainSurface(double w, double h)
+    {
+        int iw = (int)Math.Ceiling(w), ih = (int)Math.Ceiling(h);
+        var surf = new ImageSurface(Format.Argb32, iw, ih);
+        using var ctx = new Context(surf);
+        ctx.LineWidth = 0.5;
+        for (double i = 0; i < w + h; i += 5.0)
+        {
+            ctx.SetSourceRGBA(0.55, 0.42, 0.28, 0.025);
+            ctx.MoveTo(Math.Max(0, i - h), i < h ? h - i : 0);
+            ctx.LineTo(Math.Min(w, i),     i < w ? 0     : i - w);
+            ctx.Stroke();
+        }
+        return surf;
     }
 
     private void ComposeDialog()
@@ -138,17 +159,15 @@ public class GuiDialogSpellbook : GuiDialog
         // Background
         C(ctx, ClrBg); ctx.Paint();
 
-        // Subtle leather grain — diagonal lines at very low alpha
-        ctx.Save();
-        ctx.LineWidth = 0.5;
-        for (double i = 0; i < W + H; i += 5.0)
+        // Subtle leather grain — cached surface, blit each frame
+        if (_grainSurf == null || Math.Abs(_grainW - W) > 1 || Math.Abs(_grainH - H) > 1)
         {
-            ctx.SetSourceRGBA(0.55, 0.42, 0.28, 0.025);
-            ctx.MoveTo(Math.Max(0, i - H), i < H ? H - i : 0);
-            ctx.LineTo(Math.Min(W, i),     i < W ? 0     : i - W);
-            ctx.Stroke();
+            _grainSurf?.Dispose();
+            _grainSurf = BuildGrainSurface(W, H);
+            _grainW = W; _grainH = H;
         }
-        ctx.Restore();
+        ctx.SetSourceSurface(_grainSurf, 0, 0);
+        ctx.Paint();
 
         // Title bar
         C(ctx, ClrBgAlt); Rect(ctx, 0, 0, W, TitleH); ctx.Fill();
@@ -1102,7 +1121,6 @@ public class GuiDialogSpellbook : GuiDialog
             }
         }
 
-        Redraw();
         base.OnMouseMove(e);
     }
 
