@@ -49,7 +49,6 @@
 	},
 	"materialDensity": 400,
 	"frostable": true,
-	"lightHsv": [0, 0, 2],
 	"ambientSound": {
 		"sound": "game:environment/wind",
 		"range": 8,

@@ -1,0 +1,87 @@
+{
+	"textureWidth": 16,
+	"textureHeight": 16,
+	"textures": {
+		"t": "game:block/ice"
+	},
+	"elements": [
+		{
+			"name": "bone",
+			"from": [8.0, 8.0, 8.0],
+			"to":   [8.0, 8.0, 8.0],
+			"rotationOrigin": [8.0, 8.0, 8.0],
+			"children": [
+				{
+					"name": "cube",
+					"from": [-12.5, -0.5, -0.5],
+					"to":   [ 12.5,  0.5,  0.5],
+					"rotationOrigin": [0, 0, 0],
+					"faces": {
+						"north": { "texture": "#t", "uv": [0, 0, 1, 1] },
+						"east":  { "texture": "#t", "uv": [0, 0, 1, 1] },
+						"south": { "texture": "#t", "uv": [0, 0, 1, 1] },
+						"west":  { "texture": "#t", "uv": [0, 0, 1, 1] },
+						"up":    { "texture": "#t", "uv": [0, 0, 16, 1] },
+						"down":  { "texture": "#t", "uv": [0, 0, 16, 1] }
+					}
+				}
+			]
+		}
+	],
+	"animations": [
+		{
+			"name": "Wind_Spear_Spawn",
+			"code": "wind_spear_spawn",
+			"quantityframes": 24,
+			"onActivityStopped": "EaseOut",
+			"onAnimationEnd": "Hold",
+			"keyframes": [
+				{
+					"frame": 0,
+					"elements": {
+						"bone": { "rotationX": 0, "rotationY": 0, "rotationZ": 0, "scaleX": 0, "scaleY": 1, "scaleZ": 1 }
+					}
+				},
+				{
+					"frame": 8,
+					"elements": {
+						"bone": { "rotationX": 0, "rotationY": 0, "rotationZ": 0, "scaleX": 0.8, "scaleY": 1, "scaleZ": 1 }
+					}
+				},
+				{
+					"frame": 23,
+					"elements": {
+						"bone": { "rotationX": -360, "rotationY": 0, "rotationZ": 0, "scaleX": 1, "scaleY": 1, "scaleZ": 1 }
+					}
+				}
+			]
+		},
+		{
+			"name": "Wind_Spear_Idle",
+			"code": "wind_spear_idle",
+			"quantityframes": 24,
+			"onActivityStopped": "EaseOut",
+			"onAnimationEnd": "Repeat",
+			"keyframes": [
+				{
+					"frame": 0,
+					"elements": {
+						"bone": { "rotationX": 0, "rotationY": 0, "rotationZ": 0, "offsetX": 0, "offsetY": 0, "offsetZ": 0 }
+					}
+				},
+				{
+					"frame": 10,
+					"elements": {
+						"bone": { "rotationX": 0, "rotationY": 0, "rotationZ": 0, "offsetX": 0, "offsetY": 0.3, "offsetZ": 0 }
+					}
+				},
+				{
+					"frame": 23,
+					"elements": {
+						"bone": { "rotationX": -360, "rotationY": 0, "rotationZ": 0, "offsetX": 0, "offsetY": 0, "offsetZ": 0 }
+					}
+				}
+			]
+		}
+	]
+}

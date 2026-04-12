@@ -7,6 +7,6 @@
 	"creativeinventory": { "general": ["*"], "items": ["*"] },
 	"materialDensity": 200,
 	"grindingProps": {
-		"groundStack": { "type": "item", "code": "spellsandrunes:sylphweed-ground", "stackSize": 1 }
+		"groundStack": { "type": "item", "code": "spellsandrunes:sylphweed-grounded", "stackSize": 1 }
 	}
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "blockCodes": ["spellsandrunes:sylphweed"],
+    "placement": "OnSurface",
+    "minTemp": -22,
+    "maxTemp": 4,
+    "minRain": 0.12,
+    "maxRain": 0.8,
+    "minForest": 0,
+    "maxForest": 0.3,
+    "minY": 0.65,
+    "maxY": 1,
+    "quantity": { "dist": "invexp", "avg": 1, "var": 0 },
+    "chance": 0.005,
+    "offsetX": { "dist": "gaussian", "avg": 0, "var": 32 },
+    "offsetZ": { "dist": "gaussian", "avg": 0, "var": 32 }
+  }
+]

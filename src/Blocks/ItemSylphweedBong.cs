@@ -5,11 +5,32 @@ using SpellsAndRunes.Spells;
 
 namespace SpellsAndRunes.Blocks;
 
-public class ItemSylphweedPipe : Item
+public class ItemSylphweedBong : Item
 {
     public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
     {
-        if (byEntity.Api.Side != EnumAppSide.Server) { handling = EnumHandHandling.PreventDefault; return; }
+        // Delegate placement/targeting path to base so GroundStorable behavior can run.
+        if (byEntity.Controls.ShiftKey || blockSel != null || entitySel != null)
+        {
+            base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
+            return;
+        }
+
+        handling = EnumHandHandling.PreventDefault;      
+    }
+    public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity,
+    BlockSelection blockSel, EntitySelection entitySel)
+    {
+        if (byEntity.Controls.ShiftKey || blockSel != null || entitySel != null) return false;
+
+        return secondsUsed < 2.5f;
+    }
+    public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity,
+    BlockSelection blockSel, EntitySelection entitySel)
+    {
+        if (secondsUsed < 2.5f) return;
+
+
         if (byEntity is not EntityPlayer playerEntity) return;
 
         var player = playerEntity.Player as IServerPlayer;
@@ -19,24 +40,22 @@ public class ItemSylphweedPipe : Item
         if (data.IsFluxUnlocked)
         {
             player.SendMessage(0, "The flux already flows through you.", EnumChatType.Notification);
-            handling = EnumHandHandling.PreventDefault;
             return;
         }
 
-        // Find ground sylphweed in hotbar
+        // Find grounded sylphweed in hotbar
         var inv = player.InventoryManager.GetHotbarInventory();
         ItemSlot? groundSlot = null;
         for (int i = 0; i < inv.Count; i++)
         {
             var s = inv[i];
-            if (s.Itemstack?.Collectible?.Code?.Path == "sylphweed-ground")
+            if (s.Itemstack?.Collectible?.Code?.Path == "sylphweed-grounded")
             { groundSlot = s; break; }
         }
 
         if (groundSlot == null)
         {
             player.SendMessage(0, "You need ground sylphweed to smoke the pipe.", EnumChatType.Notification);
-            handling = EnumHandHandling.PreventDefault;
             return;
         }
 
@@ -48,6 +67,5 @@ public class ItemSylphweedPipe : Item
         data.UnlockFlux();
         player.SendMessage(0, "The smoke fills your lungs. A deep hum resonates through your body — flux awakens.", EnumChatType.Notification);
 
-        handling = EnumHandHandling.PreventDefault;
     }
 }

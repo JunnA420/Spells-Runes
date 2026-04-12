@@ -22,7 +22,10 @@ public class AirKick : Spell
     public override SpellType    Type    => SpellType.Offense;
 
     public override float FluxCost => 30f;
-    public override float CastTime => 1.5f;
+    public override float CastTime => 0.7f;
+
+    public override string? AnimationCode        => "air_wind_kick";
+    public override bool    AnimationUpperBodyOnly => false;
 
     public override (int col, int row) TreePosition => (1, 1);
 
