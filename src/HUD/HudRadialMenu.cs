@@ -93,19 +93,27 @@ public class HudRadialMenu : GuiDialog
     public void UpdateMouse(double mx, double my)
     {
         if (!isOpen) return;
-        double cx = capi.Render.FrameWidth  / 2.0;
-        double cy = capi.Render.FrameHeight / 2.0;
-        int prev    = hoveredSlot;
-        hoveredSlot = SlotAtPos(mx, my, cx, cy);
+        double sc    = GuiElement.scaled(1.0);
+        var (lx, ly) = Local(mx, my);
+        // Local() returns physical offset; divide by sc to get draw-space coords
+        int prev     = hoveredSlot;
+        hoveredSlot  = SlotAtPos(lx / sc, ly / sc);
         if (hoveredSlot != prev) Redraw();
     }
 
     private void ApplySlot(int slot)
         => selectedSlot = (slot == CenterCancel) ? -1 : slot;
 
-    private int SlotAtPos(double mx, double my, double cx, double cy)
+    private (double lx, double ly) Local(double mx, double my)
     {
-        double dx = mx - cx, dy = my - cy;
+        var el = SingleComposer?.GetElement("canvas");
+        if (el == null) return (CanvasSize / 2, CanvasSize / 2);
+        return (mx - el.Bounds.absX, my - el.Bounds.absY);
+    }
+
+    private int SlotAtPos(double lx, double ly)
+    {
+        double dx = lx - CanvasSize / 2, dy = ly - CanvasSize / 2;
         double dist = Math.Sqrt(dx * dx + dy * dy);
         if (dist <= InnerR) return CenterCancel;
         double angle = Math.Atan2(dy, dx);
@@ -130,6 +138,9 @@ public class HudRadialMenu : GuiDialog
 
     private void DrawRadial(Context ctx, ImageSurface surface, ElementBounds bounds)
     {
+        // VS does not pre-scale Cairo for GuiDialog — apply GUI scale so draw fills the canvas correctly
+        double sc = GuiElement.scaled(1.0);
+        ctx.Scale(sc, sc);
         double cx = CanvasSize / 2, cy = CanvasSize / 2;
         double t  = capi.ElapsedMilliseconds / 1000.0;
         var data  = capi.World.Player?.Entity != null
@@ -331,9 +342,9 @@ public class HudRadialMenu : GuiDialog
     public override void OnMouseDown(MouseEvent args)
     {
         if (args.Button != EnumMouseButton.Left) { base.OnMouseDown(args); return; }
-        double cx = capi.Render.FrameWidth  / 2.0;
-        double cy = capi.Render.FrameHeight / 2.0;
-        int slot = SlotAtPos(args.X, args.Y, cx, cy);
+        double sc    = GuiElement.scaled(1.0);
+        var (lx, ly) = Local(args.X, args.Y);
+        int slot     = SlotAtPos(lx / sc, ly / sc);
         if (slot >= 0) ApplySlot(slot);
         isOpen = false;
         if (_tickId >= 0) { capi.World.UnregisterGameTickListener(_tickId); _tickId = -1; }
