@@ -8,5 +8,6 @@
   "side": "universal",
   "dependencies": {
     "game": "1.20.6"
+    
   }
 }

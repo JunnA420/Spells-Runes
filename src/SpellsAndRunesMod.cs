@@ -426,9 +426,10 @@ public class SpellsAndRunesMod : ModSystem
         // Radial menu hotkey (hold R)
         api.Input.RegisterHotKey("spellsandrunes.radial", "Spell Radial Menu", GlKeys.R, HotkeyType.GUIOrOtherControls);
 
-        hudFlux         = new HudFlux(api);
-        castBar         = new HudCastBar(api);
+
         radialMenu      = new HudRadialMenu(api);
+        hudFlux         = new HudFlux(api, radialMenu);
+        castBar         = new HudCastBar(api);
         spellbookDialog = new GuiDialogSpellbook(api, clientChannel!);
         coneRenderer = new SpellConeRenderer(api, radialMenu);
         sparkGlow    = new SparkGlowRenderer(api);

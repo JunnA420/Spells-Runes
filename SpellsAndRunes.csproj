@@ -19,15 +19,15 @@
   
   <ItemGroup>
     <Reference Include="VintagestoryAPI">
-      <HintPath>C:\Games\Vintagestory\VintagestoryAPI.dll</HintPath>
+      <HintPath>D:\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="cairo-sharp">
-      <HintPath>C:\Games\Vintagestory\Lib\cairo-sharp.dll</HintPath>
+      <HintPath>D:\Vintagestory\Lib\cairo-sharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>C:\Games\Vintagestory\Lib\protobuf-net.dll</HintPath>
+      <HintPath>D:\Vintagestory\Lib\protobuf-net.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="VSSurvivalMod">
@@ -35,6 +35,7 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  
 
   <Target Name="PackMod" AfterTargets="Build" DependsOnTargets="Build">
     <PropertyGroup>
