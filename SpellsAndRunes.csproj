@@ -31,6 +31,7 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  
 
   <Target Name="PackMod" AfterTargets="Build" DependsOnTargets="Build">
     <PropertyGroup>

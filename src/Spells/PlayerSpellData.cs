@@ -33,7 +33,7 @@ public class PlayerSpellData
     private const string AttrHotbar       = "snr:hotbar";
     private const string AttrSpellXp      = "snr:spellxp";      // ITree: spellId -> total raw xp
     private const string AttrSpellLevel   = "snr:spelllevel";   // ITree: spellId -> current level
-    private const int    HotbarSlots      = 3;
+    private const int    HotbarSlots      = 5;
 
     private readonly Entity entity;
 

@@ -5,72 +5,65 @@ using System.Text.Json;
 namespace SpellsAndRunes.GUI;
 
 /// <summary>
-/// Live-editable layout config. All public properties are in reference-space pixels (940×600).
-/// Call UpdateActualSize() each frame before reading any scaled values.
-/// Edit the JSON at ConfigPath and reopen the spellbook to apply changes.
+/// Live-editable layout config. All properties in reference-space pixels (1128x720).
+/// Call UpdateActualSize() each frame before reading any Sc* values.
+/// Delete the JSON at ConfigPath to reset to defaults.
 /// </summary>
 public class SpellbookLayout
 {
-    // ── Reference resolution (matches book_bg.png native size) ───────────────
-    [System.Text.Json.Serialization.JsonIgnore]
-    public const double RefW = 940;
-    [System.Text.Json.Serialization.JsonIgnore]
-    public const double RefW2 = 600;
+    // ── Dialog size (1.2x bigger than original 940x600 for readability) ───────
+    public double GuiW { get; set; } = 1128;
+    public double GuiH { get; set; } = 720;
 
-    // ── User-facing config (only GuiW / GuiH matter for dialog size) ─────────
-    public double GuiW { get; set; } = 940;
-    public double GuiH { get; set; } = 600;
+    // ── Parchment page bounds (inside leather border, 1128x720 ref space) ────
+    public double LPageX { get; set; } = 190;
+    public double LPageY { get; set; } = 152;
+    public double LPageW { get; set; } = 364;
+    public double LPageH { get; set; } = 431;
 
-    // ── Page bounds (reference pixels, measured from book_bg.png 1536x1024 → 940x600) ──
-    public double LPageX { get; set; } = 154;  // left edge of left page
-    public double LPageY { get; set; } = 111;  // top edge of pages
-    public double LPageW { get; set; } = 315;  // width of left page
-    public double LPageH { get; set; } = 378;  // height of pages
+    public double RPageX { get; set; } = 572;
+    public double RPageY { get; set; } = 152;
+    public double RPageW { get; set; } = 383;
+    public double RPageH { get; set; } = 431;
 
-    public double RPageX { get; set; } = 469;  // right page starts at spine
-    public double RPageY { get; set; } = 111;
-    public double RPageW { get; set; } = 330;  // width of right page
-    public double RPageH { get; set; } = 378;
+    // ── Main tabs (right side, vertical) ─────────────────────────────────────
+    // Sized so 4 tabs fit within page height (431px total, 3px gaps)
+    // active 47x91, inactive 40x86 — preserves 55:106 and 45:97 asset ratios
+    public double MTabRefW  { get; set; } = 47;
+    public double MTabRefH  { get; set; } = 91;
+    public double MTabRefWI { get; set; } = 40;
+    public double MTabRefHI { get; set; } = 86;
+    public double MTabGap   { get; set; } = 3;
 
-    // ── Main tabs (left side, vertical — stick out left of book) ─────────────
-    public double MTabX      { get; set; } = 8;
-    public double MTabW      { get; set; } = 140;
-    public double MTabStartY { get; set; } = 130;
-    public double MTabGap    { get; set; } = 5;
+    // ── Close button (bottom-left leather corner) ─────────────────────────────
+    public double CloseBookX { get; set; } = 137;
+    public double CloseBookY { get; set; } = 593;
+    public double CloseBookW { get; set; } = 54;
+    public double CloseBookH { get; set; } = 54;
 
-    // ── Close bookmark ────────────────────────────────────────────────────────
-    public double CloseBookX { get; set; } = 8;
-    public double CloseBookY { get; set; } = 80;
-    public double CloseBookW { get; set; } = 40;
-    public double CloseBookH { get; set; } = 48;
+    // ── Element tabs (above left page, horizontal) ────────────────────────────
+    public double ETabGap   { get; set; } = 5;
+    // Reference dimensions – actual display height computed from asset aspect ratio
+    public double ETabRefW  { get; set; } = 160;
+    public double ETabRefH  { get; set; } = 77;   // used as fallback only
+    public double ETabRefHI { get; set; } = 62;   // used as fallback only
 
-    // ── Element tabs (right page, horizontal) ────────────────────────────────
-    public double ETabGap { get; set; } = 4;
+    // ── Spell tree nodes ──────────────────────────────────────────────────────
+    public double NodeR        { get; set; } = 24;
+    public double NodeSpacingX { get; set; } = 92;
+    public double NodeSpacingY { get; set; } = 82;
 
-    // ── Spell tree nodes ─────────────────────────────────────────────────────
-    public double NodeR        { get; set; } = 22;
-    public double NodeSpacingX { get; set; } = 88;
-    public double NodeSpacingY { get; set; } = 80;
+    // ── Spell cards ───────────────────────────────────────────────────────────
+    public double CardH { get; set; } = 44;
 
-    // ── Memorized spell cards ─────────────────────────────────────────────────
-    public double CardW { get; set; } = 195;
-    public double CardH { get; set; } = 32;
+    // ── Wheel slots ───────────────────────────────────────────────────────────
+    public double SlotR { get; set; } = 29;
 
-    // ── Memorized hotbar slots ────────────────────────────────────────────────
-    public double SlotR { get; set; } = 26;
+    // ── Runtime scale (not serialized) ───────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] private double _sx = 1;
+    [System.Text.Json.Serialization.JsonIgnore] private double _sy = 1;
+    [System.Text.Json.Serialization.JsonIgnore] private double _s  = 1;
 
-    // ── Runtime scale (NOT serialized, set each frame) ───────────────────────
-    [System.Text.Json.Serialization.JsonIgnore]
-    private double _sx = 1;
-    [System.Text.Json.Serialization.JsonIgnore]
-    private double _sy = 1;
-    [System.Text.Json.Serialization.JsonIgnore]
-    private double _s  = 1;
-
-    /// <summary>
-    /// Call at the start of every OnDraw with the actual canvas size.
-    /// All X() / Y() / D() calls after this will return scaled values.
-    /// </summary>
     public void UpdateActualSize(double actualW, double actualH)
     {
         _sx = actualW / GuiW;
@@ -78,87 +71,55 @@ public class SpellbookLayout
         _s  = Math.Min(_sx, _sy);
     }
 
-    // ── Scale helpers ─────────────────────────────────────────────────────────
-    /// <summary>Scale a horizontal reference value.</summary>
-    public double X(double refVal) => refVal * _sx;
+    public double X(double v) => v * _sx;
+    public double Y(double v) => v * _sy;
+    public double D(double v) => v * _s;
 
-    /// <summary>Scale a vertical reference value.</summary>
-    public double Y(double refVal) => refVal * _sy;
+    // ── Scaled page bounds ────────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScLPageX => X(LPageX);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScLPageY => Y(LPageY);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScLPageW => X(LPageW);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScLPageH => Y(LPageH);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScRPageX => X(RPageX);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScRPageY => Y(RPageY);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScRPageW => X(RPageW);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScRPageH => Y(RPageH);
 
-    /// <summary>Uniform scale — use for radii, font sizes, node spacing etc.</summary>
-    public double D(double refVal) => refVal * _s;
+    // ── Scaled main tabs ──────────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScMTabW  => X(MTabRefW);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScMTabH  => X(MTabRefW) * MTabRefH / MTabRefW;
+    [System.Text.Json.Serialization.JsonIgnore] public double ScMTabWI => X(MTabRefWI);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScMTabHI => X(MTabRefWI) * MTabRefHI / MTabRefWI;
+    [System.Text.Json.Serialization.JsonIgnore] public double ScMTabGap => Y(MTabGap);
 
-    // ── Scaled computed properties ────────────────────────────────────────────
-    // These all go through X() / Y() so they're always correct after UpdateActualSize().
+    // ── Scaled close button ───────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScCloseBookX => X(CloseBookX);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScCloseBookY => Y(CloseBookY);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScCloseBookW => X(CloseBookW);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScCloseBookH => Y(CloseBookH);
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScLPageX => X(LPageX);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScLPageY => Y(LPageY);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScLPageW => X(LPageW);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScLPageH => Y(LPageH);
+    // ── Scaled element tabs ───────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScETabGap => X(ETabGap);
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScRPageX => X(RPageX);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScRPageY => Y(RPageY);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScRPageW => X(RPageW);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScRPageH => Y(RPageH);
+    // 4 tabs fit across left page width
+    public double ETabW(int n = 4) => (ScLPageW - (n - 1) * ScETabGap) / n;
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScMTabX      => X(MTabX);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScMTabW      => X(MTabW);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScMTabStartY => Y(MTabStartY);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScMTabGap    => Y(MTabGap);
+    // Fallback heights (actual height computed from asset in RecomputeSpriteSizes)
+    [System.Text.Json.Serialization.JsonIgnore] public double ScETabH  => ETabW() * ETabRefH  / ETabRefW;
+    [System.Text.Json.Serialization.JsonIgnore] public double ScETabHI => ETabW() * ETabRefHI / ETabRefW;
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCloseBookX => X(CloseBookX);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCloseBookY => Y(CloseBookY);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCloseBookW => X(CloseBookW);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCloseBookH => Y(CloseBookH);
+    // ── Scaled nodes ──────────────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScNodeR        => D(NodeR);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScNodeSpacingX => D(NodeSpacingX);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScNodeSpacingY => D(NodeSpacingY);
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScETabGap => X(ETabGap);
-
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScNodeR        => D(NodeR);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScNodeSpacingX => D(NodeSpacingX);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScNodeSpacingY => D(NodeSpacingY);
-
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCardW => D(CardW);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScCardH => D(CardH);
-
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double ScSlotR => D(SlotR);
-
-    // ── Derived layout values (scaled) ────────────────────────────────────────
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double LContentX => ScMTabX + ScMTabW + X(8);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public double LContentW => ScLPageX + ScLPageW - LContentX;
-
-    public double ETabW(int numTabs = 4) => (ScRPageW - (numTabs - 1) * ScETabGap) / numTabs;
+    // ── Scaled cards / slots ──────────────────────────────────────────────────
+    [System.Text.Json.Serialization.JsonIgnore] public double ScCardH => D(CardH);
+    [System.Text.Json.Serialization.JsonIgnore] public double ScSlotR => D(SlotR);
 
     // ── Persistence ───────────────────────────────────────────────────────────
     private static readonly JsonSerializerOptions Opts = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true
-    };
+    { PropertyNameCaseInsensitive = true, WriteIndented = true };
 
     public static string ConfigPath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -167,29 +128,14 @@ public class SpellbookLayout
     public static SpellbookLayout Load()
     {
         string path = ConfigPath;
-        if (!File.Exists(path))
-        {
-            Save(new SpellbookLayout(), path);
-            return new SpellbookLayout();
-        }
-        try
-        {
-            return JsonSerializer.Deserialize<SpellbookLayout>(File.ReadAllText(path), Opts)
-                   ?? new SpellbookLayout();
-        }
-        catch
-        {
-            return new SpellbookLayout();
-        }
+        if (!File.Exists(path)) { Save(new SpellbookLayout(), path); return new SpellbookLayout(); }
+        try { return JsonSerializer.Deserialize<SpellbookLayout>(File.ReadAllText(path), Opts) ?? new SpellbookLayout(); }
+        catch { return new SpellbookLayout(); }
     }
 
     private static void Save(SpellbookLayout layout, string path)
     {
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            File.WriteAllText(path, JsonSerializer.Serialize(layout, Opts));
-        }
+        try { Directory.CreateDirectory(Path.GetDirectoryName(path)!); File.WriteAllText(path, JsonSerializer.Serialize(layout, Opts)); }
         catch { }
     }
 }
