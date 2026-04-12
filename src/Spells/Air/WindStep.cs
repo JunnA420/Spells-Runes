@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
+using Vintagestory.API.MathTools;
 
 namespace SpellsAndRunes.Spells.Air;
 
@@ -21,8 +23,22 @@ public class WindStep : Spell
 
     public override (int col, int row) TreePosition => (1, 3);
 
+    public const float ForwardForce = 1.65f;
+    public const float Damage = 14f;
+    public const float HitRadius = 1.15f;
+    public const float Range = 8f;
+
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
-        // TODO
+        var lookDir = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
+        var origin = caster.SidedPos.XYZ.Add(0, caster.LocalEyePos.Y - 0.15, 0);
+
+        WindSlash.HitAlongLine(caster, world, origin, lookDir, Range * GetRangeMultiplier(spellLevel), HitRadius, Damage * GetDamageMultiplier(spellLevel));
+        caster.SidedPos.Motion.Set(
+            lookDir.X * ForwardForce * GetRangeMultiplier(spellLevel),
+            Math.Max(caster.SidedPos.Motion.Y, 0.05),
+            lookDir.Z * ForwardForce * GetRangeMultiplier(spellLevel));
+
+        WindSlash.SpawnFx(world, origin, lookDir, spellLevel, Range * GetRangeMultiplier(spellLevel));
     }
 }

@@ -1,0 +1,43 @@
+{
+	"code": "wind-spear",
+	"class": "EntityWindSpear",
+	"tags": ["projectile"],
+	"attributes": {
+		"isProjectile": true
+	},
+	"hitboxSize": { "x": 0.2, "y": 0.2 },
+	"deadHitboxSize": { "x": 0.2, "y": 0.2 },
+	"eyeHeight": 0.1,
+	"canClimb": false,
+	"drops": [],
+
+	"client": {
+		"renderer": "Shape",
+		"shape": { "base": "spellsandrunes:entity/wind-spear" },
+		"texture": { "base": "game:block/ice" },
+		"glowLevel": 128,
+		"behaviors": [
+			{
+				"code": "passivephysics",
+				"groundDragFactor": 1,
+				"airDragFactor": 0.0,
+				"gravityFactor": 0.0
+			},
+			{ "code": "interpolateposition" },
+			{ "code": "entityanimation" }
+		]
+	},
+
+	"server": {
+		"behaviors": [
+			{
+				"code": "passivephysics",
+				"groundDragFactor": 1,
+				"airDragFactor": 0.0,
+				"gravityFactor": 0.0
+			},
+			{ "code": "despawn", "minSeconds": 10 },
+			{ "code": "entitystatetags" }
+		]
+	}
+}

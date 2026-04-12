@@ -1,0 +1,5 @@
+{
+  "type": "clay",
+  "ingredient": { "code": "spellsandrunes:sylphweed-clay-bong-unfired" },
+  "output": { "code": "spellsandrunes:sylphweed-clay-bong-fired" }
+}
