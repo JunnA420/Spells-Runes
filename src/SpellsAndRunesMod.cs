@@ -491,6 +491,20 @@ public class SpellsAndRunesMod : ModSystem
                 radialMenu.Close();
         };
 
+        // Forward sprint controls while radial is open (Dialog type blocks movement)
+        api.Event.RegisterGameTickListener(_ =>
+        {
+            if (!radialMenu.IsOpen) return;
+            var player = api.World.Player;
+            if (player?.Entity == null) return;
+
+            var ks = api.Input.KeyboardKeyState;
+            var sprintHk = api.Input.GetHotKeyByCode("sprint");
+            int sprintKey = sprintHk != null ? (int)sprintHk.CurrentMapping.KeyCode : (int)GlKeys.LShift;
+            if (ks[sprintKey])
+                player.Entity.Controls.Sprint = true;
+        }, 16);
+
         // RMB cancels cast
         api.Event.MouseDown += (MouseEvent e) =>
         {
