@@ -337,8 +337,7 @@ public class HudRadialMenu : GuiDialog
 
     public override string ToggleKeyCombinationCode => null!;
     public override bool PrefersUngrabbedMouse => true;
-    public override bool ShouldReceiveKeyboardEvents() => false;
-    public override EnumDialogType DialogType => EnumDialogType.HUD;
+    public override EnumDialogType DialogType => EnumDialogType.Dialog;
 
     public override void OnMouseDown(MouseEvent args)
     {
