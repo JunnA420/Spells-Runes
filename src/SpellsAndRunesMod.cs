@@ -500,12 +500,23 @@ public class SpellsAndRunesMod : ModSystem
             return true;
         });
 
-        // Radial: open on press
+        // Radial: open on press — also starts sprint-forward tick
+        long sprintTickId = -1;
+        var sprintHk = api.Input.GetHotKeyByCode("sprint");
+        int sprintKey = sprintHk != null ? (int)sprintHk.CurrentMapping.KeyCode : (int)GlKeys.LShift;
+
         api.Input.SetHotKeyHandler("spellsandrunes.radial", combo =>
         {
             var entity = api.World.Player?.Entity;
             if (entity == null || !PlayerSpellData.For(entity).IsFluxUnlocked) return true;
             radialMenu.Open();
+            sprintTickId = api.Event.RegisterGameTickListener(_ =>
+            {
+                var player = api.World.Player;
+                if (player?.Entity == null) return;
+                if (api.Input.KeyboardKeyState[sprintKey])
+                    player.Entity.Controls.Sprint = true;
+            }, 16);
             return true;
         });
 
@@ -516,11 +527,14 @@ public class SpellsAndRunesMod : ModSystem
                 radialMenu.UpdateMouse(e.X, e.Y);
         };
 
-        // R release — close radial
+        // R release — close radial and stop sprint tick
         api.Event.KeyUp += (KeyEvent e) =>
         {
             if (e.KeyCode == (int)GlKeys.R && radialMenu.IsOpen)
+            {
                 radialMenu.Close();
+                if (sprintTickId >= 0) { api.Event.UnregisterGameTickListener(sprintTickId); sprintTickId = -1; }
+            }
         };
 
         // RMB cancels cast

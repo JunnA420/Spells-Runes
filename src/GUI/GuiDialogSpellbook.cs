@@ -78,6 +78,13 @@ public class GuiDialogSpellbook : GuiDialog
     // ── Grain cache ───────────────────────────────────────────────────────────
     private ImageSurface? _grainSurf = null;
     private double        _grainW = 0, _grainH = 0;
+    // ── Text measurement cache ────────────────────────────────────────────────
+    private readonly Dictionary<string, (double w, double h)> _textMeasure = new();
+    // ── Spell list cache per element ──────────────────────────────────────────
+    private readonly List<Spell>[] _elemSpells = { new(), new(), new(), new() };
+    private bool _elemSpellsCached = false;
+    // ── Compose guard (avoid double-compose on first open) ────────────────────
+    private int _lastComposeFrameW = 0, _lastComposeFrameH = 0;
 
     private readonly IClientNetworkChannel _ch;
 
@@ -86,15 +93,22 @@ public class GuiDialogSpellbook : GuiDialog
     {
         _ch = channel;
         ComposeDialog();
+        // Static tabs (Lore=2, Runes=3) have no _t animations — only redraw them on state changes
         _tickId = capi.World.RegisterGameTickListener(_ => {
             _t = capi.ElapsedMilliseconds / 1000.0;
-            if (IsOpened()) Redraw();
+            if (IsOpened() && _mainTab != 2 && _mainTab != 3) Redraw();
         }, 1000 / 20);
     }
 
     public override string ToggleKeyCombinationCode => null!;
 
-    public override void OnGuiOpened()  { ComposeDialog(); base.OnGuiOpened(); }
+    public override void OnGuiOpened()
+    {
+        // Only recompose if frame dimensions changed since last compose
+        int fw = capi.Render.FrameWidth, fh = capi.Render.FrameHeight;
+        if (fw != _lastComposeFrameW || fh != _lastComposeFrameH) ComposeDialog();
+        base.OnGuiOpened();
+    }
     public void ReloadData()            { if (IsOpened()) Redraw(); }
 
     public override bool OnEscapePressed()
@@ -129,9 +143,11 @@ public class GuiDialogSpellbook : GuiDialog
 
     private void ComposeDialog()
     {
+        _lastComposeFrameW = capi.Render.FrameWidth;
+        _lastComposeFrameH = capi.Render.FrameHeight;
         double sc     = GuiElement.scaled(1.0);
-        double vw     = capi.Render.FrameWidth  / sc;
-        double vh     = capi.Render.FrameHeight / sc;
+        double vw     = _lastComposeFrameW / sc;
+        double vh     = _lastComposeFrameH / sc;
         DlgW = Math.Clamp(vw * 0.90, 600, 820);
         DlgH = Math.Clamp(vh * 0.88, 420, 560);
 
@@ -141,6 +157,10 @@ public class GuiDialogSpellbook : GuiDialog
             .CreateCompo("spellsandrunes:spellbook", db)
             .AddDynamicCustomDraw(cb, OnDraw, "canvas")
             .Compose();
+        // Invalidate caches that depend on dialog dimensions
+        _grainSurf?.Dispose(); _grainSurf = null;
+        _elemSpellsCached = false;
+        _textMeasure.Clear();
     }
 
     private void Redraw() =>
@@ -326,7 +346,16 @@ public class GuiDialogSpellbook : GuiDialog
         const double detailW = 220;
         double canW = cw - detailW - 8;
         int ei = _elemTab;
-        var elemSpells = SpellRegistry.All.Values.Where(s => s.Element == Elements[ei]).ToList();
+        if (!_elemSpellsCached)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                _elemSpells[j].Clear();
+                _elemSpells[j].AddRange(SpellRegistry.All.Values.Where(s => s.Element == Elements[j]));
+            }
+            _elemSpellsCached = true;
+        }
+        var elemSpells = _elemSpells[ei];
 
         if (!_panInit[ei] && elemSpells.Count > 0)
         {
@@ -482,7 +511,7 @@ public class GuiDialogSpellbook : GuiDialog
         string pip = (int)spell.Tier switch { 1 => "·", 2 => "··", 3 => "···", _ => "····" };
         ctx.SetFontSize(9);
         ctx.SetSourceRGBA(er, eg, eb, alpha * 0.65);
-        var (pw, _) = TSize(ctx, pip);
+        var (pw, _) = TSizeCached(ctx, pip, 9);
         TextAt(ctx, pip, ntx + NodeW - pw - 4, nty + 12);
 
         // Name
@@ -493,14 +522,14 @@ public class GuiDialogSpellbook : GuiDialog
             var parts = spell.Name.Split(' ');
             string l1 = string.Join(" ", parts.Take(parts.Length / 2));
             string l2 = string.Join(" ", parts.Skip(parts.Length / 2));
-            var (w1, h1) = TSize(ctx, l1); var (w2, h2) = TSize(ctx, l2);
+            var (w1, h1) = TSizeCached(ctx, l1, 11); var (w2, h2) = TSizeCached(ctx, l2, 11);
             double sy = nty + (NodeH - h1 - h2 - 3) / 2;
             TextAt(ctx, l1, ntx + (NodeW - w1) / 2, sy);
             TextAt(ctx, l2, ntx + (NodeW - w2) / 2, sy + h1 + 3);
         }
         else
         {
-            var (tw, th) = TSize(ctx, spell.Name);
+            var (tw, th) = TSizeCached(ctx, spell.Name, 11);
             TextAt(ctx, spell.Name, ntx + (NodeW - tw) / 2, nty + (NodeH - th) / 2);
         }
     }
@@ -1105,7 +1134,7 @@ public class GuiDialogSpellbook : GuiDialog
         {
             double dx = lx - _panStartMx, dy = ly - _panStartMy;
             if (Math.Abs(dx) > 3 || Math.Abs(dy) > 3) _panMoved = true;
-            if (_panMoved) { _panX[_elemTab] = _panStartPx + dx; _panY[_elemTab] = _panStartPy + dy; }
+            if (_panMoved) { _panX[_elemTab] = _panStartPx + dx; _panY[_elemTab] = _panStartPy + dy; Redraw(); }
             e.Handled = true;
         }
 
@@ -1120,6 +1149,9 @@ public class GuiDialogSpellbook : GuiDialog
                 _dragStarted = false;
             }
         }
+
+        // Redraw during active drag so the dragged card follows the mouse immediately
+        if (_dragId != null) Redraw();
 
         base.OnMouseMove(e);
     }
@@ -1589,7 +1621,20 @@ public class GuiDialogSpellbook : GuiDialog
     { var te = ctx.TextExtents(t); ctx.MoveTo(cx - te.Width/2 - te.XBearing, cy - te.Height/2 - te.YBearing); ctx.ShowText(t); }
     
     private static (double w, double h) TSize(Context ctx, string t)
-    { var te = ctx.TextExtents(t); return (te.Width, te.Height); }
+    {
+        var te = ctx.TextExtents(t);
+        return (te.Width, te.Height);
+    }
+
+    private (double w, double h) TSizeCached(Context ctx, string t, double fontSize)
+    {
+        var key = $"{fontSize:F1}|{t}";
+        if (_textMeasure.TryGetValue(key, out var cached)) return cached;
+        var te = ctx.TextExtents(t);
+        var result = (te.Width, te.Height);
+        _textMeasure[key] = result;
+        return result;
+    }
 
     private static bool InRect((double x,double y,double w,double h) r, double mx, double my)
         => mx>=r.x && mx<=r.x+r.w && my>=r.y && my<=r.y+r.h;
