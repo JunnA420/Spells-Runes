@@ -37,6 +37,6 @@ public class CloningWindStep : Spell
             Math.Max(caster.SidedPos.Motion.Y, 0.05),
             lookDir.Z * WindStep.ForwardForce * GetRangeMultiplier(spellLevel));
 
-        WindSlash.SpawnFx(world, origin, lookDir, spellLevel, WindStep.Range * GetRangeMultiplier(spellLevel));
+       
     }
 }

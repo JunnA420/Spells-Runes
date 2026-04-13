@@ -26,6 +26,7 @@ public class Tornado : Spell
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         var baseCenter = caster.SidedPos.XYZ.Add(caster.SidedPos.GetViewVector().ToVec3d().Normalize() * 9).Add(0, 0.5, 0);
+        baseCenter = ClampToSurface(world, baseCenter);
         SpawnFx(world, baseCenter, spellLevel, 2.2f);
 
         if (world.Side != EnumAppSide.Server || world.Api == null) return;

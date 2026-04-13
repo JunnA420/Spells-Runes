@@ -19,15 +19,15 @@
   
   <ItemGroup>
     <Reference Include="VintagestoryAPI">
-      <HintPath>D:\Vintagestory\VintagestoryAPI.dll</HintPath>
+      <HintPath>C:\Games\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="cairo-sharp">
-      <HintPath>D:\Vintagestory\Lib\cairo-sharp.dll</HintPath>
+      <HintPath>C:\Games\Vintagestory\Lib\cairo-sharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>D:\Vintagestory\Lib\protobuf-net.dll</HintPath>
+      <HintPath>C:\Games\Vintagestory\Lib\protobuf-net.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="VSSurvivalMod">
@@ -43,7 +43,7 @@
       <VSModsDir>$(APPDATA)\VintagestoryData\Mods</VSModsDir>
       <ProjectRoot>$(MSBuildProjectDirectory)</ProjectRoot>
     </PropertyGroup>
-    <Exec Command="powershell -NoProfile -Command &quot;$root = '$(ProjectRoot)'; $zip = '$(ModZip)'; if (Test-Path $zip) { Remove-Item $zip }; Add-Type -Assembly System.IO.Compression.FileSystem; $archive = [System.IO.Compression.ZipFile]::Open($zip, 'Create'); $addFile = { param($absPath, $entryName) [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $absPath, $entryName) | Out-Null }; &amp;$addFile '$(OutputPath)$(AssemblyName).dll' '$(AssemblyName).dll'; &amp;$addFile (Join-Path $root 'modinfo.json') 'modinfo.json'; Get-ChildItem -Path (Join-Path $root 'assets') -Recurse -File | ForEach-Object { $rel = $_.FullName.Substring($root.Length).TrimStart('\'); $rel = $rel -replace '\\\\', '/'; &amp;$addFile $_.FullName $rel }; $archive.Dispose(); $dest = '$(VSModsDir)'; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }; Copy-Item $zip $dest -Force&quot;" />
+    <Exec Command="powershell -NoProfile -Command &quot;$root = '$(ProjectRoot)'; $zip = '$(ModZip)'; if (Test-Path $zip) { Remove-Item $zip }; Add-Type -Assembly System.IO.Compression.FileSystem; $archive = [System.IO.Compression.ZipFile]::Open($zip, 'Create'); $addFile = { param($absPath, $entryName) [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $absPath, $entryName) | Out-Null }; &amp;$addFile '$(OutputPath)$(AssemblyName).dll' '$(AssemblyName).dll'; &amp;$addFile (Join-Path $root 'modinfo.json') 'modinfo.json'; Get-ChildItem -Path (Join-Path $root 'assets') -Recurse -File | ForEach-Object { $rel = $_.FullName.Substring($root.Length).TrimStart('\'); $rel = $rel -replace '\\\\', '/'; &amp;$addFile $_.FullName $rel }; $archive.Dispose(); $dest = '$(VSModsDir)'; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }; try { Copy-Item $zip $dest -Force -ErrorAction Stop } catch { Write-Host 'PackMod warning: could not copy zip to Vintage Story Mods folder.'; Write-Host $_.Exception.Message }&quot;" />
   </Target>
 
 </Project>

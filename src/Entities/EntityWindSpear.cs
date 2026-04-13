@@ -1,5 +1,7 @@
 using Vintagestory.API.Common;
+using Vintagestory.API.MathTools;
 using Vintagestory.GameContent;
+using SpellsAndRunes.Spells.Air;
 
 namespace SpellsAndRunes.Entities;
 
@@ -13,12 +15,14 @@ public class EntityWindSpear : EntityProjectile
     {
         base.OnEntitySpawn();
         PlaySpawn();
+        TrySpawnFx();
     }
 
     public override void OnEntityLoaded()
     {
         base.OnEntityLoaded();
         PlaySpawn();
+        TrySpawnFx();
     }
 
     public void RestartSpawnAnimation()
@@ -44,6 +48,7 @@ public class EntityWindSpear : EntityProjectile
         idleCallbackId = Api.Event.RegisterCallback(_ => PlayIdle(), SpawnDurationMs);
     }
 
+
     private void PlayIdle()
     {
         if (!Alive) return;
@@ -58,5 +63,21 @@ public class EntityWindSpear : EntityProjectile
             EaseOutSpeed   = 10f,
             Weight         = 1f,
         });
+    }
+
+    private void TrySpawnFx()
+    {
+        if (Api == null || Api.Side != EnumAppSide.Client) return;
+        Vec3d forward = DirectionFromYawPitch(Pos.Yaw, Pos.Pitch);
+        WindSpear.SpawnFx(Api.World, Pos.XYZ, forward, 1, 2f);
+    }
+
+    private static Vec3d DirectionFromYawPitch(float yaw, float pitch)
+    {
+        double cosPitch = System.Math.Cos(pitch);
+        return new Vec3d(
+            System.Math.Sin(yaw) * cosPitch,
+            -System.Math.Sin(pitch),
+            System.Math.Cos(yaw) * cosPitch);
     }
 }

@@ -17,11 +17,11 @@ namespace SpellsAndRunes.Spells;
 ///   3. Award spell XP via PlayerSpellData.AddSpellXp()
 ///
 /// Misscast chance by spell level:
-///   Lvl 1 = 30%, Lvl 2 = 22%, Lvl 3 = 14%, Lvl 4 = 5%, Lvl 5+ = 0%
+///   Lvl 1 = 15%, Lvl 2 = 12%, Lvl 3 = 8%, Lvl 4 = 5%, Lvl 5+ = 0%
 /// </summary>
 public abstract class Spell
 {
-    private static readonly float[] MisscastChance = { 0.30f, 0.22f, 0.14f, 0.05f };
+    private static readonly float[] MisscastChance = { 0.15f, 0.12f, 0.08f, 0.05f };
 
     // ---- Identity ----
 
@@ -109,6 +109,22 @@ public abstract class Spell
             .Add(0, caster.LocalEyePos.Y + cfg.Up, 0)
             .Add(look  * cfg.Forward)
             .Add(right * cfg.Side);
+    }
+
+    /// <summary>
+    /// Clamps a world position to at least the terrain surface at that X/Z.
+    /// Ensures ground-targeted FX never spawn under the terrain when looking down.
+    /// </summary>
+    protected static Vec3d ClampToSurface(IWorldAccessor world, Vec3d pos, double lift = 0.1)
+    {
+        var blockAccessor = world.BlockAccessor;
+        if (blockAccessor == null) return pos;
+        int x = (int)Math.Floor(pos.X);
+        int z = (int)Math.Floor(pos.Z);
+        int terrainY = blockAccessor.GetTerrainMapheightAt(new BlockPos(x, 0, z));
+        double minY = terrainY + 1 + lift;
+        if (pos.Y < minY) pos.Y = minY;
+        return pos;
     }
 
     // ---- Casting ----

@@ -36,6 +36,8 @@ public class SpellsAndRunesMod : ModSystem
     private IClientNetworkChannel?  clientChannel;
     private IServerNetworkChannel? serverChannel;
     private readonly Dictionary<long, ActiveChannelSpell> activeChannelSpells = new();
+    private readonly Dictionary<string, long> recentFxReceipts = new();
+    private readonly Dictionary<string, long> recentSpellReceipts = new();
     private bool windVortexHeld;
 
     private const string ChannelName = "spellsandrunes";
@@ -365,6 +367,36 @@ public class SpellsAndRunesMod : ModSystem
             })
             .SetMessageHandler<MsgSpellFx>(msg =>
             {
+                long nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (msg.SpellId == "air_wind_slash")
+                {
+                    if (recentSpellReceipts.TryGetValue(msg.SpellId, out long lastSpellMs) && nowMs - lastSpellMs < 150)
+                    {
+                        return;
+                    }
+                    recentSpellReceipts[msg.SpellId] = nowMs;
+                }
+                string fxKey = $"{msg.SpellId}|{msg.SpellLevel}|{msg.OriginX:F3}|{msg.OriginY:F3}|{msg.OriginZ:F3}|{msg.LookDirX:F3}|{msg.LookDirY:F3}|{msg.LookDirZ:F3}";
+                if (recentFxReceipts.TryGetValue(fxKey, out long lastMs) && nowMs - lastMs < 120)
+                {
+                    return;
+                }
+
+                recentFxReceipts[fxKey] = nowMs;
+                if (recentFxReceipts.Count > 64)
+                {
+                    string? staleKey = null;
+                    foreach (var pair in recentFxReceipts)
+                    {
+                        if (nowMs - pair.Value > 1000)
+                        {
+                            staleKey = pair.Key;
+                            break;
+                        }
+                    }
+                    if (staleKey != null) recentFxReceipts.Remove(staleKey);
+                }
+
                 var origin  = new Vec3d(msg.OriginX, msg.OriginY, msg.OriginZ);
                 var lookDir = new Vec3d(msg.LookDirX, msg.LookDirY, msg.LookDirZ).Normalize();
                 switch (msg.SpellId)
@@ -394,7 +426,6 @@ public class SpellsAndRunesMod : ModSystem
                         Spells.Air.WindVortex.SpawnFx(api.World, origin, msg.SpellLevel);
                         break;
                     case "air_wind_spear":
-                        Spells.Air.WindSpear.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
                         break;
                     case "air_feather_fall":
                         Spells.Air.FeatherFall.SpawnFx(api.World, origin);
@@ -437,12 +468,13 @@ public class SpellsAndRunesMod : ModSystem
 
         api.Event.RegisterGameTickListener(_ => coneRenderer.OnGameTick(_), 50);
 
-        // /snr debug — toggle cone preview
-        api.Input.RegisterHotKey("spellsandrunes.debug", "Toggle Spell Debug Cone", GlKeys.F8, HotkeyType.GUIOrOtherControls);
+        // /snr debug — toggle cone preview + wind slash hitbox
+        api.Input.RegisterHotKey("spellsandrunes.debug", "Toggle Spell Debugs", GlKeys.F8, HotkeyType.GUIOrOtherControls);
         api.Input.SetHotKeyHandler("spellsandrunes.debug", _ =>
         {
             coneRenderer.Enabled = !coneRenderer.Enabled;
-            api.ShowChatMessage($"[SnR] Cone debug: {(coneRenderer.Enabled ? "ON" : "OFF")}");
+            Spells.Air.WindSlash.DebugHitboxEnabled = !Spells.Air.WindSlash.DebugHitboxEnabled;
+            api.ShowChatMessage($"[SnR] Cone debug: {(coneRenderer.Enabled ? "ON" : "OFF")} | Slash hitbox: {(Spells.Air.WindSlash.DebugHitboxEnabled ? "ON" : "OFF")}");
             return true;
         });
 

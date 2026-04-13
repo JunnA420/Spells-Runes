@@ -44,7 +44,7 @@ public class TripleWindSlash : Spell
                 if (!caster.Alive) return;
                 var origin = baseOrigin + right * offsets[index];
                 WindSlash.HitAlongLine(caster, world, origin, lookDir, range, WindSlash.HitRadius, damage);
-                WindSlash.SpawnFx(world, origin, lookDir, spellLevel, range);
+                WindSlash.SpawnFx(world, origin, lookDir, spellLevel);
             }, i * 120);
         }
     }

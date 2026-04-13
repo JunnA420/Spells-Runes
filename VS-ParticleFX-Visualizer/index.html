@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JunnAs FX Visualizer</title>
+  <style>
+    :root{--panel:rgba(18,18,18,.92);--panel-border:rgba(214,172,92,.22);--text:#f0dfb1;--muted:#b89a57;--accent:#c79c3b;--accent-strong:#8f6a1d;--shadow:0 18px 42px rgba(0,0,0,.34);--field-bg:rgba(14,14,14,.95)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Georgia,"Times New Roman",serif;color:var(--text);background:radial-gradient(circle at top left,rgba(199,156,59,.18),transparent 35%),radial-gradient(circle at bottom right,rgba(199,156,59,.1),transparent 30%),linear-gradient(135deg,#050505 0%,#0d0d0d 45%,#15120c 100%)}
+    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.app-shell{width:min(1760px,100%);display:grid;gap:18px}.panel{background:var(--panel);border:1px solid var(--panel-border);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    .app-header{display:grid;gap:18px;align-items:end;padding:20px 22px}.app-title{display:grid;gap:8px}.header-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;align-items:center}h1{margin:0;font-size:clamp(1.8rem,3vw,2.5rem);line-height:1}.subtle{margin:0;color:var(--muted);font-size:.98rem;line-height:1.45}
+    .content{display:grid;grid-template-columns:minmax(1060px,1.5fr) minmax(560px,.85fr);gap:18px;align-items:start}.workspace{display:grid;gap:16px;padding:18px;align-content:start}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .stat-card{padding:12px 14px;border-radius:14px;background:rgba(24,24,24,.92);border:1px solid rgba(214,172,92,.12)}.stat-card strong,.stat-card span{display:block}.stat-card strong{margin-bottom:4px;color:var(--muted);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.stat-card span{font-size:1.05rem}
+    .sections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}.viewer-stack{display:grid;gap:14px;position:sticky;top:18px}.section-card{padding:16px;border-radius:18px;background:rgba(214,172,92,.06);border:1px solid rgba(214,172,92,.12);display:grid;gap:12px;align-content:start;height:100%}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px}.section-title strong{font-size:1rem}.section-title span{font-size:.88rem;color:var(--muted)}
+    .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.field{min-width:0}.field label{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;color:var(--muted);font-size:.92rem}.field-value{color:var(--text);font-size:.9rem}
+    .preset-toolbar,.layer-toolbar{display:grid;gap:12px;padding:16px 18px;align-items:end}.preset-toolbar{grid-template-columns:minmax(220px,280px) minmax(220px,1fr) auto}.layer-toolbar{grid-template-columns:minmax(220px,280px) minmax(220px,1fr) auto;align-items:center}.toolbar-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+    input,select,textarea{width:100%;border:1px solid rgba(79,55,39,.15);color:var(--text);background:var(--field-bg);font:inherit}input,select{border-radius:999px;padding:12px 14px;font:0.95rem/1.2 Georgia,"Times New Roman",serif}input[type=color]{padding:6px;height:46px}input[type=checkbox]{width:auto;accent-color:var(--accent);transform:scale(1.1)}
+    input[type=range]{padding:0;height:44px;appearance:none;background:transparent;border:none}
+    input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:linear-gradient(180deg,rgba(199,156,59,.45),rgba(143,106,29,.8))}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:#f0dfb1;border:2px solid #8f6a1d;margin-top:-5px;box-shadow:0 0 0 3px rgba(199,156,59,.18)}
+    input[type=range]::-moz-range-track{height:8px;border-radius:999px;background:linear-gradient(180deg,rgba(199,156,59,.45),rgba(143,106,29,.8))}
+    input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#f0dfb1;border:2px solid #8f6a1d}
+    .toggle-row{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:999px;background:var(--field-bg);border:1px solid rgba(79,55,39,.15)}textarea{min-height:210px;resize:vertical;border-radius:16px;padding:14px;font:.92rem/1.45 Consolas,"Courier New",monospace}
+    button,input[type=file]::file-selector-button{appearance:none;border:0;border-radius:999px;padding:10px 16px;font:inherit;color:#0c0a06;background:linear-gradient(180deg,var(--accent) 0%,var(--accent-strong) 100%);cursor:pointer;transition:transform .12s ease,opacity .12s ease}button:hover,input[type=file]::file-selector-button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.file-picker{overflow:hidden;border-radius:999px}.file-picker input[type=file]{width:100%;font:inherit;color:var(--muted)}
+    .viewer{position:relative;min-height:720px;overflow:hidden;padding:0}#three-root{width:100%;height:100%;min-height:720px;border-radius:22px}.viewer-overlay{position:absolute;top:16px;left:16px;display:grid;gap:10px;z-index:2;pointer-events:none}.overlay-pill{padding:9px 12px;border-radius:999px;background:rgba(10,10,10,.72);border:1px solid rgba(214,172,92,.18);font-size:.88rem;backdrop-filter:blur(6px)}
+    .timeline-panel,.export-panel{display:grid;gap:10px;padding:18px}.timeline-head,.timeline-meta,.timeline-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.timeline-track{display:grid;gap:8px}.timeline-axis{display:flex;justify-content:space-between;color:var(--muted);font-size:.84rem}
+    #timelineInput{height:26px}.status{min-height:1.25rem;color:var(--accent-strong);font-size:.94rem}.hint{color:var(--muted);font-size:.88rem;line-height:1.45}
+    @media (max-width:1500px){.content{grid-template-columns:minmax(760px,1.25fr) minmax(500px,.9fr)}.sections{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:1200px){.content,.sections,.preset-toolbar,.layer-toolbar{grid-template-columns:1fr}.viewer-stack{position:static}.toolbar-actions{justify-content:flex-start}}@media (max-width:980px){.page{align-items:start;padding:18px}.stats-grid,.fields,.app-header{grid-template-columns:1fr}.header-actions{justify-content:flex-start}.viewer,#three-root{min-height:58vh}}
+  </style>
+</head>
+<body>
+  <div class="page"><div class="app-shell">
+    <section class="panel app-header">
+      <div class="app-title">
+        <h1>JunnAs FX Visualizer</h1>
+        <p class="subtle">Live particle playground in the same style as the voxelforming tool. Tweak emitter values, preview them in 3D, and export JSON or a C# starter snippet.</p>
+      </div>
+      <div class="header-actions">
+        <button id="togglePlaybackButton" type="button">Pause</button>
+      </div>
+    </section>
+
+    <div class="content">
+      <section class="panel workspace">
+        <section class="panel preset-toolbar">
+          <div class="field"><label for="presetSelect">Preset</label><select id="presetSelect"></select></div>
+          <div class="field"><label for="labelInput">FX Name</label><input id="labelInput" type="text" /></div>
+          <div class="field"><label for="exportParamsInput">SpawnFx Params</label><input id="exportParamsInput" type="text" value="IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f" /></div>
+          <div class="field"><label for="rangeRefInput">Range Ref</label><input id="rangeRefInput" type="number" min="0.1" step="0.1" value="12" /></div>
+          <div class="toolbar-actions">
+            <button id="newPresetButton" type="button">New FX</button>
+          </div>
+        </section>
+
+        <section class="panel layer-toolbar">
+          <div class="field"><label for="emitterSelect">Active Layer</label><select id="emitterSelect"></select></div>
+          <div class="field"><label for="emitterLabelInput">Layer Name</label><input id="emitterLabelInput" type="text" /></div>
+          <div class="toolbar-actions">
+            <button id="addEmitterButton" type="button">Add Layer</button>
+            <button id="duplicateEmitterButton" type="button">Duplicate Layer</button>
+            <button id="removeEmitterButton" type="button">Remove Layer</button>
+          </div>
+        </section>
+
+        <div class="stats-grid">
+          <div class="stat-card"><strong>Active Preset</strong><span id="presetLabel">Custom</span></div>
+          <div class="stat-card"><strong>Live Particles</strong><span id="particleCountLabel">0</span></div>
+          <div class="stat-card"><strong>Spawn Mode</strong><span id="modeLabel">Loop</span></div>
+          <div class="stat-card"><strong>Preview Time</strong><span id="timeLabel">0.0s</span></div>
+        </div>
+
+        <div class="sections">
+          <section class="section-card">
+            <div class="section-title"><strong>Emission</strong><span>How particles spawn</span></div>
+            <div class="fields">
+              <div class="field"><label for="shapeSelect">Emitter Shape</label><select id="shapeSelect"><option value="sphere">Sphere</option><option value="box">Box</option><option value="cone">Cone</option><option value="ring">Ring</option><option value="vortex">Vortex</option><option value="slash">Slash</option></select></div>
+              <div class="field"><label for="burstCountInput">Burst Count</label><input id="burstCountInput" type="number" min="0" step="1" /></div>
+              <div class="field"><label for="burstIntervalInput">Burst Interval (sec)</label><input id="burstIntervalInput" type="number" min="0" step="0.01" /></div>
+              <div class="field"><label for="spawnRateInput">Spawn Rate / sec</label><input id="spawnRateInput" type="number" min="0" step="1" /></div>
+              <div class="field"><label for="durationInput">Duration (sec)</label><input id="durationInput" type="number" min="0.1" step="0.1" /></div>
+              <div class="field"><label for="startDelayInput">Start Delay (sec)</label><input id="startDelayInput" type="number" min="0" step="0.01" inputmode="decimal" /></div>
+              <div class="field"><label for="radiusInput">Radius</label><input id="radiusInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="radiusTopInput">Top Radius</label><input id="radiusTopInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="heightInput">Height</label><input id="heightInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="coneAngleInput">Cone Angle</label><input id="coneAngleInput" type="number" min="0" max="180" step="1" /></div>
+              <div class="field"><label for="spreadXInput">Box Spread X</label><input id="spreadXInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="spreadYInput">Box Spread Y</label><input id="spreadYInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="spreadZInput">Box Spread Z</label><input id="spreadZInput" type="number" min="0" step="0.05" /></div>
+              <div class="field"><label for="chaosInput">Chaos</label><input id="chaosInput" type="number" min="0" step="0.01" /></div>
+              <div class="field"><label for="maxParticlesInput">Max Particles</label><input id="maxParticlesInput" type="number" min="16" max="4000" step="16" /></div>
+              <div class="field"><label for="loopInput">Loop Playback</label><div class="toggle-row"><input id="loopInput" type="checkbox" /><span>Respawn after duration</span></div></div>
+              <div class="field"><label for="worldSpaceInput">World Space</label><div class="toggle-row"><input id="worldSpaceInput" type="checkbox" /><span>Keep particles between loops</span></div></div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title"><strong>Motion</strong><span>Velocity and drift</span></div>
+            <div class="fields">
+              <div class="field"><label for="dirXInput">Direction X</label><input id="dirXInput" type="number" step="0.1" /></div>
+              <div class="field"><label for="dirYInput">Direction Y</label><input id="dirYInput" type="number" step="0.1" /></div>
+              <div class="field"><label for="dirZInput">Direction Z</label><input id="dirZInput" type="number" step="0.1" /></div>
+              <div class="field"><label for="velocityModeSelect">Velocity Mode</label><select id="velocityModeSelect"><option value="directional">Directional</option><option value="radial">Radial</option><option value="inward">Inward</option><option value="tangential">Tangential</option><option value="vortex">Vortex</option></select></div>
+              <div class="field"><label for="speedInput">Base Speed</label><input id="speedInput" type="number" min="0" step="0.1" /></div>
+              <div class="field"><label for="randomVelocityInput">Random Velocity</label><input id="randomVelocityInput" type="number" min="0" step="0.1" /></div>
+              <div class="field"><label for="tangentialInput">Tangential</label><input id="tangentialInput" type="number" min="-20" max="20" step="0.05" /></div>
+              <div class="field"><label for="inwardInput">Inward</label><input id="inwardInput" type="number" min="-20" max="20" step="0.05" /></div>
+              <div class="field"><label for="verticalInput">Vertical</label><input id="verticalInput" type="number" min="-20" max="20" step="0.05" /></div>
+              <div class="field"><label for="dragInput">Drag</label><input id="dragInput" type="number" min="0" step="0.01" /></div>
+              <div class="field"><label for="gravityInput">Gravity</label><input id="gravityInput" type="number" step="0.1" /></div>
+              <div class="field"><label for="updraftInput">Updraft Noise</label><input id="updraftInput" type="number" min="0" step="0.05" /></div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title"><strong>Transform</strong><span>Orient the emitter</span></div>
+            <div class="fields">
+              <div class="field"><label for="offsetXInput">Offset X</label><input id="offsetXInput" type="number" min="-10" max="10" step="0.05" /></div>
+              <div class="field"><label for="offsetYInput">Offset Y</label><input id="offsetYInput" type="number" min="-10" max="10" step="0.05" /></div>
+              <div class="field"><label for="offsetZInput">Offset Z</label><input id="offsetZInput" type="number" min="-10" max="10" step="0.05" /></div>
+              <div class="field"><label for="yawInput">Yaw</label><input id="yawInput" type="number" min="-180" max="180" step="1" /></div>
+              <div class="field"><label for="pitchInput">Pitch</label><input id="pitchInput" type="number" min="-180" max="180" step="1" /></div>
+              <div class="field"><label for="rollInput">Roll</label><input id="rollInput" type="number" min="-180" max="180" step="1" /></div>
+              <div class="field"><label>Viewport Gizmo</label><div class="toolbar-actions"><button id="gizmoTranslateButton" type="button">Move</button><button id="gizmoRotateButton" type="button">Rotate</button></div></div>
+              <div class="field"><label>Quick Rotate</label><div class="toolbar-actions"><button id="rotateYaw90Button" type="button">Yaw +90°</button><button id="rotatePitch90Button" type="button">Pitch +90°</button><button id="rotateRoll90Button" type="button">Roll +90°</button><button id="resetRotationButton" type="button">Reset</button></div></div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title"><strong>Appearance</strong><span>Life, size, color</span></div>
+            <div class="fields">
+              <div class="field"><label for="lifeMinInput">Life Min</label><input id="lifeMinInput" type="number" min="0.01" step="0.05" /></div>
+              <div class="field"><label for="lifeMaxInput">Life Max</label><input id="lifeMaxInput" type="number" min="0.01" step="0.05" /></div>
+              <div class="field"><label for="sizeMinInput">Size Min</label><input id="sizeMinInput" type="number" min="0.01" step="0.01" /></div>
+              <div class="field"><label for="sizeMaxInput">Size Max</label><input id="sizeMaxInput" type="number" min="0.01" step="0.01" /></div>
+              <div class="field"><label for="startColorInput">Start Color</label><input id="startColorInput" type="color" /></div>
+              <div class="field"><label for="endColorInput">End Color</label><input id="endColorInput" type="color" /></div>
+              <div class="field"><label for="alphaStartInput">Alpha Start</label><input id="alphaStartInput" type="number" min="0" max="1" step="0.05" /></div>
+              <div class="field"><label for="alphaEndInput">Alpha End</label><input id="alphaEndInput" type="number" min="0" max="1" step="0.05" /></div>
+              <div class="field"><label for="collisionInput">Terrain Collision</label><div class="toggle-row"><input id="collisionInput" type="checkbox" /><span>Block collision</span></div></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <div class="viewer-stack">
+        <section class="panel viewer">
+          <div class="viewer-overlay">
+            <div class="overlay-pill" id="viewerModeLabel">Emitter: Sphere</div>
+            <div class="overlay-pill" id="viewerArrowLabel">Blue arrow = export forward, gold arrow = particle direction</div>
+            <div class="overlay-pill">Drag to orbit, scroll to zoom</div>
+          </div>
+          <div id="three-root"></div>
+        </section>
+        <section class="panel timeline-panel">
+          <div class="timeline-head">
+            <strong>Timeline</strong>
+            <span class="hint">0s to end of current FX cycle</span>
+          </div>
+          <div class="timeline-meta">
+            <span id="timelineStartLabel">0.0s</span>
+            <strong id="timelineCurrentLabel">0.0s</strong>
+            <span id="timelineEndLabel">1.2s</span>
+          </div>
+          <div class="timeline-track">
+            <input id="timelineInput" type="range" min="0" max="1" step="0.01" value="0" />
+            <div class="timeline-axis">
+              <span>0s</span>
+              <span id="timelineMarkerLabel">Cycle Progress</span>
+              <span id="timelineDurationLabel">1.2s</span>
+            </div>
+          </div>
+          <div class="timeline-controls">
+            <button id="timelinePlayButton" type="button">Pause</button>
+            <button id="timelineRestartButton" type="button">Restart</button>
+          </div>
+        </section>
+        <section class="panel export-panel">
+          <label for="importInput">Import SpawnFx / FX JSON</label>
+          <textarea id="importInput" placeholder="Paste SpawnFx() output or exported JSON here, then click Import."></textarea>
+          <div class="toolbar-actions">
+            <button id="importButton" type="button">Import</button>
+          </div>
+          <div class="timeline-head">
+            <label for="codeOutput">C# SpawnFx() Snippet</label>
+            <button id="copyCodeButton" type="button">Copy</button>
+          </div>
+          <textarea id="codeOutput" readonly></textarea>
+          <div id="statusLabel" class="status" aria-live="polite"></div>
+          <div class="hint">Tune the effect, then copy the generated `SpawnFx()` method directly into your spell class.</div>
+        </section>
+      </div>
+    </div>
+  </div></div>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { TransformControls } from "three/addons/controls/TransformControls.js";
+
+    const STORAGE_KEY = "junnas-fx-visualizer-config";
+    function makeEmitter(label, config) { return { label, ...config }; }
+    const PRESETS = {
+      spark:{label:"Spark Burst",emitters:[
+        makeEmitter("Spark Core",{shape:"cone",velocityMode:"directional",burstCount:180,spawnRate:0,duration:1.2,loop:true,worldSpace:true,radius:.2,radiusTop:.2,height:.6,chaos:0,coneAngle:40,spreadX:.4,spreadY:.3,spreadZ:.4,maxParticles:700,direction:{x:0,y:.35,z:1},speed:6,tangential:0,inward:0,vertical:0,randomVelocity:3.5,drag:.2,gravity:3.2,updraft:.7,lifeMin:.08,lifeMax:1.4,sizeMin:.08,sizeMax:.22,startColor:"#aeeeff",endColor:"#0014b4",alphaStart:1,alphaEnd:0})
+      ]},
+      airpush:{label:"Air Push Spiral",emitters:[
+        makeEmitter("Wind Core",{shape:"cone",velocityMode:"directional",burstCount:220,spawnRate:28,duration:1.8,loop:true,worldSpace:true,radius:.35,radiusTop:.35,height:.8,chaos:0,coneAngle:52,spreadX:.45,spreadY:.35,spreadZ:.8,maxParticles:700,direction:{x:0,y:.18,z:1},speed:8.8,tangential:0,inward:0,vertical:0,randomVelocity:2.4,drag:.08,gravity:-.35,updraft:.9,lifeMin:.16,lifeMax:.4,sizeMin:.1,sizeMax:.24,startColor:"#eef9ff",endColor:"#8cc5ff",alphaStart:.85,alphaEnd:0}),
+        makeEmitter("Outer Ring Left",{shape:"cone",burstCount:72,spawnRate:0,duration:1.1,loop:true,worldSpace:true,radius:.75,coneAngle:70,spreadX:.85,spreadY:.7,spreadZ:1.2,maxParticles:220,direction:{x:-.22,y:.08,z:1},speed:5.2,randomVelocity:1.2,drag:.04,gravity:-.1,updraft:.2,lifeMin:.18,lifeMax:.34,sizeMin:.07,sizeMax:.18,startColor:"#f8fdff",endColor:"#c4e5ff",alphaStart:.65,alphaEnd:0}),
+        makeEmitter("Outer Ring Right",{shape:"cone",burstCount:72,spawnRate:0,duration:1.1,loop:true,worldSpace:true,radius:.75,coneAngle:70,spreadX:.85,spreadY:.7,spreadZ:1.2,maxParticles:220,direction:{x:.22,y:.08,z:1},speed:5.2,randomVelocity:1.2,drag:.04,gravity:-.1,updraft:.2,lifeMin:.18,lifeMax:.34,sizeMin:.07,sizeMax:.18,startColor:"#f8fdff",endColor:"#c4e5ff",alphaStart:.65,alphaEnd:0})
+      ]},
+      sylphweed:{label:"Sylphweed Drift",emitters:[
+        makeEmitter("Glow Drift",{shape:"sphere",velocityMode:"directional",burstCount:0,spawnRate:18,duration:2.6,loop:true,worldSpace:true,radius:.55,radiusTop:.55,height:.4,chaos:0,coneAngle:20,spreadX:.65,spreadY:.45,spreadZ:.65,maxParticles:420,direction:{x:0,y:1,z:0},speed:.2,tangential:0,inward:0,vertical:0,randomVelocity:.22,drag:.12,gravity:-.08,updraft:.12,lifeMin:1.6,lifeMax:3.4,sizeMin:.08,sizeMax:.16,startColor:"#ffffff",endColor:"#c1f5dc",alphaStart:.85,alphaEnd:0})
+      ]},
+      airkick:{label:"Air Kick",emitters:[
+        makeEmitter("Ground Blast",{shape:"cone",burstCount:60,spawnRate:0,duration:.3,loop:true,worldSpace:true,radius:.6,coneAngle:55,spreadX:.55,spreadY:.1,spreadZ:.55,maxParticles:220,direction:{x:0,y:-1,z:0},speed:10.5,randomVelocity:2.8,drag:.05,gravity:1.1,updraft:0,lifeMin:.14,lifeMax:.24,sizeMin:.1,sizeMax:.4,startColor:"#e1f5ff",endColor:"#b5deff",alphaStart:.92,alphaEnd:0}),
+        makeEmitter("Shockwave Ring",{shape:"sphere",burstCount:48,spawnRate:0,duration:.35,loop:true,worldSpace:true,radius:.18,coneAngle:0,spreadX:.2,spreadY:.05,spreadZ:.2,maxParticles:180,direction:{x:0,y:.08,z:1},speed:6.8,randomVelocity:1.5,drag:.04,gravity:-.02,updraft:.05,lifeMin:.2,lifeMax:.3,sizeMin:.12,sizeMax:.45,startColor:"#d2eeff",endColor:"#9ed0ff",alphaStart:.82,alphaEnd:0}),
+        makeEmitter("Launch Trail",{shape:"cone",burstCount:50,spawnRate:18,duration:.75,loop:true,worldSpace:true,radius:.28,coneAngle:22,spreadX:.3,spreadY:.4,spreadZ:.3,maxParticles:260,direction:{x:0,y:.18,z:1},speed:12,randomVelocity:1.4,drag:.02,gravity:-.1,updraft:.08,lifeMin:.1,lifeMax:.18,sizeMin:.06,sizeMax:.22,startColor:"#f0faff",endColor:"#cce8ff",alphaStart:.9,alphaEnd:0}),
+        makeEmitter("Upward Core Burst",{shape:"sphere",burstCount:25,spawnRate:0,duration:.28,loop:true,worldSpace:true,radius:.16,coneAngle:0,spreadX:.15,spreadY:.4,spreadZ:.15,maxParticles:100,direction:{x:0,y:1,z:0},speed:10,randomVelocity:1.2,drag:.04,gravity:-.1,updraft:.15,lifeMin:.12,lifeMax:.2,sizeMin:.05,sizeMax:.18,startColor:"#f5fcff",endColor:"#dff3ff",alphaStart:.95,alphaEnd:0})
+      ]},
+      featherfall:{label:"Feather Fall",emitters:[
+        makeEmitter("Downward Jet",{shape:"cone",burstCount:80,spawnRate:0,duration:.35,loop:true,worldSpace:true,radius:.55,coneAngle:50,spreadX:.35,spreadY:.08,spreadZ:.35,maxParticles:260,direction:{x:0,y:-1,z:0},speed:8.8,randomVelocity:2.1,drag:.04,gravity:.3,updraft:0,lifeMin:.12,lifeMax:.22,sizeMin:.08,sizeMax:.3,startColor:"#dcf2ff",endColor:"#aad8ff",alphaStart:.9,alphaEnd:0}),
+        makeEmitter("Shockwave Ring",{shape:"sphere",burstCount:40,spawnRate:0,duration:.32,loop:true,worldSpace:true,radius:.22,coneAngle:0,spreadX:.18,spreadY:.08,spreadZ:.18,maxParticles:180,direction:{x:0,y:-.08,z:1},speed:4.9,randomVelocity:1.2,drag:.05,gravity:.08,updraft:0,lifeMin:.18,lifeMax:.3,sizeMin:.1,sizeMax:.38,startColor:"#d2eeff",endColor:"#a1d1ff",alphaStart:.8,alphaEnd:0}),
+        makeEmitter("Core Flash",{shape:"sphere",burstCount:20,spawnRate:0,duration:.18,loop:true,worldSpace:true,radius:.15,coneAngle:0,spreadX:.15,spreadY:.3,spreadZ:.15,maxParticles:90,direction:{x:0,y:-1,z:0},speed:11.5,randomVelocity:1.1,drag:.02,gravity:0,updraft:0,lifeMin:.07,lifeMax:.12,sizeMin:.04,sizeMax:.12,startColor:"#f0faff",endColor:"#ffffff",alphaStart:.98,alphaEnd:0})
+      ]},
+      updraft:{label:"Updraft",emitters:[
+        makeEmitter("Vertical Burst",{shape:"sphere",burstCount:72,spawnRate:0,duration:.45,loop:true,worldSpace:true,radius:.45,coneAngle:0,spreadX:.25,spreadY:.05,spreadZ:.25,maxParticles:240,direction:{x:0,y:1,z:.25},speed:6.2,randomVelocity:1.3,drag:.04,gravity:-.08,updraft:.18,lifeMin:.22,lifeMax:.34,sizeMin:.1,sizeMax:.28,startColor:"#e1f6ff",endColor:"#b7dbff",alphaStart:.9,alphaEnd:0})
+      ]},
+      windslash:{label:"Wind Slash",emitters:[
+        makeEmitter("Crescent Blade",{shape:"slash",velocityMode:"directional",burstCount:220,spawnRate:0,duration:.35,loop:true,worldSpace:true,radius:.42,radiusTop:1.35,height:0,chaos:.01,coneAngle:166,spreadX:.02,spreadY:.04,spreadZ:.01,maxParticles:320,direction:{x:0,y:0,z:1},speed:13.8,tangential:0,inward:0,vertical:0,randomVelocity:.04,drag:.01,gravity:0,updraft:0,lifeMin:.1,lifeMax:.12,sizeMin:.095,sizeMax:.17,startColor:"#eefbff",endColor:"#d7efff",alphaStart:.98,alphaEnd:0})
+      ]},
+      windspear:{label:"Wind Spear",emitters:[
+        makeEmitter("Spear Trail",{shape:"cone",burstCount:18,spawnRate:16,duration:.7,loop:true,worldSpace:true,radius:.08,coneAngle:8,spreadX:.05,spreadY:.05,spreadZ:.08,maxParticles:180,direction:{x:0,y:0,z:1},speed:10,randomVelocity:.25,drag:.01,gravity:0,updraft:0,lifeMin:.08,lifeMax:.13,sizeMin:.05,sizeMax:.14,startColor:"#ebfaff",endColor:"#d3ecff",alphaStart:.96,alphaEnd:0})
+      ]},
+      windvortex:{label:"Wind Vortex",emitters:[
+        makeEmitter("Orbit Ring Low",{shape:"ring",velocityMode:"tangential",burstCount:10,burstInterval:.1,spawnRate:0,duration:3,loop:true,worldSpace:true,radius:1.8,radiusTop:1.8,height:.9,chaos:0,coneAngle:0,spreadX:.01,spreadY:.45,spreadZ:.01,maxParticles:180,direction:{x:1,y:0,z:0},speed:.25,tangential:.25,inward:0,vertical:0,randomVelocity:.05,drag:.02,gravity:0,updraft:0,sizeMin:.08,sizeMax:.14,lifeMin:.12,lifeMax:.14,startColor:"#e1f5ff",endColor:"#c3e5ff",alphaStart:.78,alphaEnd:.2}),
+        makeEmitter("Orbit Ring High",{shape:"ring",velocityMode:"tangential",burstCount:10,burstInterval:.1,spawnRate:0,duration:3,loop:true,worldSpace:true,radius:1.8,radiusTop:1.8,height:.9,chaos:0,coneAngle:0,spreadX:.01,spreadY:.45,spreadZ:.01,maxParticles:180,direction:{x:-1,y:0,z:0},speed:.25,tangential:-.25,inward:0,vertical:0,randomVelocity:.05,drag:.02,gravity:0,updraft:0,sizeMin:.08,sizeMax:.14,lifeMin:.12,lifeMax:.14,startColor:"#e1f5ff",endColor:"#c3e5ff",alphaStart:.78,alphaEnd:.2})
+      ]},
+      stormseye:{label:"Storm's Eye",emitters:[
+        makeEmitter("Funnel Swirl",{shape:"vortex",velocityMode:"vortex",burstCount:52,burstInterval:.1,spawnRate:0,duration:5,loop:true,worldSpace:true,radius:.7,radiusTop:1.45,height:1.45,chaos:.08,coneAngle:55,spreadX:.8,spreadY:1.2,spreadZ:.8,maxParticles:520,direction:{x:0,y:.08,z:1},speed:0,tangential:5.4,inward:1.8,vertical:.12,randomVelocity:.06,drag:.03,gravity:-.035,updraft:.25,lifeMin:.18,lifeMax:.24,sizeMin:.09,sizeMax:.22,startColor:"#dcf7ff",endColor:"#b8e4ff",alphaStart:.8,alphaEnd:0}),
+        makeEmitter("Outer Inward Ring",{shape:"ring",velocityMode:"inward",burstCount:18,burstInterval:.1,spawnRate:0,duration:5,loop:true,worldSpace:true,radius:2.4,radiusTop:2.4,height:.35,chaos:0,coneAngle:0,spreadX:.02,spreadY:.2,spreadZ:.02,maxParticles:220,direction:{x:0,y:0,z:-1},speed:3.2,tangential:0,inward:3.2,vertical:0,randomVelocity:.04,drag:.04,gravity:0,updraft:0,lifeMin:.12,lifeMax:.16,sizeMin:.08,sizeMax:.16,startColor:"#ebfcff",endColor:"#d0efff",alphaStart:.72,alphaEnd:0})
+      ]},
+      tornado:{label:"Tornado",emitters:[
+        makeEmitter("Tornado Body",{shape:"vortex",velocityMode:"vortex",burstCount:156,burstInterval:.1,spawnRate:0,duration:8,loop:true,worldSpace:true,radius:.35,radiusTop:2.9,height:5.2,chaos:.22,coneAngle:65,spreadX:1.4,spreadY:2.4,spreadZ:1.4,maxParticles:1200,direction:{x:0,y:.28,z:1},speed:0,tangential:5.8,inward:0,vertical:1.05,randomVelocity:.08,drag:.02,gravity:-.015,updraft:.4,lifeMin:.22,lifeMax:.32,sizeMin:.09,sizeMax:.22,startColor:"#dcf4ff",endColor:"#b6e0ff",alphaStart:.75,alphaEnd:0}),
+        makeEmitter("Inward Base Ring",{shape:"ring",velocityMode:"inward",burstCount:22,burstInterval:.1,spawnRate:0,duration:8,loop:true,worldSpace:true,radius:2.2,radiusTop:2.2,height:.7,chaos:0,coneAngle:0,spreadX:.05,spreadY:.35,spreadZ:.05,maxParticles:320,direction:{x:0,y:.12,z:-1},speed:2.8,tangential:0,inward:2.8,vertical:.3,randomVelocity:.04,drag:.03,gravity:-.02,updraft:.15,lifeMin:.14,lifeMax:.19,sizeMin:.07,sizeMax:.15,startColor:"#f0fcff",endColor:"#d8f0ff",alphaStart:.7,alphaEnd:0})
+      ]},
+      custom:{label:"Custom FX",emitters:[
+        makeEmitter("Layer 1",{shape:"sphere",velocityMode:"directional",burstCount:120,burstInterval:0,spawnRate:20,duration:1.5,loop:true,worldSpace:true,radius:.45,radiusTop:.45,height:.5,chaos:0,coneAngle:35,spreadX:.4,spreadY:.4,spreadZ:.4,maxParticles:600,direction:{x:0,y:.6,z:.5},speed:2.5,tangential:0,inward:0,vertical:0,randomVelocity:1.4,drag:.1,gravity:.3,updraft:.1,lifeMin:.45,lifeMax:1.25,sizeMin:.09,sizeMax:.2,startColor:"#f1d18a",endColor:"#8f6a1d",alphaStart:1,alphaEnd:0})
+      ]}
+    };
+
+    const state = { presetKey:"spark", fx:structuredClone(PRESETS.spark), activeEmitterIndex:0, playbackActive:true, elapsed:0, spawnCarry:[], burstCarry:[], burstFired:[], gizmoMode:"rotate", exportParams:"IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f", rangeRef:12 };
+    const particles = [];
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      newPresetButton:$("newPresetButton"), togglePlaybackButton:$("togglePlaybackButton"), copyCodeButton:$("copyCodeButton"),
+      presetSelect:$("presetSelect"), labelInput:$("labelInput"), exportParamsInput:$("exportParamsInput"), rangeRefInput:$("rangeRefInput"), emitterSelect:$("emitterSelect"), emitterLabelInput:$("emitterLabelInput"), addEmitterButton:$("addEmitterButton"), duplicateEmitterButton:$("duplicateEmitterButton"), removeEmitterButton:$("removeEmitterButton"), shapeSelect:$("shapeSelect"), burstCountInput:$("burstCountInput"), burstIntervalInput:$("burstIntervalInput"), spawnRateInput:$("spawnRateInput"), durationInput:$("durationInput"), startDelayInput:$("startDelayInput"),
+      radiusInput:$("radiusInput"), radiusTopInput:$("radiusTopInput"), heightInput:$("heightInput"), coneAngleInput:$("coneAngleInput"), spreadXInput:$("spreadXInput"), spreadYInput:$("spreadYInput"), spreadZInput:$("spreadZInput"), chaosInput:$("chaosInput"), maxParticlesInput:$("maxParticlesInput"),
+      loopInput:$("loopInput"), worldSpaceInput:$("worldSpaceInput"), dirXInput:$("dirXInput"), dirYInput:$("dirYInput"), dirZInput:$("dirZInput"), velocityModeSelect:$("velocityModeSelect"), speedInput:$("speedInput"), randomVelocityInput:$("randomVelocityInput"), tangentialInput:$("tangentialInput"), inwardInput:$("inwardInput"), verticalInput:$("verticalInput"), offsetXInput:$("offsetXInput"), offsetYInput:$("offsetYInput"), offsetZInput:$("offsetZInput"), yawInput:$("yawInput"), pitchInput:$("pitchInput"), rollInput:$("rollInput"), collisionInput:$("collisionInput"),
+      dragInput:$("dragInput"), gravityInput:$("gravityInput"), updraftInput:$("updraftInput"), lifeMinInput:$("lifeMinInput"), lifeMaxInput:$("lifeMaxInput"), sizeMinInput:$("sizeMinInput"), sizeMaxInput:$("sizeMaxInput"),
+      startColorInput:$("startColorInput"), endColorInput:$("endColorInput"), alphaStartInput:$("alphaStartInput"), alphaEndInput:$("alphaEndInput"),
+      codeOutput:$("codeOutput"), importInput:$("importInput"), importButton:$("importButton"), statusLabel:$("statusLabel"), presetLabel:$("presetLabel"), particleCountLabel:$("particleCountLabel"), modeLabel:$("modeLabel"), timeLabel:$("timeLabel"), viewerModeLabel:$("viewerModeLabel"), viewerArrowLabel:$("viewerArrowLabel"),
+      timelineInput:$("timelineInput"), timelineStartLabel:$("timelineStartLabel"), timelineCurrentLabel:$("timelineCurrentLabel"), timelineEndLabel:$("timelineEndLabel"), timelineDurationLabel:$("timelineDurationLabel"), timelineMarkerLabel:$("timelineMarkerLabel"), timelinePlayButton:$("timelinePlayButton"), timelineRestartButton:$("timelineRestartButton"),
+      gizmoTranslateButton:$("gizmoTranslateButton"), gizmoRotateButton:$("gizmoRotateButton"), rotateYaw90Button:$("rotateYaw90Button"), rotatePitch90Button:$("rotatePitch90Button"), rotateRoll90Button:$("rotateRoll90Button"), resetRotationButton:$("resetRotationButton"),
+      threeRoot:$("three-root")
+    };
+    const sliderConfigs = {
+      burstCountInput:{ min:0, max:600, step:1, format:(v)=>`${v}` },
+      burstIntervalInput:{ min:0, max:2, step:.01, format:(v)=>Number(v) <= 0 ? "start only" : `${Number(v).toFixed(2)}s` },
+      spawnRateInput:{ min:0, max:240, step:1, format:(v)=>`${v}/s` },
+      durationInput:{ min:.1, max:8, step:.1, format:(v)=>`${Number(v).toFixed(1)}s` },
+      radiusInput:{ min:0, max:2.5, step:.01, format:(v)=>Number(v).toFixed(2) },
+      radiusTopInput:{ min:0, max:4, step:.01, format:(v)=>Number(v).toFixed(2) },
+      heightInput:{ min:0, max:8, step:.01, format:(v)=>Number(v).toFixed(2) },
+      coneAngleInput:{ min:0, max:180, step:1, format:(v)=>`${v}°` },
+      spreadXInput:{ min:0, max:4, step:.01, format:(v)=>Number(v).toFixed(2) },
+      spreadYInput:{ min:0, max:4, step:.01, format:(v)=>Number(v).toFixed(2) },
+      spreadZInput:{ min:0, max:4, step:.01, format:(v)=>Number(v).toFixed(2) },
+      chaosInput:{ min:0, max:2, step:.01, format:(v)=>Number(v).toFixed(2) },
+      maxParticlesInput:{ min:16, max:4000, step:16, format:(v)=>`${v}` },
+      dirXInput:{ min:-1, max:1, step:.01, format:(v)=>Number(v).toFixed(2) },
+      dirYInput:{ min:-1, max:1, step:.01, format:(v)=>Number(v).toFixed(2) },
+      dirZInput:{ min:-1, max:1, step:.01, format:(v)=>Number(v).toFixed(2) },
+      speedInput:{ min:0, max:20, step:.05, format:(v)=>Number(v).toFixed(2) },
+      randomVelocityInput:{ min:0, max:10, step:.05, format:(v)=>Number(v).toFixed(2) },
+      tangentialInput:{ min:-20, max:20, step:.05, format:(v)=>Number(v).toFixed(2) },
+      inwardInput:{ min:-20, max:20, step:.05, format:(v)=>Number(v).toFixed(2) },
+      verticalInput:{ min:-20, max:20, step:.05, format:(v)=>Number(v).toFixed(2) },
+      offsetXInput:{ min:-10, max:10, step:.01, format:(v)=>Number(v).toFixed(2) },
+      offsetYInput:{ min:-10, max:10, step:.01, format:(v)=>Number(v).toFixed(2) },
+      offsetZInput:{ min:-10, max:10, step:.01, format:(v)=>Number(v).toFixed(2) },
+      yawInput:{ min:-180, max:180, step:1, format:(v)=>`${v} deg` },
+      pitchInput:{ min:-180, max:180, step:1, format:(v)=>`${v} deg` },
+      rollInput:{ min:-180, max:180, step:1, format:(v)=>`${v} deg` },
+      dragInput:{ min:0, max:2, step:.01, format:(v)=>Number(v).toFixed(2) },
+      gravityInput:{ min:-6, max:8, step:.05, format:(v)=>Number(v).toFixed(2) },
+      updraftInput:{ min:0, max:4, step:.05, format:(v)=>Number(v).toFixed(2) },
+      lifeMinInput:{ min:.01, max:6, step:.01, format:(v)=>Number(v).toFixed(2) },
+      lifeMaxInput:{ min:.01, max:8, step:.01, format:(v)=>Number(v).toFixed(2) },
+      sizeMinInput:{ min:.01, max:1.2, step:.01, format:(v)=>Number(v).toFixed(2) },
+      sizeMaxInput:{ min:.01, max:2, step:.01, format:(v)=>Number(v).toFixed(2) },
+      alphaStartInput:{ min:0, max:1, step:.01, format:(v)=>Number(v).toFixed(2) },
+      alphaEndInput:{ min:0, max:1, step:.01, format:(v)=>Number(v).toFixed(2) }
+    };
+
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0f0f0f);
+    const camera = new THREE.PerspectiveCamera(50,1,.1,1000); camera.position.set(8,5,9); camera.lookAt(0,1.5,0);
+    const renderer = new THREE.WebGLRenderer({ antialias:true }); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2)); els.threeRoot.appendChild(renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.enablePan = true; controls.target.set(0,1.5,0);
+    const transformControls = new TransformControls(camera, renderer.domElement); transformControls.setMode(state.gizmoMode); scene.add(transformControls);
+    transformControls.addEventListener("dragging-changed", (event) => { controls.enabled = !event.value; });
+    transformControls.addEventListener("objectChange", () => {
+      const emitter = getActiveEmitter();
+      emitter.offsetX = round(emitterGroup.position.x, 3);
+      emitter.offsetY = round(emitterGroup.position.y, 3);
+      emitter.offsetZ = round(emitterGroup.position.z, 3);
+      const euler = new THREE.Euler().setFromQuaternion(emitterGroup.quaternion, "YXZ");
+      emitter.yaw = normalizeAngle(THREE.MathUtils.radToDeg(euler.y));
+      emitter.pitch = normalizeAngle(THREE.MathUtils.radToDeg(euler.x));
+      emitter.roll = normalizeAngle(THREE.MathUtils.radToDeg(euler.z));
+      syncInputs();
+      updateOutputs();
+      saveSession();
+      resetSimulation();
+    });
+    scene.add(new THREE.AmbientLight(0xf3deb0,1.2));
+    const keyLight = new THREE.DirectionalLight(0xf1d18a,2.1); keyLight.position.set(10,16,12); scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0x8f6a1d,1.4); rimLight.position.set(-12,8,-10); scene.add(rimLight);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(9,48), new THREE.MeshStandardMaterial({ color:0x231a0a, roughness:.92, metalness:.06 })); floor.rotation.x = -Math.PI/2; floor.position.y = -.6; scene.add(floor);
+    const grid = new THREE.GridHelper(12,24,0x8f6a1d,0x3d2c12); grid.position.y = -.59; grid.material.transparent = true; grid.material.opacity = .3; scene.add(grid);
+    scene.add(new THREE.AxesHelper(2.4));
+    const emitterGroup = new THREE.Group(); scene.add(emitterGroup);
+    const directionArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 2.2, 0xf1d18a, .3, .18); scene.add(directionArrow);
+    const forwardArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 2.4, 0x67c7ff, .34, .2); scene.add(forwardArrow);
+
+    const MAX_PARTICLES = 4000;
+    const particlePositions = new Float32Array(MAX_PARTICLES * 3);
+    const particleColors = new Float32Array(MAX_PARTICLES * 3);
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+    particleGeometry.setAttribute("color", new THREE.BufferAttribute(particleColors, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      size:.18,
+      sizeAttenuation:true,
+      transparent:true,
+      opacity:.95,
+      vertexColors:true,
+      depthWrite:false,
+      blending:THREE.AdditiveBlending
+    });
+    particleMaterial.toneMapped = false;
+    const particleCloud = new THREE.Points(particleGeometry, particleMaterial);
+    particleCloud.frustumCulled = false;
+    scene.add(particleCloud);
+    const clock = new THREE.Clock();
+
+    const setStatus = (msg) => { els.statusLabel.textContent = msg; };
+    const clone = (v) => JSON.parse(JSON.stringify(v));
+    const rgb = (hex) => { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? { r:parseInt(m[1],16)/255, g:parseInt(m[2],16)/255, b:parseInt(m[3],16)/255 } : { r:1,g:1,b:1 }; };
+    const round = (v,d=3) => Number(v.toFixed(d));
+    const clampByte = (v) => Math.max(0, Math.min(255, Math.round(v)));
+    const methodSafeName = (value) => {
+      const cleaned = String(value || "CustomFx").replace(/[^a-zA-Z0-9]+/g, " ").trim();
+      const parts = cleaned ? cleaned.split(/\s+/) : ["Custom", "Fx"];
+      const joined = parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("");
+      return /^[A-Za-z_]/.test(joined) ? joined : `Fx${joined || "Custom"}`;
+    };
+    const csFloat = (value, digits = 3) => {
+      const num = Number(value) || 0;
+      const fixed = num.toFixed(digits);
+      const trimmed = fixed.replace(/\.?0+$/, "");
+      return `${trimmed.includes(".") ? trimmed : `${trimmed}.0`}f`;
+    };
+    const csDouble = (value, digits = 3) => {
+      const num = Number(value) || 0;
+      const fixed = num.toFixed(digits);
+      const trimmed = fixed.replace(/\.?0+$/, "");
+      return trimmed.includes(".") ? trimmed : `${trimmed}.0`;
+    };
+    const colorLiteral = (hex, alpha) => {
+      const { r, g, b } = rgb(hex);
+      return `${clampByte(r * 255)}, ${clampByte(g * 255)}, ${clampByte(b * 255)}, ${clampByte((Number(alpha) || 0) * 255)}`;
+    };
+    const indentLines = (text, spaces) => text.split("\n").map((line) => `${" ".repeat(spaces)}${line}`).join("\n");
+    const encodeEmitterMeta = (emitter) => {
+      try { return btoa(unescape(encodeURIComponent(JSON.stringify(emitter)))); }
+      catch { return ""; }
+    };
+    const decodeEmitterMeta = (payload) => {
+      try { return JSON.parse(decodeURIComponent(escape(atob(payload)))); }
+      catch { return null; }
+    };
+    function buildEmitterSpawnCode(emitter, index){
+      const burstCount = Math.max(0, Math.round(Number(emitter.burstCount) || 0));
+      const spawnRate = Math.max(0, Number(emitter.spawnRate) || 0);
+      const perCallCount = burstCount > 0 ? burstCount : Math.max(1, Math.round(spawnRate * 0.1));
+      const pitch = Number(emitter.pitch) || 0;
+      const yaw = Number(emitter.yaw) || 0;
+      const roll = Number(emitter.roll) || 0;
+      const offsetX = Number(emitter.offsetX) || 0;
+      const offsetY = Number(emitter.offsetY) || 0;
+      const offsetZ = Number(emitter.offsetZ) || 0;
+      const radius = Number(emitter.radius) || 0;
+      const radiusTop = Number(emitter.radiusTop) || radius;
+      const height = Number(emitter.height) || 0;
+      const spreadX = Number(emitter.spreadX) || 0;
+      const spreadY = Number(emitter.spreadY) || 0;
+      const spreadZ = Number(emitter.spreadZ) || 0;
+      const chaos = Number(emitter.chaos) || 0;
+      const coneAngle = Number(emitter.coneAngle) || 0;
+      const dirX = Number(emitter.direction?.x) || 0;
+      const dirY = Number(emitter.direction?.y) || 0;
+      const dirZ = Number(emitter.direction?.z) || 0;
+      const speed = Number(emitter.speed) || 0;
+      const randomVelocity = Number(emitter.randomVelocity) || 0;
+      const tangential = Number(emitter.tangential) || 0;
+      const inward = Number(emitter.inward) || 0;
+      const vertical = Number(emitter.vertical) || 0;
+      const drag = Number(emitter.drag) || 0;
+      const gravity = Number(emitter.gravity) || 0;
+      const lifeMin = Number(emitter.lifeMin) || 0.01;
+      const lifeMax = Number(emitter.lifeMax) || lifeMin;
+      const sizeMin = Number(emitter.sizeMin) || 0.01;
+      const sizeMax = Number(emitter.sizeMax) || sizeMin;
+      const alphaStart = Number(emitter.alphaStart) || 0;
+      const alphaEnd = Number(emitter.alphaEnd) || 0;
+      const startDelay = Math.max(0, Number(emitter.startDelay) || 0);
+      const startColor = colorLiteral(emitter.startColor, alphaStart);
+      const endColor = colorLiteral(emitter.endColor, alphaEnd);
+      const label = String(emitter.label || `Layer ${index + 1}`).replace(/\*\//g, "* /");
+      const meta = encodeEmitterMeta(sanitizeConfig({
+        ...emitter,
+        label: emitter.label || `Layer ${index + 1}`
+      }));
+
+      return [
+        `// ${label}${startDelay > 0 ? ` (delay ${csDouble(startDelay)}s)` : ""}`,
+        meta ? `// @fxviz ${meta}` : "",
+        "{",
+        `    const double pitchDeg = ${csDouble(pitch)};`,
+        `    const double yawDeg = ${csDouble(yaw)};`,
+        `    const double rollDeg = ${csDouble(roll)};`,
+        `    Vec3d emitterOrigin = origin + right * ${csDouble(offsetX)} * rangeScale + up * ${csDouble(offsetY)} * rangeScale + forward * ${csDouble(offsetZ)} * rangeScale;`,
+        `    int count = ${perCallCount} * mult;`,
+        startDelay > 0 ? `    if (world.ElapsedMilliseconds / 1000.0 < ${csDouble(startDelay)}) return;` : "",
+        "",
+        "    for (int i = 0; i < count; i++)",
+        "    {",
+        `        Vec3d localPos = SampleLocalPosition(\"${emitter.shape}\", rng, ${csDouble(radius)} * rangeScale, ${csDouble(radiusTop)} * rangeScale, ${csDouble(height)} * rangeScale, ${csDouble(coneAngle)}, ${csDouble(spreadX)} * rangeScale, ${csDouble(spreadY)} * rangeScale, ${csDouble(spreadZ)} * rangeScale, ${csDouble(chaos)});`,
+        "        Vec3d worldPos = emitterOrigin + TransformLocal(localPos, forward, right, up, pitchDeg, yawDeg, rollDeg);",
+        `        Vec3d velocity = ComputeVelocity(`,
+        `            \"${emitter.velocityMode}\",`,
+        `            new Vec3d(${csDouble(dirX)}, ${csDouble(dirY)}, ${csDouble(dirZ)}),`,
+        `            localPos,`,
+        `            forward, right, up, pitchDeg, yawDeg, rollDeg,`,
+        `            ${csDouble(speed)}, ${csDouble(tangential)}, ${csDouble(inward)}, ${csDouble(vertical)});`,
+        "",
+        `        if (${csDouble(randomVelocity)} > 0)`,
+        "        {",
+        `            velocity += RandomUnit(rng) * (rng.NextDouble() * ${csDouble(randomVelocity)});`,
+        "        }",
+        "",
+        "        int color = LerpColor(",
+        `            ${startColor},`,
+        `            ${endColor},`,
+        "            rng.NextDouble());",
+        "",
+        "        world.SpawnParticles(new SimpleParticleProperties",
+        "        {",
+        "            MinQuantity = 1,",
+        "            AddQuantity = 0,",
+        "            Color = color,",
+        "            MinPos = worldPos,",
+        "            AddPos = new Vec3d(0, 0, 0),",
+        `            MinVelocity = new Vec3f((float)velocity.X, (float)velocity.Y, (float)velocity.Z),`,
+        "            AddVelocity = new Vec3f(0, 0, 0),",
+        `            LifeLength = (float)Lerp(${csDouble(lifeMin)}, ${csDouble(lifeMax)}, rng.NextDouble()),`,
+        `            MinSize = ${csFloat(sizeMin)},`,
+        `            MaxSize = ${csFloat(sizeMax)},`,
+        `            GravityEffect = ${csFloat(gravity)},`,
+        "            ParticleModel = EnumParticleModel.Quad,",
+        `            WithTerrainCollision = ${emitter.withTerrainCollision ? "true" : "false"},`,
+        "            ShouldDieInLiquid = false",
+        "        });",
+        "    }",
+        "}"
+      ].join("\n");
+    }
+    function buildSpawnFxCode(){
+      const methodName = methodSafeName(state.fx.label);
+      const exportParams = String(state.exportParams || "IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f").trim() || "IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f";
+      const usesRangeParam = /\brange\b/.test(exportParams);
+      const emitters = state.fx.emitters.map((emitter) => sanitizeConfig(emitter));
+      const emitterBlocks = state.fx.emitters.map((emitter, index) => buildEmitterSpawnCode(emitter, index)).join("\n\n");
+      const usedShapes = new Set(emitters.map((emitter) => emitter.shape));
+      const usedVelocityModes = new Set(emitters.map((emitter) => emitter.velocityMode));
+      const usesRandomUnit = emitters.some((emitter) => (Number(emitter.randomVelocity) || 0) > 0 || emitter.shape === "sphere");
+      const usesDirectionVec = emitters.some((emitter) => emitter.velocityMode === "directional");
+      const usesRotateAroundAxis = emitters.some((emitter) => Math.abs(Number(emitter.roll) || 0) > 0.001);
+      const sampleBranches = [];
+
+      if (usedShapes.has("box")) {
+        sampleBranches.push(
+          "        if (shape == \"box\")",
+          "        {",
+          "            return new Vec3d((rng.NextDouble() - 0.5) * spreadX * 2, (rng.NextDouble() - 0.5) * spreadY * 2, (rng.NextDouble() - 0.5) * spreadZ * 2);",
+          "        }",
+          ""
+        );
+      }
+      if (usedShapes.has("cone")) {
+        sampleBranches.push(
+          "        if (shape == \"cone\")",
+          "        {",
+          "            double angle = (rng.NextDouble() - 0.5) * coneAngleDeg * Math.PI / 180.0;",
+          "            double spin = rng.NextDouble() * Math.PI * 2;",
+          "            double coneRadius = rng.NextDouble() * radius;",
+          "            return new Vec3d(",
+          "                Math.Cos(spin) * Math.Sin(angle) * coneRadius,",
+          "                Math.Sin(spin) * Math.Sin(angle) * coneRadius,",
+          "                rng.NextDouble() * radius);",
+          "        }",
+          ""
+        );
+      }
+      if (usedShapes.has("ring")) {
+        sampleBranches.push(
+          "        if (shape == \"ring\")",
+          "        {",
+          "            double angle = rng.NextDouble() * Math.PI * 2;",
+          "            double y = (rng.NextDouble() - 0.5) * height;",
+          "            return new Vec3d(Math.Cos(angle) * radius, y, Math.Sin(angle) * radius);",
+          "        }",
+          ""
+        );
+      }
+      if (usedShapes.has("slash")) {
+        sampleBranches.push(
+          "        if (shape == \"slash\")",
+          "        {",
+          "            double t = rng.NextDouble();",
+          "            double arcSpan = coneAngleDeg * Math.PI / 180.0;",
+          "            double theta = -arcSpan * 0.5 + t * arcSpan;",
+          "            double sideJitter = (rng.NextDouble() - 0.5) * Math.Max(0.005, spreadX);",
+          "            double upJitter = (rng.NextDouble() - 0.5) * Math.Max(0.005, spreadY);",
+          "            double depthJitter = rng.NextDouble() * Math.Max(0.0, Math.Abs(spreadZ) + chaos);",
+          "            double arcX = Math.Cos(theta) * radius;",
+          "            double arcY = (Math.Sin(theta) * 0.5 + 0.5) * radius;",
+          "            return new Vec3d(",
+          "                arcX + sideJitter,",
+          "                arcY + upJitter,",
+          "                depthJitter);",
+          "        }",
+          ""
+        );
+      }
+      if (usedShapes.has("vortex")) {
+        sampleBranches.push(
+          "        if (shape == \"vortex\")",
+          "        {",
+          "            double t = rng.NextDouble();",
+          "            double angle = rng.NextDouble() * Math.PI * 2;",
+          "            double vortexRadius = Lerp(radius, radiusTop, t) * (0.82 + rng.NextDouble() * 0.35);",
+          "            double y = t * height;",
+          "            return new Vec3d(",
+          "                Math.Cos(angle) * vortexRadius + Math.Sin(y * 1.6) * chaos,",
+          "                y,",
+          "                Math.Sin(angle) * vortexRadius + Math.Cos(y * 1.4) * chaos);",
+          "        }",
+          ""
+        );
+      }
+
+      const velocityBranches = [];
+      if (usedVelocityModes.has("radial")) {
+        velocityBranches.push("        if (velocityMode == \"radial\") return TransformLocal(radial * speed + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);");
+      }
+      if (usedVelocityModes.has("inward")) {
+        velocityBranches.push("        if (velocityMode == \"inward\") return TransformLocal(radial * -Math.Abs(inwardStrength) + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);");
+      }
+      if (usedVelocityModes.has("tangential")) {
+        velocityBranches.push("        if (velocityMode == \"tangential\") return TransformLocal(tangential * tangentialStrength + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);");
+      }
+      if (usedVelocityModes.has("vortex")) {
+        velocityBranches.push("        if (velocityMode == \"vortex\") return TransformLocal(tangential * tangentialStrength + radial * -inwardStrength + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);");
+      }
+
+        return [
+        `// ${state.fx.label}`,
+        `// Generated as a per-call SpawnFx() method. If your effect should persist, call this from a tick listener. Courtesy of Fx Visualizer`,
+        `public static void SpawnFx(${exportParams})`,
+        "{",
+        "    var rng = world.Rand;",
+        "    int mult = 1 + (spellLevel - 1) / 4;",
+        "    Vec3d forward = lookDir.Normalize();",
+        usesRangeParam
+          ? `    double rangeScale = ${csDouble(state.rangeRef || 12)} > 0 ? range / ${csDouble(state.rangeRef || 12)} : 1.0;`
+          : "    double rangeScale = 1.0;",
+        "    Vec3d refUp = Math.Abs(forward.Y) > 0.98 ? new Vec3d(1, 0, 0) : new Vec3d(0, 1, 0);",
+        "    Vec3d right = refUp.Cross(forward).Normalize();",
+        "    Vec3d up = forward.Cross(right).Normalize();",
+        "",
+        "    static double Lerp(double a, double b, double t) => a + (b - a) * t;",
+        ...(usesRandomUnit ? [
+          "",
+          "    static Vec3d RandomUnit(Random rng)",
+          "    {",
+          "        Vec3d v;",
+          "        do",
+          "        {",
+          "            v = new Vec3d(rng.NextDouble() * 2 - 1, rng.NextDouble() * 2 - 1, rng.NextDouble() * 2 - 1);",
+          "        }",
+          "        while (v.LengthSq() < 0.0001);",
+          "        return v.Normalize();",
+          "    }"
+        ] : []),
+        ...(usesDirectionVec ? [
+          "",
+          "    static Vec3d DirectionVec(Vec3d dir)",
+          "    {",
+          "        if (dir.LengthSq() < 0.0001) return new Vec3d(0, 1, 0);",
+          "        return dir.Normalize();",
+          "    }"
+        ] : []),
+        "",
+        "    static Vec3d RotateLocalEuler(Vec3d vector, double pitchDeg, double yawDeg, double rollDeg)",
+        "    {",
+        "        double pitchRad = pitchDeg * Math.PI / 180.0;",
+        "        double yawRad = yawDeg * Math.PI / 180.0;",
+        "        double rollRad = rollDeg * Math.PI / 180.0;",
+        "        double a = Math.Cos(pitchRad);",
+        "        double b = Math.Sin(pitchRad);",
+        "        double c = Math.Cos(yawRad);",
+        "        double d = Math.Sin(yawRad);",
+        "        double e = Math.Cos(rollRad);",
+        "        double f = Math.Sin(rollRad);",
+        "",
+        "        double m11 = c * e + d * b * f;",
+        "        double m12 = d * b * e - c * f;",
+        "        double m13 = a * d;",
+        "        double m21 = a * f;",
+        "        double m22 = a * e;",
+        "        double m23 = -b;",
+        "        double m31 = c * b * f - d * e;",
+        "        double m32 = d * f + c * b * e;",
+        "        double m33 = a * c;",
+        "",
+        "        return new Vec3d(",
+        "            m11 * vector.X + m12 * vector.Y + m13 * vector.Z,",
+        "            m21 * vector.X + m22 * vector.Y + m23 * vector.Z,",
+        "            m31 * vector.X + m32 * vector.Y + m33 * vector.Z);",
+        "    }",
+        "",
+        "    static Vec3d TransformBasis(Vec3d local, Vec3d forward, Vec3d right, Vec3d up)",
+        "    {",
+        "        return right * local.X + up * local.Y + forward * local.Z;",
+        "    }",
+        "",
+        "    static Vec3d TransformLocal(Vec3d local, Vec3d forward, Vec3d right, Vec3d up, double pitchDeg, double yawDeg, double rollDeg)",
+        "    {",
+        "        Vec3d rotated = RotateLocalEuler(local, pitchDeg, yawDeg, rollDeg);",
+        "        return TransformBasis(rotated, forward, right, up);",
+        "    }",
+        "",
+        "    static int LerpColor(int startR, int startG, int startB, int startA, int endR, int endG, int endB, int endA, double t)",
+        "    {",
+        "        return ColorUtil.ColorFromRgba(",
+        "            (int)Math.Round(Lerp(startR, endR, t)),",
+        "            (int)Math.Round(Lerp(startG, endG, t)),",
+        "            (int)Math.Round(Lerp(startB, endB, t)),",
+        "            (int)Math.Round(Lerp(startA, endA, t)));",
+        "    }",
+        "",
+        "    static Vec3d SampleLocalPosition(string shape, Random rng, double radius, double radiusTop, double height, double coneAngleDeg, double spreadX, double spreadY, double spreadZ, double chaos)",
+        "    {",
+        ...sampleBranches,
+        "",
+        ...(usesRandomUnit
+          ? ["        return RandomUnit(rng) * (rng.NextDouble() * radius);"]
+          : ["        return new Vec3d();"]),
+        "    }",
+        "",
+        "    static Vec3d ComputeVelocity(string velocityMode, Vec3d direction, Vec3d localPos, Vec3d forward, Vec3d right, Vec3d up, double pitchDeg, double yawDeg, double rollDeg, double speed, double tangentialStrength, double inwardStrength, double verticalStrength)",
+        "    {",
+        ...(usesDirectionVec
+          ? ["        Vec3d directional = TransformBasis(DirectionVec(direction) * speed, forward, right, up);"]
+          : ["        Vec3d directional = TransformBasis(direction * speed, forward, right, up);"]),
+        "        Vec3d planar = new Vec3d(localPos.X, 0, localPos.Z);",
+        "        if (planar.LengthSq() < 0.0001) planar = new Vec3d(0, 0, 1);",
+        "        Vec3d radial = planar.Normalize();",
+        "        Vec3d tangential = new Vec3d(-radial.Z, 0, radial.X).Normalize();",
+        "        Vec3d vertical = new Vec3d(0, verticalStrength, 0);",
+        "",
+        ...velocityBranches,
+        "        return directional + TransformBasis(vertical, forward, right, up);",
+        "    }",
+        "",
+        indentLines(emitterBlocks, 4),
+        "}",
+        "",
+        `// Suggested host method name: ${methodName}.SpawnFx(...)`
+      ].join("\n");
+    }
+    const getActiveEmitter = () => state.fx.emitters[state.activeEmitterIndex];
+    const getCycleDuration = () => Math.max(.1, ...state.fx.emitters.map((emitter) => emitter.duration || 0));
+    function directionVec(d){ const v = new THREE.Vector3(Number(d.x)||0,Number(d.y)||0,Number(d.z)||0); if (v.lengthSq()===0) v.set(0,0,1); return v.normalize(); }
+    function normalizeAngle(v){ let angle = Number(v) || 0; while (angle > 180) angle -= 360; while (angle < -180) angle += 360; return angle; }
+    function getRotationEuler(emitter){
+      return new THREE.Euler(
+        THREE.MathUtils.degToRad(Number(emitter.pitch) || 0),
+        THREE.MathUtils.degToRad(Number(emitter.yaw) || 0),
+        THREE.MathUtils.degToRad(Number(emitter.roll) || 0),
+        "YXZ"
+      );
+    }
+    function getRotationQuaternion(emitter){
+      return new THREE.Quaternion().setFromEuler(getRotationEuler(emitter));
+    }
+    function getEmitterPosition(emitter){
+      return new THREE.Vector3(Number(emitter.offsetX) || 0, Number(emitter.offsetY) || 0, Number(emitter.offsetZ) || 0);
+    }
+    function rotateLocalToWorld(emitter, vector){
+      return vector.applyQuaternion(getRotationQuaternion(emitter));
+    }
+    function getEmitterBasis(emitter){
+      const forward = rotateLocalToWorld(emitter, new THREE.Vector3(0, 0, 1)).normalize();
+      const up = rotateLocalToWorld(emitter, new THREE.Vector3(0, 1, 0)).normalize();
+      const right = rotateLocalToWorld(emitter, new THREE.Vector3(1, 0, 0)).normalize();
+      return { forward, up, right };
+    }
+    function clearParticles(){
+      particles.length = 0;
+      particleGeometry.setDrawRange(0, 0);
+      particleGeometry.attributes.position.needsUpdate = true;
+      particleGeometry.attributes.color.needsUpdate = true;
+    }
+    function resetSimulation(){ state.elapsed = 0; state.spawnCarry = []; state.burstCarry = []; state.burstFired = []; clearParticles(); updateStats(); }
+
+    function sanitizeConfig(input){
+      const base = clone(PRESETS.custom.emitters[0]);
+      const cfg = { ...base, ...input, direction:{ ...base.direction, ...(input?.direction || {}) } };
+      cfg.label = String(cfg.label || "Custom FX");
+      cfg.shape = ["sphere","box","cone","ring","vortex","slash"].includes(cfg.shape) ? cfg.shape : "sphere";
+      cfg.velocityMode = ["directional","radial","inward","tangential","vortex"].includes(cfg.velocityMode) ? cfg.velocityMode : "directional";
+      cfg.burstCount = Math.max(0, Math.round(Number(cfg.burstCount) || 0));
+      cfg.burstInterval = Math.max(0, Number(cfg.burstInterval) || 0);
+      cfg.spawnRate = Math.max(0, Number(cfg.spawnRate) || 0);
+      cfg.duration = Math.max(.1, Number(cfg.duration) || 1);
+      cfg.startDelay = Math.max(0, Number(cfg.startDelay) || 0);
+      cfg.radius = Math.max(0, Number(cfg.radius) || 0);
+      cfg.radiusTop = Math.max(0, Number(cfg.radiusTop) || cfg.radius);
+      cfg.height = Math.max(0, Number(cfg.height) || 0);
+      cfg.coneAngle = Math.max(0, Math.min(180, Number(cfg.coneAngle) || 0));
+      cfg.spreadX = Math.max(0, Number(cfg.spreadX) || 0); cfg.spreadY = Math.max(0, Number(cfg.spreadY) || 0); cfg.spreadZ = Math.max(0, Number(cfg.spreadZ) || 0);
+      cfg.chaos = Math.max(0, Number(cfg.chaos) || 0);
+      cfg.maxParticles = Math.max(16, Math.min(MAX_PARTICLES, Math.round(Number(cfg.maxParticles) || 600)));
+      cfg.loop = Boolean(cfg.loop); cfg.worldSpace = Boolean(cfg.worldSpace);
+      cfg.withTerrainCollision = Boolean(cfg.withTerrainCollision);
+      cfg.direction.x = Number(cfg.direction.x) || 0; cfg.direction.y = Number(cfg.direction.y) || 0; cfg.direction.z = Number(cfg.direction.z) || 0;
+      cfg.speed = Math.max(0, Number(cfg.speed) || 0); cfg.randomVelocity = Math.max(0, Number(cfg.randomVelocity) || 0); cfg.drag = Math.max(0, Number(cfg.drag) || 0);
+      cfg.tangential = Number(cfg.tangential) || 0; cfg.inward = Number(cfg.inward) || 0; cfg.vertical = Number(cfg.vertical) || 0;
+      cfg.offsetX = Number(cfg.offsetX) || 0;
+      cfg.offsetY = Number(cfg.offsetY) || 0;
+      cfg.offsetZ = Number(cfg.offsetZ) || 0;
+      cfg.yaw = normalizeAngle(cfg.yaw);
+      cfg.pitch = normalizeAngle(cfg.pitch);
+      cfg.roll = normalizeAngle(cfg.roll);
+      cfg.gravity = Number(cfg.gravity) || 0; cfg.updraft = Math.max(0, Number(cfg.updraft) || 0);
+      cfg.lifeMin = Math.max(.01, Number(cfg.lifeMin) || .1); cfg.lifeMax = Math.max(cfg.lifeMin, Number(cfg.lifeMax) || cfg.lifeMin);
+      cfg.sizeMin = Math.max(.01, Number(cfg.sizeMin) || .05); cfg.sizeMax = Math.max(cfg.sizeMin, Number(cfg.sizeMax) || cfg.sizeMin);
+      cfg.startColor = /^#[0-9a-f]{6}$/i.test(cfg.startColor) ? cfg.startColor : "#ffffff";
+      cfg.endColor = /^#[0-9a-f]{6}$/i.test(cfg.endColor) ? cfg.endColor : "#ffffff";
+      cfg.alphaStart = Math.max(0, Math.min(1, Number(cfg.alphaStart))); cfg.alphaEnd = Math.max(0, Math.min(1, Number(cfg.alphaEnd)));
+      return cfg;
+    }
+
+    function syncEmitterOptions(){
+      const current = String(state.activeEmitterIndex);
+      els.emitterSelect.innerHTML = "";
+      state.fx.emitters.forEach((emitter, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = `${index + 1}. ${emitter.label || `Layer ${index + 1}`}`;
+        els.emitterSelect.appendChild(option);
+      });
+      els.emitterSelect.value = current;
+      els.emitterLabelInput.value = getActiveEmitter().label || `Layer ${state.activeEmitterIndex + 1}`;
+      els.removeEmitterButton.disabled = state.fx.emitters.length <= 1;
+    }
+
+    function syncInputs(){
+      const c = getActiveEmitter();
+      els.presetSelect.value = state.presetKey; els.labelInput.value = state.fx.label; els.exportParamsInput.value = state.exportParams; els.rangeRefInput.value = state.rangeRef; els.shapeSelect.value = c.shape; els.burstCountInput.value = c.burstCount; els.burstIntervalInput.value = c.burstInterval; els.spawnRateInput.value = c.spawnRate; els.durationInput.value = c.duration; els.startDelayInput.value = c.startDelay || 0;
+      els.radiusInput.value = c.radius; els.radiusTopInput.value = c.radiusTop; els.heightInput.value = c.height; els.coneAngleInput.value = c.coneAngle; els.spreadXInput.value = c.spreadX; els.spreadYInput.value = c.spreadY; els.spreadZInput.value = c.spreadZ; els.chaosInput.value = c.chaos; els.maxParticlesInput.value = c.maxParticles;
+      els.loopInput.checked = c.loop; els.worldSpaceInput.checked = c.worldSpace; els.collisionInput.checked = !!c.withTerrainCollision; els.dirXInput.value = c.direction.x; els.dirYInput.value = c.direction.y; els.dirZInput.value = c.direction.z; els.velocityModeSelect.value = c.velocityMode; els.speedInput.value = c.speed; els.randomVelocityInput.value = c.randomVelocity; els.tangentialInput.value = c.tangential; els.inwardInput.value = c.inward; els.verticalInput.value = c.vertical;
+      els.offsetXInput.value = c.offsetX; els.offsetYInput.value = c.offsetY; els.offsetZInput.value = c.offsetZ; els.yawInput.value = c.yaw; els.pitchInput.value = c.pitch; els.rollInput.value = c.roll;
+      els.dragInput.value = c.drag; els.gravityInput.value = c.gravity; els.updraftInput.value = c.updraft; els.lifeMinInput.value = c.lifeMin; els.lifeMaxInput.value = c.lifeMax; els.sizeMinInput.value = c.sizeMin; els.sizeMaxInput.value = c.sizeMax;
+      els.startColorInput.value = c.startColor; els.endColorInput.value = c.endColor; els.alphaStartInput.value = c.alphaStart; els.alphaEndInput.value = c.alphaEnd;
+      syncEmitterOptions();
+      updateSliderLabels();
+    }
+
+    function setupSliders(){
+      Object.entries(sliderConfigs).forEach(([id, config]) => {
+        const input = els[id];
+        if (!input) return;
+        input.type = "range";
+        input.min = config.min;
+        input.max = config.max;
+        input.step = config.step;
+        const label = input.closest(".field")?.querySelector("label");
+        if (!label || label.querySelector(".field-value")) return;
+        const value = document.createElement("span");
+        value.className = "field-value";
+        value.dataset.outputFor = id;
+        label.appendChild(value);
+      });
+    }
+
+    function updateSliderLabels(){
+      Object.entries(sliderConfigs).forEach(([id, config]) => {
+        const output = document.querySelector(`[data-output-for="${id}"]`);
+        if (output) output.textContent = config.format(els[id].value);
+      });
+    }
+
+    function saveSession(){ try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ presetKey:state.presetKey, fx:state.fx, activeEmitterIndex:state.activeEmitterIndex, exportParams:state.exportParams, rangeRef:state.rangeRef })); } catch (error) { console.warn(error); } }
+    function loadSession(){ try { const raw = sessionStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (error) { return null; } }
+
+    function rebuildGizmo(){
+      emitterGroup.clear();
+      const activeEmitter = getActiveEmitter();
+      const wire = new THREE.MeshBasicMaterial({ color:0xc79c3b, wireframe:true, transparent:true, opacity:.45 });
+      let mesh;
+      emitterGroup.position.copy(getEmitterPosition(activeEmitter));
+      emitterGroup.rotation.copy(getRotationEuler(activeEmitter));
+      if (activeEmitter.shape === "box") mesh = new THREE.Mesh(new THREE.BoxGeometry(Math.max(.05,activeEmitter.spreadX*2),Math.max(.05,activeEmitter.spreadY*2),Math.max(.05,activeEmitter.spreadZ*2)), wire);
+      else if (activeEmitter.shape === "cone") { mesh = new THREE.Mesh(new THREE.ConeGeometry(Math.max(.08,activeEmitter.radius),Math.max(.12,activeEmitter.radius*2.2),24,1,true), wire); mesh.rotation.x = Math.PI/2; }
+      else if (activeEmitter.shape === "ring") { mesh = new THREE.Mesh(new THREE.TorusGeometry(Math.max(.05,activeEmitter.radius), 0.04, 10, 32), wire); mesh.rotation.x = Math.PI / 2; }
+      else if (activeEmitter.shape === "slash") {
+        const points = [];
+        const arcSpan = THREE.MathUtils.degToRad(activeEmitter.coneAngle || 160);
+        const radius = Math.max(.05, activeEmitter.radius || .5);
+        const depth = Math.max(0, Math.abs(activeEmitter.spreadZ || 0) + (activeEmitter.chaos || 0));
+        for (let i = 0; i <= 40; i += 1) {
+          const t = i / 40;
+          const theta = -arcSpan / 2 + t * arcSpan;
+          points.push(new THREE.Vector3(
+            Math.cos(theta) * radius,
+            (Math.sin(theta) * 0.5 + 0.5) * radius,
+            depth * 0.5
+          ));
+        }
+        mesh = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color:0xc79c3b, transparent:true, opacity:.65 }));
+      }
+      else if (activeEmitter.shape === "vortex") { mesh = new THREE.Mesh(new THREE.CylinderGeometry(Math.max(.05,activeEmitter.radiusTop), Math.max(.05,activeEmitter.radius), Math.max(.12,activeEmitter.height || 1), 24, 1, true), wire); mesh.position.y = Math.max(.12,activeEmitter.height || 1) / 2; }
+      else mesh = new THREE.Mesh(new THREE.SphereGeometry(Math.max(.05,activeEmitter.radius),20,18), wire);
+      emitterGroup.add(mesh);
+      emitterGroup.add(new THREE.AxesHelper(1.4));
+      directionArrow.position.copy(getEmitterPosition(activeEmitter));
+      directionArrow.setDirection(directionVec(activeEmitter.direction));
+      forwardArrow.position.copy(getEmitterPosition(activeEmitter));
+      forwardArrow.setDirection(new THREE.Vector3(0, 0, 1));
+      transformControls.attach(emitterGroup);
+      transformControls.setMode(state.gizmoMode);
+      els.viewerModeLabel.textContent = `Emitter: ${activeEmitter.label} (${activeEmitter.shape[0].toUpperCase()}${activeEmitter.shape.slice(1)})`;
+      els.viewerArrowLabel.textContent = `Blue arrow = export forward (+Z / lookDir), gold arrow = configured particle direction`;
+    }
+
+    function updateOutputs(){
+      els.codeOutput.value = buildSpawnFxCode();
+    }
+
+    function updateStats(){
+      els.presetLabel.textContent = state.fx.label;
+      els.particleCountLabel.textContent = String(particles.length);
+      els.modeLabel.textContent = state.fx.emitters.some((emitter) => emitter.loop) ? "Loop" : "One-shot";
+      els.timeLabel.textContent = `${state.elapsed.toFixed(1)}s`;
+      els.togglePlaybackButton.textContent = state.playbackActive ? "Pause" : "Play";
+      updateTimelineUI();
+    }
+
+    function updateTimelineUI(){
+      const duration = getCycleDuration();
+      const progress = THREE.MathUtils.clamp(state.elapsed / duration, 0, 1);
+      els.timelineInput.max = String(duration);
+      els.timelineInput.step = "0.01";
+      els.timelineInput.value = String(Math.min(state.elapsed, duration));
+      els.timelineCurrentLabel.textContent = `${state.elapsed.toFixed(2)}s`;
+      els.timelineEndLabel.textContent = `${duration.toFixed(1)}s`;
+      els.timelineDurationLabel.textContent = `${duration.toFixed(1)}s`;
+      els.timelineMarkerLabel.textContent = `${Math.round(progress * 100)}%`;
+      els.timelinePlayButton.textContent = state.playbackActive ? "Pause" : "Play";
+    }
+
+    function hexFromRgb(r, g, b){
+      return `#${[r,g,b].map((v) => clampByte(v).toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    function parseNumberList(text){
+      return text.split(",").map((part) => Number(String(part).replace(/f|d/g, "").trim()) || 0);
+    }
+
+    function extractEmitterBlocks(text){
+      const lines = text.split(/\r?\n/);
+      const blocks = [];
+
+      for (let i = 0; i < lines.length; i += 1) {
+        const labelMatch = lines[i].match(/^\s*\/\/\s*(.+?)\s*$/);
+        if (!labelMatch) continue;
+        if (labelMatch[1].startsWith("@fxviz")) continue;
+        if (labelMatch[1].includes("Generated as a per-call")) continue;
+
+        let meta = null;
+        let j = i + 1;
+        while (j < lines.length && !lines[j].trim()) j += 1;
+        if (j < lines.length) {
+          const metaMatch = lines[j].match(/^\s*\/\/\s*@fxviz\s+(.+?)\s*$/);
+          if (metaMatch) {
+            meta = decodeEmitterMeta(metaMatch[1]);
+            j += 1;
+          }
+        }
+        while (j < lines.length && !lines[j].trim()) j += 1;
+        if (j >= lines.length || lines[j].trim() !== "{") continue;
+
+        let depth = 0;
+        const blockLines = [];
+        let started = false;
+        for (; j < lines.length; j += 1) {
+          const line = lines[j];
+          const opens = (line.match(/\{/g) || []).length;
+          const closes = (line.match(/\}/g) || []).length;
+          depth += opens;
+          if (started) blockLines.push(line);
+          else started = true;
+          depth -= closes;
+          if (started && depth === 0) break;
+        }
+
+        if (blockLines.length) {
+          blocks.push({
+            label: labelMatch[1].trim(),
+            meta,
+            block: blockLines.slice(1, -1).join("\n")
+          });
+          i = j;
+        }
+      }
+
+      return blocks;
+    }
+
+    function parseSpawnFxImport(text){
+      if (!/public\s+static\s+void\s+SpawnFx\s*\(/.test(text)) return null;
+
+      const lines = text.split(/\r?\n/);
+      const titleLine = lines.find((line) => line.trim().startsWith("//") && !line.includes("Generated as a per-call"));
+      const label = titleLine ? titleLine.replace(/^\/\//, "").trim() : "Imported FX";
+      const emitters = [];
+
+      for (const { label: emitterLabel, meta, block } of extractEmitterBlocks(text)) {
+        if (meta && typeof meta === "object") {
+          emitters.push(sanitizeConfig({ ...meta, label: meta.label || emitterLabel }));
+          continue;
+        }
+
+        const shapeMatch = block.match(/SampleLocalPosition\("([^"]+)"/);
+        const sampleMatch = block.match(/SampleLocalPosition\("[^"]+",\s*rng,\s*([^)]+)\)/);
+        const offsetMatch = block.match(/Vec3d emitterOrigin = origin \+ right \* ([^ ]+) \+ up \* ([^ ]+) \+ forward \* ([^;]+);/);
+        const pitchMatch = block.match(/const double pitchDeg = ([^;]+);/);
+        const yawMatch = block.match(/const double yawDeg = ([^;]+);/);
+        const rollMatch = block.match(/const double rollDeg = ([^;]+);/);
+        const countMatch = block.match(/int count = (\d+) \* mult;/);
+        const velocityModeMatch = block.match(/ComputeVelocity\(\s*"([^"]+)"/);
+        const directionMatch = block.match(/new Vec3d\(([^)]+)\),\s*\r?\n\s*localPos,\s*\r?\n\s*forward,\s*right,\s*up,\s*pitchDeg,\s*yawDeg,\s*rollDeg,/);
+        const speedTailMatch = block.match(/forward,\s*right,\s*up,\s*pitchDeg,\s*yawDeg,\s*rollDeg,\s*\r?\n\s*([^,]+),\s*([^,]+),\s*([^,]+),\s*([^)]+)\)/);
+        const randomVelMatch = block.match(/rng\.NextDouble\(\) \* ([^)]+)\)/);
+        const colorMatch = block.match(/LerpColor\(\s*\r?\n\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*\r?\n\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),/);
+        const addPosMatch = block.match(/AddPos = new Vec3d\(([^)]+)\)/);
+        const lifeMatch = block.match(/LifeLength = \(float\)Lerp\(([^,]+),\s*([^,]+),/);
+        const minSizeMatch = block.match(/MinSize = ([^,]+),/);
+        const maxSizeMatch = block.match(/MaxSize = ([^,]+),/);
+        const gravityMatch = block.match(/GravityEffect = ([^,]+),/);
+        const dragMatch = block.match(/drag\s*[:=]\s*([^,\r\n]+)/i);
+
+        if (!shapeMatch || !sampleMatch || !offsetMatch || !countMatch) continue;
+
+        const [radius, radiusTop, height, coneAngle, spreadX, spreadY, spreadZ, chaos] = parseNumberList(sampleMatch[1]);
+        const [offsetX, offsetY, offsetZ] = offsetMatch ? offsetMatch.slice(1, 4).map((value) => Number(String(value).replace(/f|d/g, "").trim()) || 0) : [0, 0, 0];
+        const [dirX, dirY, dirZ] = directionMatch ? parseNumberList(directionMatch[1]) : [0, 0, 1];
+        const [speed, tangential, inward, vertical] = speedTailMatch ? parseNumberList(speedTailMatch.slice(1).join(",")) : [0, 0, 0, 0];
+        const [startR, startG, startB, startA, endR, endG, endB, endA] = colorMatch ? colorMatch.slice(1).map((v) => Number(v)) : [255,255,255,255,255,255,255,0];
+        const [addPosX, addPosY, addPosZ] = addPosMatch ? parseNumberList(addPosMatch[1]) : [spreadX, spreadY, spreadZ];
+        const [lifeMin, lifeMax] = lifeMatch ? parseNumberList(`${lifeMatch[1]},${lifeMatch[2]}`) : [0.1, 0.2];
+
+        emitters.push(sanitizeConfig({
+          label: emitterLabel,
+          shape: shapeMatch[1],
+          burstCount: Number(countMatch[1]) || 1,
+          burstInterval: 0,
+          spawnRate: 0,
+          duration: Math.max(0.1, lifeMax),
+          radius,
+          radiusTop,
+          height,
+          coneAngle,
+          spreadX: addPosX,
+          spreadY: addPosY,
+          spreadZ: addPosZ,
+          chaos,
+          maxParticles: Math.max(64, (Number(countMatch[1]) || 1) * 2),
+          loop: true,
+          worldSpace: true,
+          direction: { x: dirX, y: dirY, z: dirZ },
+          velocityMode: velocityModeMatch ? velocityModeMatch[1] : "directional",
+          speed,
+          randomVelocity: randomVelMatch ? Number(String(randomVelMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          tangential,
+          inward,
+          vertical,
+          offsetX,
+          offsetY,
+          offsetZ,
+          yaw: yawMatch ? Number(String(yawMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          pitch: pitchMatch ? Number(String(pitchMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          roll: rollMatch ? Number(String(rollMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          drag: dragMatch ? Number(String(dragMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          gravity: gravityMatch ? Number(String(gravityMatch[1]).replace(/f|d/g, "").trim()) || 0 : 0,
+          updraft: 0,
+          lifeMin,
+          lifeMax,
+          sizeMin: minSizeMatch ? Number(String(minSizeMatch[1]).replace(/f|d/g, "").trim()) || 0.05 : 0.05,
+          sizeMax: maxSizeMatch ? Number(String(maxSizeMatch[1]).replace(/f|d/g, "").trim()) || 0.1 : 0.1,
+          startColor: hexFromRgb(startR, startG, startB),
+          endColor: hexFromRgb(endR, endG, endB),
+          alphaStart: startA / 255,
+          alphaEnd: endA / 255
+        }));
+      }
+
+      if (!emitters.length) return null;
+      return { label, emitters };
+    }
+
+    function rebuildParticlesToTime(targetTime){
+      const wasPlaying = state.playbackActive;
+      state.playbackActive = true;
+      state.elapsed = 0;
+      state.spawnCarry = [];
+      state.burstCarry = [];
+      state.burstFired = [];
+      clearParticles();
+      const step = 1 / 60;
+      while (state.elapsed + step < targetTime) {
+        updateSimulation(step);
+      }
+      const remainder = targetTime - state.elapsed;
+      if (remainder > 0) {
+        updateSimulation(remainder);
+      }
+      state.playbackActive = wasPlaying;
+      updateStats();
+    }
+
+    function applyConfig(config, presetKey="custom"){
+      state.presetKey = presetKey;
+      state.exportParams = String(config.exportParams || state.exportParams || "IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f");
+      state.rangeRef = Number(config.rangeRef || state.rangeRef || 12);
+      state.fx = {
+        label: String(config.label || "Custom FX"),
+        emitters: (config.emitters?.length ? config.emitters : [config]).map((emitter, index) => {
+          const sanitized = sanitizeConfig(emitter);
+          sanitized.label = String(emitter.label || `Layer ${index + 1}`);
+          return sanitized;
+        })
+      };
+      state.activeEmitterIndex = Math.max(0, Math.min(state.activeEmitterIndex, state.fx.emitters.length - 1));
+      syncInputs(); rebuildGizmo(); updateOutputs(); updateStats(); saveSession(); resetSimulation();
+    }
+
+    function normalizeImportedConfig(config){
+      if (!config || !config.emitters || !Array.isArray(config.emitters)) return config;
+      if (!config.shapes || !Array.isArray(config.shapes)) return config;
+      const shapeMap = new Map(config.shapes.map((shape) => [shape.id || shape.label, shape]));
+      const toNum = (v, fallback=0) => Number.isFinite(Number(v)) ? Number(v) : fallback;
+      const emitters = config.emitters.map((emitter, index) => {
+        if (emitter.shape) return emitter;
+        const shape = shapeMap.get(emitter.shapeId) || shapeMap.get(emitter.shape) || config.shapes[index] || config.shapes[0];
+        if (!shape) return emitter;
+        const params = shape.params || shape;
+        const transform = shape.transform || shape;
+        return {
+          ...emitter,
+          shape: shape.generatorType || shape.shape || "sphere",
+          radius: toNum(params.radius, 0.5),
+          radiusTop: toNum(params.radiusTop ?? params.radius, toNum(params.radius, 0.5)),
+          height: toNum(params.height, 0.5),
+          coneAngle: toNum(params.coneAngle, 45),
+          spreadX: toNum(params.spreadX, 0.4),
+          spreadY: toNum(params.spreadY, 0.4),
+          spreadZ: toNum(params.spreadZ, 0.4),
+          chaos: toNum(params.chaos, 0),
+          offsetX: toNum(transform.offsetX, 0),
+          offsetY: toNum(transform.offsetY, 0),
+          offsetZ: toNum(transform.offsetZ, 0),
+          yaw: toNum(transform.yaw, 0),
+          pitch: toNum(transform.pitch, 0),
+          roll: toNum(transform.roll, 0)
+        };
+      });
+      return { label: config.label || "Imported FX", emitters };
+    }
+
+    function readInputs(){
+      const activeEmitter = sanitizeConfig({
+        label:els.emitterLabelInput.value, shape:els.shapeSelect.value, burstCount:els.burstCountInput.value, burstInterval:els.burstIntervalInput.value, spawnRate:els.spawnRateInput.value, duration:els.durationInput.value, startDelay:els.startDelayInput.value,
+        radius:els.radiusInput.value, radiusTop:els.radiusTopInput.value, height:els.heightInput.value, coneAngle:els.coneAngleInput.value, spreadX:els.spreadXInput.value, spreadY:els.spreadYInput.value, spreadZ:els.spreadZInput.value, chaos:els.chaosInput.value, maxParticles:els.maxParticlesInput.value,
+        loop:els.loopInput.checked, worldSpace:els.worldSpaceInput.checked, withTerrainCollision:els.collisionInput.checked, direction:{ x:els.dirXInput.value, y:els.dirYInput.value, z:els.dirZInput.value }, velocityMode:els.velocityModeSelect.value, speed:els.speedInput.value, tangential:els.tangentialInput.value, inward:els.inwardInput.value, vertical:els.verticalInput.value, offsetX:els.offsetXInput.value, offsetY:els.offsetYInput.value, offsetZ:els.offsetZInput.value, yaw:els.yawInput.value, pitch:els.pitchInput.value, roll:els.rollInput.value,
+        randomVelocity:els.randomVelocityInput.value, drag:els.dragInput.value, gravity:els.gravityInput.value, updraft:els.updraftInput.value, lifeMin:els.lifeMinInput.value, lifeMax:els.lifeMaxInput.value,
+        sizeMin:els.sizeMinInput.value, sizeMax:els.sizeMaxInput.value, startColor:els.startColorInput.value, endColor:els.endColorInput.value, alphaStart:els.alphaStartInput.value, alphaEnd:els.alphaEndInput.value
+      });
+      activeEmitter.label = els.emitterLabelInput.value || `Layer ${state.activeEmitterIndex + 1}`;
+      state.fx.label = els.labelInput.value || "Custom FX";
+      state.exportParams = els.exportParamsInput.value || "IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1, float range = 12f";
+      state.rangeRef = Number(els.rangeRefInput.value) || 12;
+      state.fx.emitters[state.activeEmitterIndex] = activeEmitter;
+      if (state.presetKey !== "custom") { state.presetKey = "custom"; els.presetSelect.value = "custom"; }
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus(`Updated ${state.fx.label}.`);
+    }
+
+    function randomUnit(){ const v = new THREE.Vector3(Math.random()*2-1,Math.random()*2-1,Math.random()*2-1); if (v.lengthSq()===0) v.set(0,1,0); return v.normalize(); }
+    function samplePos(c){
+      if (c.shape === "box") return rotateLocalToWorld(c, new THREE.Vector3((Math.random()-.5)*c.spreadX*2,(Math.random()-.5)*c.spreadY*2,(Math.random()-.5)*c.spreadZ*2)).add(getEmitterPosition(c));
+      if (c.shape === "cone") {
+        const angle = (Math.random()-.5) * THREE.MathUtils.degToRad(c.coneAngle), spin = Math.random()*Math.PI*2, radius = Math.random()*c.radius;
+        return rotateLocalToWorld(c, new THREE.Vector3(Math.cos(spin)*Math.sin(angle)*radius, Math.sin(spin)*Math.sin(angle)*radius, Math.random()*c.radius)).add(getEmitterPosition(c));
+      }
+      if (c.shape === "ring") {
+        const angle = Math.random() * Math.PI * 2;
+        const y = (Math.random() - 0.5) * c.height;
+        return rotateLocalToWorld(c, new THREE.Vector3(Math.cos(angle) * c.radius, y, Math.sin(angle) * c.radius)).add(getEmitterPosition(c));
+      }
+      if (c.shape === "slash") {
+        const t = Math.random();
+        const arcSpan = THREE.MathUtils.degToRad(c.coneAngle || 160);
+        const theta = -arcSpan / 2 + t * arcSpan;
+        const local = new THREE.Vector3(
+          Math.cos(theta) * Math.max(.05, c.radius || .5) + (Math.random() - .5) * Math.max(.005, c.spreadX || 0),
+          (Math.sin(theta) * 0.5 + 0.5) * Math.max(.05, c.radius || .5) + (Math.random() - .5) * Math.max(.005, c.spreadY || 0),
+          Math.random() * Math.max(0, Math.abs(c.spreadZ || 0) + (c.chaos || 0))
+        );
+        return rotateLocalToWorld(c, local).add(getEmitterPosition(c));
+      }
+      if (c.shape === "vortex") {
+        const t = Math.random();
+        const angle = Math.random() * Math.PI * 2;
+        const radius = THREE.MathUtils.lerp(c.radius, c.radiusTop, t) * (0.82 + Math.random() * 0.35);
+        const chaos = c.chaos || 0;
+        const y = t * c.height;
+        return rotateLocalToWorld(c, new THREE.Vector3(
+          Math.cos(angle) * radius + Math.sin(y * 1.6) * chaos,
+          y,
+          Math.sin(angle) * radius + Math.cos(y * 1.4) * chaos
+        )).add(getEmitterPosition(c));
+      }
+      return rotateLocalToWorld(c, randomUnit().multiplyScalar(Math.random() * c.radius)).add(getEmitterPosition(c));
+    }
+
+    function computeVelocity(emitter, position){
+      const directional = directionVec(emitter.direction).multiplyScalar(emitter.speed);
+      const localPos = position.clone().sub(getEmitterPosition(emitter)).applyQuaternion(getRotationQuaternion(emitter).invert());
+      const planar = new THREE.Vector3(localPos.x, 0, localPos.z);
+      if (planar.lengthSq() === 0) planar.copy(new THREE.Vector3(0, 0, 1));
+      if (planar.lengthSq() === 0) planar.set(1, 0, 0);
+      const radial = planar.normalize();
+      const tangential = new THREE.Vector3(-radial.z, 0, radial.x).normalize();
+      const vertical = new THREE.Vector3(0, emitter.vertical || 0, 0);
+      const inwardStrength = emitter.inward || emitter.speed;
+      const tangentialStrength = emitter.tangential || emitter.speed;
+      if (emitter.velocityMode === "radial") return rotateLocalToWorld(emitter, radial.multiplyScalar(emitter.speed).add(vertical));
+      if (emitter.velocityMode === "inward") return rotateLocalToWorld(emitter, radial.multiplyScalar(-Math.abs(inwardStrength)).add(vertical));
+      if (emitter.velocityMode === "tangential") return rotateLocalToWorld(emitter, tangential.multiplyScalar(tangentialStrength).add(vertical));
+      if (emitter.velocityMode === "vortex") return rotateLocalToWorld(emitter, tangential.multiplyScalar(tangentialStrength).add(radial.multiplyScalar(-(emitter.inward || 0))).add(vertical));
+      return directional.add(vertical);
+    }
+
+    function spawnParticle(emitter){
+      if (particles.length >= MAX_PARTICLES) return;
+      const life = THREE.MathUtils.lerp(emitter.lifeMin, emitter.lifeMax, Math.random());
+      const position = samplePos(emitter);
+      const velocity = computeVelocity(emitter, position.clone()).add(randomUnit().multiplyScalar(Math.random()*emitter.randomVelocity));
+      particles.push({
+        position,
+        velocity,
+        age:0,
+        life,
+        size:THREE.MathUtils.lerp(emitter.sizeMin, emitter.sizeMax, Math.random()),
+        startColor: emitter.startColor,
+        endColor: emitter.endColor,
+        alphaStart: emitter.alphaStart,
+        alphaEnd: emitter.alphaEnd,
+        drag: emitter.drag,
+        gravity: emitter.gravity,
+        updraft: emitter.updraft
+      });
+    }
+
+    function updateBuffers(){
+      for (let i = 0; i < particles.length; i += 1) {
+        const p = particles[i], t = THREE.MathUtils.clamp(p.age / p.life, 0, 1), alpha = THREE.MathUtils.lerp(p.alphaStart, p.alphaEnd, t);
+        const start = rgb(p.startColor), end = rgb(p.endColor);
+        particlePositions[i * 3] = p.position.x;
+        particlePositions[i * 3 + 1] = p.position.y;
+        particlePositions[i * 3 + 2] = p.position.z;
+        particleColors[i * 3] = THREE.MathUtils.lerp(start.r, end.r, t) * alpha;
+        particleColors[i * 3 + 1] = THREE.MathUtils.lerp(start.g, end.g, t) * alpha;
+        particleColors[i * 3 + 2] = THREE.MathUtils.lerp(start.b, end.b, t) * alpha;
+      }
+      particleGeometry.setDrawRange(0, particles.length);
+      particleGeometry.attributes.position.needsUpdate = true;
+      particleGeometry.attributes.color.needsUpdate = true;
+    }
+
+    function updateSimulation(dt){
+      if (!state.playbackActive) { updateBuffers(); updateStats(); return; }
+      state.elapsed += dt;
+      state.fx.emitters.forEach((emitter, index) => {
+        if (state.burstCarry[index] == null) state.burstCarry[index] = 0;
+        if (state.burstFired[index] == null) state.burstFired[index] = false;
+        if (!state.spawnCarry[index]) state.spawnCarry[index] = 0;
+        if (state.elapsed < (emitter.startDelay || 0)) return;
+        if (emitter.burstCount > 0) {
+          if (emitter.burstInterval > 0) {
+            if (!state.burstFired[index]) {
+              for (let i = 0; i < emitter.burstCount; i += 1) spawnParticle(emitter);
+              state.burstFired[index] = true;
+            }
+            state.burstCarry[index] += dt;
+            while (state.burstCarry[index] >= emitter.burstInterval) {
+              state.burstCarry[index] -= emitter.burstInterval;
+              for (let i = 0; i < emitter.burstCount; i += 1) spawnParticle(emitter);
+            }
+          } else if (!state.burstFired[index]) {
+            for (let i = 0; i < emitter.burstCount; i += 1) spawnParticle(emitter);
+            state.burstFired[index] = true;
+          }
+        }
+        if (emitter.spawnRate > 0) {
+          state.spawnCarry[index] += emitter.spawnRate * dt;
+          const count = Math.floor(state.spawnCarry[index]);
+          state.spawnCarry[index] -= count;
+          for (let i = 0; i < count; i += 1) spawnParticle(emitter);
+        }
+      });
+      for (let i = particles.length - 1; i >= 0; i -= 1) {
+        const p = particles[i]; p.age += dt;
+        if (p.age >= p.life) { particles.splice(i,1); continue; }
+        p.velocity.multiplyScalar(Math.max(0, 1 - p.drag * dt));
+        p.velocity.y += (-p.gravity + Math.sin((state.elapsed + i) * 2.2) * p.updraft) * dt;
+        p.position.addScaledVector(p.velocity, dt);
+      }
+      if (state.elapsed >= getCycleDuration()) {
+        if (state.fx.emitters.some((emitter) => emitter.loop)) { state.elapsed = 0; state.spawnCarry = []; state.burstCarry = []; state.burstFired = []; if (!state.fx.emitters.every((emitter) => emitter.worldSpace)) clearParticles(); }
+        else state.playbackActive = false;
+      }
+      updateBuffers(); updateStats();
+    }
+
+    function resizeRenderer(){
+      const width = els.threeRoot.clientWidth, height = els.threeRoot.clientHeight;
+      camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setSize(width, height, false);
+    }
+
+    function handleImport(text){
+      const trimmed = String(text || "").trim();
+      if (!trimmed) return;
+      let importedFx = parseSpawnFxImport(trimmed);
+      if (!importedFx) {
+        try { importedFx = JSON.parse(trimmed); }
+        catch (error) { setStatus(`Import failed: ${error.message}`); return; }
+      }
+      importedFx = normalizeImportedConfig(importedFx);
+      applyConfig(importedFx, "custom");
+      setStatus(`Loaded FX preset "${state.fx.label}".`);
+    }
+
+    setupSliders();
+    Object.entries(PRESETS).forEach(([key,preset]) => { const option = document.createElement("option"); option.value = key; option.textContent = preset.label; els.presetSelect.appendChild(option); });
+    els.presetSelect.addEventListener("change", () => { state.activeEmitterIndex = 0; applyConfig(PRESETS[els.presetSelect.value], els.presetSelect.value); setStatus(`Loaded preset ${state.fx.label}.`); });
+    els.emitterSelect.addEventListener("change", () => { state.activeEmitterIndex = Number(els.emitterSelect.value) || 0; syncInputs(); rebuildGizmo(); updateOutputs(); updateStats(); });
+    els.addEmitterButton.addEventListener("click", () => {
+      state.fx.emitters.push(sanitizeConfig({ ...clone(PRESETS.custom.emitters[0]), label:`Layer ${state.fx.emitters.length + 1}` }));
+      state.activeEmitterIndex = state.fx.emitters.length - 1;
+      state.presetKey = "custom";
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus("Added FX layer.");
+    });
+    els.duplicateEmitterButton.addEventListener("click", () => {
+      const emitter = clone(getActiveEmitter());
+      emitter.label = `${emitter.label} Copy`;
+      state.fx.emitters.splice(state.activeEmitterIndex + 1, 0, emitter);
+      state.activeEmitterIndex += 1;
+      state.presetKey = "custom";
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus("Duplicated FX layer.");
+    });
+    els.removeEmitterButton.addEventListener("click", () => {
+      if (state.fx.emitters.length <= 1) return;
+      state.fx.emitters.splice(state.activeEmitterIndex, 1);
+      state.activeEmitterIndex = Math.max(0, Math.min(state.activeEmitterIndex, state.fx.emitters.length - 1));
+      state.presetKey = "custom";
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus("Removed FX layer.");
+    });
+    els.shapeSelect.addEventListener("change", () => {
+      els.dirXInput.value = "0";
+      els.dirYInput.value = "0";
+      els.dirZInput.value = "1";
+    });
+    [els.labelInput,els.exportParamsInput,els.rangeRefInput,els.emitterLabelInput,els.shapeSelect,els.burstCountInput,els.burstIntervalInput,els.spawnRateInput,els.durationInput,els.startDelayInput,els.radiusInput,els.radiusTopInput,els.heightInput,els.coneAngleInput,els.spreadXInput,els.spreadYInput,els.spreadZInput,els.chaosInput,els.maxParticlesInput,els.loopInput,els.worldSpaceInput,els.collisionInput,els.dirXInput,els.dirYInput,els.dirZInput,els.velocityModeSelect,els.speedInput,els.randomVelocityInput,els.tangentialInput,els.inwardInput,els.verticalInput,els.offsetXInput,els.offsetYInput,els.offsetZInput,els.yawInput,els.pitchInput,els.rollInput,els.dragInput,els.gravityInput,els.updraftInput,els.lifeMinInput,els.lifeMaxInput,els.sizeMinInput,els.sizeMaxInput,els.startColorInput,els.endColorInput,els.alphaStartInput,els.alphaEndInput].forEach((el) => { el.addEventListener("input", readInputs); el.addEventListener("change", readInputs); });
+    els.gizmoTranslateButton.addEventListener("click", () => { state.gizmoMode = "translate"; transformControls.setMode("translate"); setStatus("Viewport gizmo set to Move."); });
+    els.gizmoRotateButton.addEventListener("click", () => { state.gizmoMode = "rotate"; transformControls.setMode("rotate"); setStatus("Viewport gizmo set to Rotate."); });
+    function rotateEmitter(axis, delta){
+      const emitter = getActiveEmitter();
+      emitter[axis] = normalizeAngle((Number(emitter[axis]) || 0) + delta);
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus(`Adjusted ${axis} to ${emitter[axis]}°. `);
+    }
+    els.rotateYaw90Button.addEventListener("click", () => rotateEmitter("yaw", 90));
+    els.rotatePitch90Button.addEventListener("click", () => rotateEmitter("pitch", 90));
+    els.rotateRoll90Button.addEventListener("click", () => rotateEmitter("roll", 90));
+    els.resetRotationButton.addEventListener("click", () => {
+      const emitter = getActiveEmitter();
+      emitter.yaw = 0; emitter.pitch = 0; emitter.roll = 0;
+      syncInputs(); rebuildGizmo(); updateOutputs(); saveSession(); resetSimulation(); setStatus("Reset emitter rotation.");
+    });
+    els.newPresetButton.addEventListener("click", () => { state.playbackActive = true; state.activeEmitterIndex = 0; applyConfig(PRESETS.custom, "custom"); setStatus("Started a fresh FX preset."); });
+    els.togglePlaybackButton.addEventListener("click", () => { state.playbackActive = !state.playbackActive; updateStats(); setStatus(state.playbackActive ? "Playback resumed." : "Playback paused."); });
+    els.copyCodeButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(els.codeOutput.value);
+        setStatus("SpawnFx() copied to clipboard.");
+      } catch (error) {
+        setStatus(`Copy failed: ${error.message}`);
+      }
+    });
+    els.timelinePlayButton.addEventListener("click", () => {
+      if (!state.playbackActive && !state.fx.emitters.some((emitter) => emitter.loop) && state.elapsed >= getCycleDuration()) {
+        resetSimulation();
+      }
+      state.playbackActive = !state.playbackActive;
+      updateStats();
+      setStatus(state.playbackActive ? "Playback resumed." : "Playback paused.");
+    });
+    els.timelineRestartButton.addEventListener("click", () => {
+      resetSimulation();
+      state.playbackActive = true;
+      updateStats();
+      setStatus("Timeline restarted.");
+    });
+    els.timelineInput.addEventListener("input", () => {
+      const target = Math.min(Number(els.timelineInput.value) || 0, getCycleDuration());
+      rebuildParticlesToTime(target);
+      setStatus(`Jumped to ${target.toFixed(2)}s.`);
+    });
+    els.importButton?.addEventListener("click", () => {
+      handleImport(els.importInput?.value || "");
+    });
+    window.addEventListener("resize", resizeRenderer);
+
+    const restored = loadSession();
+    if (restored?.fx || restored?.config) {
+      state.activeEmitterIndex = restored.activeEmitterIndex || 0;
+      if (restored.exportParams) state.exportParams = restored.exportParams;
+      if (restored.rangeRef) state.rangeRef = restored.rangeRef;
+      applyConfig(restored.fx || restored.config, restored.presetKey || "custom");
+      setStatus(`Restored ${state.fx.label}.`);
+    }
+    else { applyConfig(PRESETS.spark, "spark"); setStatus("Loaded Spark Burst preset."); }
+
+    resizeRenderer();
+    (function animate(){ const dt = Math.min(clock.getDelta(), .05); controls.update(); updateSimulation(dt); renderer.render(scene, camera); requestAnimationFrame(animate); })();
+  </script>
+</body>
+</html>

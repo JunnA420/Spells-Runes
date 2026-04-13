@@ -27,11 +27,14 @@ public class StormsEye : Spell
 
     public const float Range = 7f;
     public const float Radius = 2.4f;
-    public const float PullStrength = 0.08f;
+    public const float PullStrength = 0.3f;
     public const float DurationSeconds = 5f;
 
     public static Vec3d GetCenter(EntityAgent caster)
-        => caster.SidedPos.XYZ.Add(caster.SidedPos.GetViewVector().ToVec3d().Normalize() * Range).Add(0, 0.5, 0);
+    {
+        var center = caster.SidedPos.XYZ.Add(caster.SidedPos.GetViewVector().ToVec3d().Normalize() * Range).Add(0, 0.5, 0);
+        return ClampToSurface(caster.World, center);
+    }
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
@@ -90,69 +93,220 @@ public class StormsEye : Spell
             channel.SendPacket(fx, p as IServerPlayer);
     }
 
-    public static void SpawnFx(IWorldAccessor world, Vec3d center, int spellLevel = 1, float radius = Radius)
-    {
-        int mult = 1 + (spellLevel - 1) / 4;
-        var rng = world.Rand;
+    // Storm's Eye
+// Generated as a per-call SpawnFx() method. If your effect should persist, call this from a tick listener. Courtesy of Fx Visualizer
+public static void SpawnFx(IWorldAccessor world, Vec3d center, int spellLevel = 1, float radius = Radius)
+{
+    var rng = world.Rand;
+    int mult = 1 + (spellLevel - 1) / 4;
+    Vec3d forward = new Vec3d(0, 0, 1);
+    double rangeScale = 1.0;
+    Vec3d refUp = Math.Abs(forward.Y) > 0.98 ? new Vec3d(1, 0, 0) : new Vec3d(0, 1, 0);
+    Vec3d right = refUp.Cross(forward).Normalize();
+    Vec3d up = forward.Cross(right).Normalize();
 
-        for (int i = 0; i < 52 * mult; i++)
+    static double Lerp(double a, double b, double t) => a + (b - a) * t;
+
+    static Vec3d RandomUnit(Random rng)
+    {
+        Vec3d v;
+        do
+        {
+            v = new Vec3d(rng.NextDouble() * 2 - 1, rng.NextDouble() * 2 - 1, rng.NextDouble() * 2 - 1);
+        }
+        while (v.LengthSq() < 0.0001);
+        return v.Normalize();
+    }
+
+    static Vec3d RotateLocalEuler(Vec3d vector, double pitchDeg, double yawDeg, double rollDeg)
+    {
+        double pitchRad = pitchDeg * Math.PI / 180.0;
+        double yawRad = yawDeg * Math.PI / 180.0;
+        double rollRad = rollDeg * Math.PI / 180.0;
+        double a = Math.Cos(pitchRad);
+        double b = Math.Sin(pitchRad);
+        double c = Math.Cos(yawRad);
+        double d = Math.Sin(yawRad);
+        double e = Math.Cos(rollRad);
+        double f = Math.Sin(rollRad);
+
+        double m11 = c * e + d * b * f;
+        double m12 = d * b * e - c * f;
+        double m13 = a * d;
+        double m21 = a * f;
+        double m22 = a * e;
+        double m23 = -b;
+        double m31 = c * b * f - d * e;
+        double m32 = d * f + c * b * e;
+        double m33 = a * c;
+
+        return new Vec3d(
+            m11 * vector.X + m12 * vector.Y + m13 * vector.Z,
+            m21 * vector.X + m22 * vector.Y + m23 * vector.Z,
+            m31 * vector.X + m32 * vector.Y + m33 * vector.Z);
+    }
+
+    static Vec3d TransformBasis(Vec3d local, Vec3d forward, Vec3d right, Vec3d up)
+    {
+        return right * local.X + up * local.Y + forward * local.Z;
+    }
+
+    static Vec3d TransformLocal(Vec3d local, Vec3d forward, Vec3d right, Vec3d up, double pitchDeg, double yawDeg, double rollDeg)
+    {
+        Vec3d rotated = RotateLocalEuler(local, pitchDeg, yawDeg, rollDeg);
+        return TransformBasis(rotated, forward, right, up);
+    }
+
+    static int LerpColor(int startR, int startG, int startB, int startA, int endR, int endG, int endB, int endA, double t)
+    {
+        return ColorUtil.ColorFromRgba(
+            (int)Math.Round(Lerp(startR, endR, t)),
+            (int)Math.Round(Lerp(startG, endG, t)),
+            (int)Math.Round(Lerp(startB, endB, t)),
+            (int)Math.Round(Lerp(startA, endA, t)));
+    }
+
+    static Vec3d SampleLocalPosition(string shape, Random rng, double radius, double radiusTop, double height, double coneAngleDeg, double spreadX, double spreadY, double spreadZ, double chaos)
+    {
+        if (shape == "ring")
         {
             double angle = rng.NextDouble() * Math.PI * 2;
-            double height = rng.NextDouble() * 1.45 - 0.35;
-            double funnel = 0.28 + (height + 0.35) * 0.32;
-            double r = radius * funnel * (0.75 + rng.NextDouble() * 0.22);
-            double swirl = 4.6 + rng.NextDouble() * 2.4;
-            var pos = new Vec3d(center.X + Math.Cos(angle) * r, center.Y + height, center.Z + Math.Sin(angle) * r);
-            var toCenter = center - pos;
-            var dir = toCenter.Normalize();
-            var tangent = new Vec3d(-Math.Sin(angle), 0.06 + rng.NextDouble() * 0.1, Math.Cos(angle));
-
-            world.SpawnParticles(new SimpleParticleProperties
-            {
-                MinQuantity = 1,
-                AddQuantity = 0,
-                Color = ColorUtil.ColorFromRgba(220, 247, 255, 145 + rng.Next(70)),
-                MinPos = pos,
-                AddPos = new Vec3d(0.025, 0.025, 0.025),
-                MinVelocity = new Vec3f(
-                    (float)(dir.X * 1.8 + tangent.X * swirl),
-                    (float)(0.03 + rng.NextDouble() * 0.18),
-                    (float)(dir.Z * 1.8 + tangent.Z * swirl)),
-                AddVelocity = new Vec3f(0.06f, 0.06f, 0.06f),
-                LifeLength = 0.18f + (float)rng.NextDouble() * 0.06f,
-                MinSize = 0.09f,
-                MaxSize = 0.22f,
-                GravityEffect = -0.035f,
-                ParticleModel = EnumParticleModel.Quad,
-                WithTerrainCollision = false,
-                ShouldDieInLiquid = false
-            });
+            double y = (rng.NextDouble() - 0.5) * height;
+            return new Vec3d(Math.Cos(angle) * radius, y, Math.Sin(angle) * radius);
         }
 
-        for (int i = 0; i < 18 * mult; i++)
+        if (shape == "vortex")
         {
-            double a = rng.NextDouble() * Math.PI * 2;
-            double ringR = radius * (0.95 + rng.NextDouble() * 0.12);
-            var pos = new Vec3d(center.X + Math.Cos(a) * ringR, center.Y + (rng.NextDouble() - 0.5) * 0.35, center.Z + Math.Sin(a) * ringR);
-            var inward = (center - pos).Normalize();
+            double t = rng.NextDouble();
+            double angle = rng.NextDouble() * Math.PI * 2;
+            double vortexRadius = Lerp(radius, radiusTop, t) * (0.82 + rng.NextDouble() * 0.35);
+            double y = t * height;
+            return new Vec3d(
+                Math.Cos(angle) * vortexRadius + Math.Sin(y * 1.6) * chaos,
+                y,
+                Math.Sin(angle) * vortexRadius + Math.Cos(y * 1.4) * chaos);
+        }
 
+
+        return RandomUnit(rng) * (rng.NextDouble() * radius);
+    }
+
+    static Vec3d ComputeVelocity(string velocityMode, Vec3d direction, Vec3d localPos, Vec3d forward, Vec3d right, Vec3d up, double pitchDeg, double yawDeg, double rollDeg, double speed, double tangentialStrength, double inwardStrength, double verticalStrength)
+    {
+        Vec3d directional = TransformBasis(direction * speed, forward, right, up);
+        Vec3d planar = new Vec3d(localPos.X, 0, localPos.Z);
+        if (planar.LengthSq() < 0.0001) planar = new Vec3d(0, 0, 1);
+        Vec3d radial = planar.Normalize();
+        Vec3d tangential = new Vec3d(-radial.Z, 0, radial.X).Normalize();
+        Vec3d vertical = new Vec3d(0, verticalStrength, 0);
+
+        if (velocityMode == "inward") return TransformLocal(radial * -Math.Abs(inwardStrength) + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);
+        if (velocityMode == "vortex") return TransformLocal(tangential * tangentialStrength + radial * -inwardStrength + vertical, forward, right, up, pitchDeg, yawDeg, rollDeg);
+        return directional + TransformBasis(vertical, forward, right, up);
+    }
+
+    // Funnel Swirl
+    // @fxviz eyJsYWJlbCI6IkZ1bm5lbCBTd2lybCIsInNoYXBlIjoidm9ydGV4IiwidmVsb2NpdHlNb2RlIjoidm9ydGV4IiwiYnVyc3RDb3VudCI6NDAyLCJidXJzdEludGVydmFsIjowLjEsInNwYXduUmF0ZSI6MCwiZHVyYXRpb24iOjUsImxvb3AiOnRydWUsIndvcmxkU3BhY2UiOnRydWUsInJhZGl1cyI6MC43NywicmFkaXVzVG9wIjoxLjYzLCJoZWlnaHQiOjIuNTQsImNoYW9zIjowLjQ0LCJjb25lQW5nbGUiOjU1LCJzcHJlYWRYIjowLjgsInNwcmVhZFkiOjEuMiwic3ByZWFkWiI6MC44LCJtYXhQYXJ0aWNsZXMiOjI1NDQsImRpcmVjdGlvbiI6eyJ4IjowLCJ5IjowLjA4LCJ6IjoxfSwic3BlZWQiOjAsInRhbmdlbnRpYWwiOjUuNCwiaW53YXJkIjoxLjgsInZlcnRpY2FsIjowLjEsInJhbmRvbVZlbG9jaXR5IjowLjA1LCJkcmFnIjowLjAzLCJncmF2aXR5IjotMC4wNSwidXBkcmFmdCI6MC4yNSwibGlmZU1pbiI6MC4xOCwibGlmZU1heCI6MC4yNCwic2l6ZU1pbiI6MC4wOSwic2l6ZU1heCI6MC4yMiwic3RhcnRDb2xvciI6IiNkY2Y3ZmYiLCJlbmRDb2xvciI6IiNiOGU0ZmYiLCJhbHBoYVN0YXJ0IjowLjgsImFscGhhRW5kIjowLCJzdGFydERlbGF5IjowLCJ3aXRoVGVycmFpbkNvbGxpc2lvbiI6ZmFsc2UsIm9mZnNldFgiOjAsIm9mZnNldFkiOjAsIm9mZnNldFoiOjAsInlhdyI6MCwicGl0Y2giOjAsInJvbGwiOjB9
+    {
+        const double pitchDeg = 0.0;
+        const double yawDeg = 0.0;
+        const double rollDeg = 0.0;
+        Vec3d emitterOrigin = center + right * 0.0 * rangeScale + up * 0.0 * rangeScale + forward * 0.0 * rangeScale;
+        int count = 402 * mult;
+    
+    
+        for (int i = 0; i < count; i++)
+        {
+            Vec3d localPos = SampleLocalPosition("vortex", rng, 0.77 * rangeScale, 1.63 * rangeScale, 2.54 * rangeScale, 55.0, 0.8 * rangeScale, 1.2 * rangeScale, 0.8 * rangeScale, 0.44);
+            Vec3d worldPos = emitterOrigin + TransformLocal(localPos, forward, right, up, pitchDeg, yawDeg, rollDeg);
+            Vec3d velocity = ComputeVelocity(
+                "vortex",
+                new Vec3d(0.0, 0.08, 1.0),
+                localPos,
+                forward, right, up, pitchDeg, yawDeg, rollDeg,
+                0.0, 5.4, 1.8, 0.1);
+    
+            if (0.05 > 0)
+            {
+                velocity += RandomUnit(rng) * (rng.NextDouble() * 0.05);
+            }
+    
+            int color = LerpColor(
+                220, 247, 255, 204,
+                184, 228, 255, 0,
+                rng.NextDouble());
+    
             world.SpawnParticles(new SimpleParticleProperties
             {
                 MinQuantity = 1,
                 AddQuantity = 0,
-                Color = ColorUtil.ColorFromRgba(235, 252, 255, 120 + rng.Next(60)),
-                MinPos = pos,
-                AddPos = new Vec3d(0.02, 0.02, 0.02),
-                MinVelocity = new Vec3f((float)(inward.X * 3.2), (float)((rng.NextDouble() - 0.5) * 0.1), (float)(inward.Z * 3.2)),
-                AddVelocity = new Vec3f(0.04f, 0.04f, 0.04f),
-                LifeLength = 0.12f + (float)rng.NextDouble() * 0.04f,
-                MinSize = 0.08f,
-                MaxSize = 0.16f,
-                GravityEffect = 0f,
+                Color = color,
+                MinPos = worldPos,
+                AddPos = new Vec3d(0, 0, 0),
+                MinVelocity = new Vec3f((float)velocity.X, (float)velocity.Y, (float)velocity.Z),
+                AddVelocity = new Vec3f(0, 0, 0),
+                LifeLength = (float)Lerp(0.18, 0.24, rng.NextDouble()),
+                MinSize = 0.09f,
+                MaxSize = 0.22f,
+                GravityEffect = -0.05f,
                 ParticleModel = EnumParticleModel.Quad,
                 WithTerrainCollision = false,
                 ShouldDieInLiquid = false
             });
         }
     }
+    
+    // Outer Inward Ring
+    // @fxviz eyJsYWJlbCI6Ik91dGVyIElud2FyZCBSaW5nIiwic2hhcGUiOiJyaW5nIiwidmVsb2NpdHlNb2RlIjoiaW53YXJkIiwiYnVyc3RDb3VudCI6MTgsImJ1cnN0SW50ZXJ2YWwiOjAuMSwic3Bhd25SYXRlIjowLCJkdXJhdGlvbiI6NSwibG9vcCI6dHJ1ZSwid29ybGRTcGFjZSI6dHJ1ZSwicmFkaXVzIjoyLjUsInJhZGl1c1RvcCI6Mi44MSwiaGVpZ2h0IjoyLjkxLCJjaGFvcyI6MCwiY29uZUFuZ2xlIjoxMiwic3ByZWFkWCI6MC4wMiwic3ByZWFkWSI6MC4yLCJzcHJlYWRaIjowLjAyLCJtYXhQYXJ0aWNsZXMiOjIyNCwiZGlyZWN0aW9uIjp7IngiOjAsInkiOjAsInoiOi0xfSwic3BlZWQiOjMuMiwidGFuZ2VudGlhbCI6MCwiaW53YXJkIjozLjIsInZlcnRpY2FsIjowLCJyYW5kb21WZWxvY2l0eSI6MC4wNSwiZHJhZyI6MC4wNCwiZ3Jhdml0eSI6MCwidXBkcmFmdCI6MCwibGlmZU1pbiI6MC4xMiwibGlmZU1heCI6MC4xNiwic2l6ZU1pbiI6MC4wOCwic2l6ZU1heCI6MC4xNiwic3RhcnRDb2xvciI6IiNlYmZjZmYiLCJlbmRDb2xvciI6IiNkMGVmZmYiLCJhbHBoYVN0YXJ0IjowLjcyLCJhbHBoYUVuZCI6MCwic3RhcnREZWxheSI6MCwid2l0aFRlcnJhaW5Db2xsaXNpb24iOmZhbHNlLCJvZmZzZXRYIjowLCJvZmZzZXRZIjowLCJvZmZzZXRaIjowLCJ5YXciOjAsInBpdGNoIjowLCJyb2xsIjowfQ==
+    {
+        const double pitchDeg = 0.0;
+        const double yawDeg = 0.0;
+        const double rollDeg = 0.0;
+        Vec3d emitterOrigin = center + right * 0.0 * rangeScale + up * 0.0 * rangeScale + forward * 0.0 * rangeScale;
+        int count = 18 * mult;
+    
+    
+        for (int i = 0; i < count; i++)
+        {
+            Vec3d localPos = SampleLocalPosition("ring", rng, 2.5 * rangeScale, 2.81 * rangeScale, 2.91 * rangeScale, 12.0, 0.02 * rangeScale, 0.2 * rangeScale, 0.02 * rangeScale, 0.0);
+            Vec3d worldPos = emitterOrigin + TransformLocal(localPos, forward, right, up, pitchDeg, yawDeg, rollDeg);
+            Vec3d velocity = ComputeVelocity(
+                "inward",
+                new Vec3d(0.0, 0.0, -1.0),
+                localPos,
+                forward, right, up, pitchDeg, yawDeg, rollDeg,
+                3.2, 0.0, 3.2, 0.0);
+    
+            if (0.05 > 0)
+            {
+                velocity += RandomUnit(rng) * (rng.NextDouble() * 0.05);
+            }
+    
+            int color = LerpColor(
+                235, 252, 255, 184,
+                208, 239, 255, 0,
+                rng.NextDouble());
+    
+            world.SpawnParticles(new SimpleParticleProperties
+            {
+                MinQuantity = 1,
+                AddQuantity = 0,
+                Color = color,
+                MinPos = worldPos,
+                AddPos = new Vec3d(0, 0, 0),
+                MinVelocity = new Vec3f((float)velocity.X, (float)velocity.Y, (float)velocity.Z),
+                AddVelocity = new Vec3f(0, 0, 0),
+                LifeLength = (float)Lerp(0.12, 0.16, rng.NextDouble()),
+                MinSize = 0.08f,
+                MaxSize = 0.16f,
+                GravityEffect = 0.0f,
+                ParticleModel = EnumParticleModel.Quad,
+                WithTerrainCollision = false,
+                ShouldDieInLiquid = false
+            });
+        }
+    }
+}
+
+// Suggested host method name: StormSEye.SpawnFx(...)
 }

@@ -39,6 +39,6 @@ public class WindStep : Spell
             Math.Max(caster.SidedPos.Motion.Y, 0.05),
             lookDir.Z * ForwardForce * GetRangeMultiplier(spellLevel));
 
-        WindSlash.SpawnFx(world, origin, lookDir, spellLevel, Range * GetRangeMultiplier(spellLevel));
+
     }
 }

@@ -1,0 +1,11 @@
+{
+  "modid": "junnasfxvisualizer",
+  "name": "JunnAs FX Visualizer",
+  "authors": [
+    "JunnA"
+  ],
+  "description": "A standalone particle FX visualizer with live 3D preview, presets, JSON import/export, and a helper snippet for Vintage Story spell effects.",
+  "version": "1.0.0",
+  "type": "content",
+  "side": "universal"
+}
