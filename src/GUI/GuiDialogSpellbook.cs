@@ -1134,7 +1134,7 @@ public class GuiDialogSpellbook : GuiDialog
         {
             double dx = lx - _panStartMx, dy = ly - _panStartMy;
             if (Math.Abs(dx) > 3 || Math.Abs(dy) > 3) _panMoved = true;
-            if (_panMoved) { _panX[_elemTab] = _panStartPx + dx; _panY[_elemTab] = _panStartPy + dy; }
+            if (_panMoved) { _panX[_elemTab] = _panStartPx + dx; _panY[_elemTab] = _panStartPy + dy; Redraw(); }
             e.Handled = true;
         }
 
@@ -1149,6 +1149,9 @@ public class GuiDialogSpellbook : GuiDialog
                 _dragStarted = false;
             }
         }
+
+        // Redraw during active drag so the dragged card follows the mouse immediately
+        if (_dragId != null) Redraw();
 
         base.OnMouseMove(e);
     }
