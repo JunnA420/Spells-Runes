@@ -491,6 +491,13 @@ public class SpellsAndRunesMod : ModSystem
                 radialMenu.Close();
         };
 
+        // LMB selects radial slot (HUD type can't use OnMouseDown override)
+        api.Event.MouseDown += (MouseEvent e) =>
+        {
+            if (e.Button == EnumMouseButton.Left && radialMenu.IsOpen)
+                radialMenu.HandleClick(e.X, e.Y);
+        };
+
         // RMB cancels cast
         api.Event.MouseDown += (MouseEvent e) =>
         {

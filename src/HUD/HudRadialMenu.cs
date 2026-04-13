@@ -338,20 +338,22 @@ public class HudRadialMenu : GuiDialog
     public override string ToggleKeyCombinationCode => null!;
     public override bool PrefersUngrabbedMouse => true;
     public override bool ShouldReceiveKeyboardEvents() => false;
-    public override EnumDialogType DialogType => EnumDialogType.Dialog;
+    public override bool ShouldReceiveMouseEvents()    => false;
+    public override EnumDialogType DialogType => EnumDialogType.HUD;
 
-    public override void OnMouseDown(MouseEvent args)
+    /// <summary>Called from api.Event.MouseDown so HUD type doesn't block player movement.</summary>
+    public bool HandleClick(int x, int y)
     {
-        if (args.Button != EnumMouseButton.Left) { base.OnMouseDown(args); return; }
+        if (!isOpen) return false;
         double sc    = GuiElement.scaled(1.0);
-        var (lx, ly) = Local(args.X, args.Y);
+        var (lx, ly) = Local(x, y);
         int slot     = SlotAtPos(lx / sc, ly / sc);
         if (slot >= 0) ApplySlot(slot);
         isOpen = false;
         if (_tickId >= 0) { capi.World.UnregisterGameTickListener(_tickId); _tickId = -1; }
         TryClose();
         indicator.RedrawIndicator();
-        args.Handled = true;
+        return true;
     }
 
     public override void Dispose()
