@@ -31,7 +31,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="VSSurvivalMod">
-      <HintPath>C:\Games\Vintagestory\Mods\VSSurvivalMod.dll</HintPath>
+      <HintPath>D:\Vintagestory\Mods\VSSurvivalMod.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
