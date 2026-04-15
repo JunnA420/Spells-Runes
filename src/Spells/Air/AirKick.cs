@@ -162,6 +162,34 @@ public class AirKick : Spell
         }
     }
 
+    public static void SpawnHitboxDebug(IWorldAccessor world, Vec3d center, float radius)
+    {
+        var rng = world.Rand;
+        var p = Pool;
+        p.ParticleModel = EnumParticleModel.Quad;
+        p.ShouldDieInLiquid = false;
+        p.WithTerrainCollision = false;
+        p.MinQuantity = 1;
+        p.AddQuantity = 0;
+        p.MinVelocity = new Vec3f(0, 0, 0);
+        p.AddVelocity = new Vec3f(0, 0, 0);
+        p.LifeLength = 0.18f;
+        p.MinSize = 0.10f;
+        p.MaxSize = 0.12f;
+
+        for (int i = 0; i < 24; i++)
+        {
+            double angle = i * (Math.PI * 2 / 24.0);
+            double r = radius * 0.98;
+            var pos = new Vec3d(center.X + Math.Cos(angle) * r, center.Y, center.Z + Math.Sin(angle) * r);
+            p.MinPos = pos;
+            p.AddPos = new Vec3d(0, 0, 0);
+            // VS seems to display as BGRA, so use blue channel for visible red
+            p.Color = ColorUtil.ColorFromRgba(0, 0, 255, 200 + rng.Next(40));
+            world.SpawnParticles(p);
+        }
+    }
+
     /// <summary>Impact puff on direct hit.</summary>
     public static void SpawnImpactFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel = 1)
     {

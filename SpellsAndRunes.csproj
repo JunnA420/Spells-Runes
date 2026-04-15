@@ -22,6 +22,10 @@
       <HintPath>C:\Games\Vintagestory\VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Vintagestory">
+      <HintPath>C:\Games\Vintagestory\Vintagestory.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="cairo-sharp">
       <HintPath>C:\Games\Vintagestory\Lib\cairo-sharp.dll</HintPath>
       <Private>false</Private>
@@ -31,7 +35,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="VSSurvivalMod">
-      <HintPath>D:\Vintagestory\Mods\VSSurvivalMod.dll</HintPath>
+      <HintPath>C:\Games\Vintagestory\Mods\VSSurvivalMod.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

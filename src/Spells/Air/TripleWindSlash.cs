@@ -3,6 +3,8 @@ using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.MathTools;
+using Vintagestory.API.Server;
+using SpellsAndRunes.Network;
 
 namespace SpellsAndRunes.Spells.Air;
 
@@ -28,24 +30,47 @@ public class TripleWindSlash : Spell
         var api = world.Api;
         if (api == null) return;
 
-        var lookDir = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
-        var up = new Vec3d(0, 1, 0);
-        var right = lookDir.Cross(up).Normalize();
-        var baseOrigin = caster.SidedPos.XYZ.Add(0, caster.LocalEyePos.Y - 0.1, 0);
         float range = WindSlash.Range * GetRangeMultiplier(spellLevel) * 1.1f;
         float damage = WindSlash.Damage * GetDamageMultiplier(spellLevel) * 0.8f;
-        double[] offsets = { -0.7, 0.0, 0.7 };
+        const int delayMs = 320;
 
-        for (int i = 0; i < offsets.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
-            int index = i;
             api.Event.RegisterCallback(_ =>
             {
                 if (!caster.Alive) return;
-                var origin = baseOrigin + right * offsets[index];
-                WindSlash.HitAlongLine(caster, world, origin, lookDir, range, WindSlash.HitRadius, damage);
-                WindSlash.SpawnFx(world, origin, lookDir, spellLevel);
-            }, i * 120);
+                var lookDir = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
+                var fxOrigin = caster.SidedPos.XYZ.Add(0, 0, 0);
+                var hitOrigin = caster.SidedPos.XYZ.Add(0, caster.LocalEyePos.Y - 0.1, 0);
+                var origin = fxOrigin;
+                if (world.Side == EnumAppSide.Server && world.Api != null)
+                {
+                    WindSlash.StartDamageSweep(caster, world, hitOrigin, lookDir, range, WindSlash.HitRadius, damage, replaceExisting: false);
+                    if (WindSlash.DebugHitboxEnabled)
+                    {
+                        WindSlash.StartHitboxSweepDebug(caster, world, hitOrigin, lookDir, range, WindSlash.HitRadius, replaceExisting: false);
+                    }
+
+                    if (world.Api is ICoreServerAPI sapi)
+                    {
+                        var fxMsg = new MsgSpellFx
+                        {
+                            SpellId = "air_wind_slash",
+                            OriginX = (float)origin.X,
+                            OriginY = (float)origin.Y,
+                            OriginZ = (float)origin.Z,
+                            LookDirX = (float)lookDir.X,
+                            LookDirY = (float)lookDir.Y,
+                            LookDirZ = (float)lookDir.Z,
+                            SpellLevel = spellLevel
+                        };
+                        var channel = sapi.Network.GetChannel("spellsandrunes");
+                        foreach (var p in sapi.World.AllOnlinePlayers)
+                            channel.SendPacket(fxMsg, p as IServerPlayer);
+                    }
+                }
+
+            }, i * delayMs);
         }
     }
 }

@@ -1,0 +1,35 @@
+{
+	"code": "ignis-fragment-gem",
+	"class": "Item",
+	"maxstacksize": 16,
+	"renderType": "shape",
+	"shape": {
+		"base": "spellsandrunes:item/ignis-fragment-gem"
+	},
+	"textures": {
+		"ignis-fragment.png": {
+			"base": "spellsandrunes:block/ignis-fragment"
+		}
+	},
+	"behaviors": [
+		{
+			"name": "GroundStorable",
+			"properties": {
+				"layout": "Quadrants",
+				"collisionBox": {
+					"x1": 0,
+					"y1": 0,
+					"z1": 0,
+					"x2": 1,
+					"y2": 0.125,
+					"z2": 1
+				}
+			}
+		}
+	],
+	"creativeinventory": {
+		"general": ["*"],
+		"items": ["*"]
+	},
+	"materialDensity": 400
+}

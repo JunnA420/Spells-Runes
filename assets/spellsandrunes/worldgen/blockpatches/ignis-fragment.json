@@ -1,0 +1,18 @@
+[
+  {
+    "blockCodes": ["spellsandrunes:ignis-fragment"],
+    "placement": "OnSurface",
+    "minTemp": 18,
+    "maxTemp": 40,
+    "minRain": 0.0,
+    "maxRain": 0.35,
+    "minForest": 0,
+    "maxForest": 0.2,
+    "minY": 0.4,
+    "maxY": 1,
+    "quantity": { "dist": "invexp", "avg": 1, "var": 0 },
+    "chance": 0.003,
+    "offsetX": { "dist": "gaussian", "avg": 0, "var": 28 },
+    "offsetZ": { "dist": "gaussian", "avg": 0, "var": 28 }
+  }
+]

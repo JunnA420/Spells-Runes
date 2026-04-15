@@ -53,6 +53,8 @@ public class MsgLaunchPlayer
     [ProtoMember(2)] public float ForwardForce { get; set; }
     [ProtoMember(3)] public float LookDirX     { get; set; }
     [ProtoMember(4)] public float LookDirZ     { get; set; }
+    [ProtoMember(5)] public float LookDirY     { get; set; }
+    [ProtoMember(6)] public bool  UseLookY     { get; set; }
 }
 
 /// <summary>Server → all nearby clients: play a spell animation on an entity.</summary>
@@ -77,4 +79,18 @@ public class MsgSpellFx
     [ProtoMember(6)] public float  LookDirY { get; set; }
     [ProtoMember(7)] public float  LookDirZ { get; set; }
     [ProtoMember(8)] public int    SpellLevel { get; set; } = 1;
+    [ProtoMember(9)] public float  RollDeg { get; set; } = 0f;
+}
+
+[ProtoContract]
+public class MsgChickenKills
+{
+    [ProtoMember(1)] public int Count { get; set; }
+}
+
+[ProtoContract]
+public class MsgCancelCast
+{
+    [ProtoMember(1)] public long EntityId { get; set; }
+    [ProtoMember(2)] public string SpellId { get; set; } = "";
 }

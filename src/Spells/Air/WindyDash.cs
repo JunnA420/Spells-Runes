@@ -26,15 +26,13 @@ public class WindyDash : Spell
 
     public override (int col, int row) TreePosition => (0, 3);
 
-    public const float ForwardForce = 1.25f;
+    public const float ForwardForce = 0.25f;
 
     public override void Execute(EntityAgent caster, IWorldAccessor world, int spellLevel)
     {
         var lookDir = caster.SidedPos.GetViewVector().ToVec3d().Normalize();
-        caster.SidedPos.Motion.Set(
-            lookDir.X * ForwardForce * GetRangeMultiplier(spellLevel),
-            Math.Max(caster.SidedPos.Motion.Y, 0.05),
-            lookDir.Z * ForwardForce * GetRangeMultiplier(spellLevel));
+        float force = ForwardForce * GetRangeMultiplier(spellLevel);
+        caster.SidedPos.Motion.Set(lookDir * force);
 
         SpawnFx(world, caster.SidedPos.XYZ.Add(0, 0.5, 0), lookDir, spellLevel);
     }

@@ -30,8 +30,8 @@ public class WindSlash : Spell
     public const float HitRadius = 0.3f;
     public const float Damage = 10f;
     public static bool DebugHitboxEnabled = false;
-    private static readonly Dictionary<long, long> ActiveDebugSweeps = new();
-    private static readonly Dictionary<long, long> ActiveDamageSweeps = new();
+    private static readonly Dictionary<long, HashSet<long>> ActiveDebugSweeps = new();
+    private static readonly Dictionary<long, HashSet<long>> ActiveDamageSweeps = new();
     private const float SweepSpeed = 20f;
     private const float MinTravelDistance = 0.6f;
 
@@ -82,15 +82,18 @@ public class WindSlash : Spell
         });
     }
 
-    private static void StartDamageSweep(EntityAgent caster, IWorldAccessor world, Vec3d origin, Vec3d lookDir, float range, float hitRadius, float damage)
+    internal static void StartDamageSweep(EntityAgent caster, IWorldAccessor world, Vec3d origin, Vec3d lookDir, float range, float hitRadius, float damage, bool replaceExisting = true)
     {
         if (world.Api == null) return;
         float elapsed = 0f;
         long listenerId = 0;
 
-        if (ActiveDamageSweeps.TryGetValue(caster.EntityId, out long prevId))
+        if (replaceExisting && ActiveDamageSweeps.TryGetValue(caster.EntityId, out var prevIds))
         {
-            world.Api.Event.UnregisterGameTickListener(prevId);
+            foreach (var prevId in prevIds)
+            {
+                world.Api.Event.UnregisterGameTickListener(prevId);
+            }
             ActiveDamageSweeps.Remove(caster.EntityId);
         }
 
@@ -99,7 +102,7 @@ public class WindSlash : Spell
             if (!caster.Alive)
             {
                 world.Api.Event.UnregisterGameTickListener(listenerId);
-                ActiveDamageSweeps.Remove(caster.EntityId);
+                RemoveSweep(ActiveDamageSweeps, caster.EntityId, listenerId);
                 return;
             }
 
@@ -123,18 +126,23 @@ public class WindSlash : Spell
                 }
                 SpawnPoof(world, hitPos);
                 world.Api.Event.UnregisterGameTickListener(listenerId);
-                ActiveDamageSweeps.Remove(caster.EntityId);
+                RemoveSweep(ActiveDamageSweeps, caster.EntityId, listenerId);
                 return;
             }
 
             if (dist >= range)
             {
                 world.Api.Event.UnregisterGameTickListener(listenerId);
-                ActiveDamageSweeps.Remove(caster.EntityId);
+                RemoveSweep(ActiveDamageSweeps, caster.EntityId, listenerId);
             }
         }, 20);
 
-        ActiveDamageSweeps[caster.EntityId] = listenerId;
+        if (!ActiveDamageSweeps.TryGetValue(caster.EntityId, out var set))
+        {
+            set = new HashSet<long>();
+            ActiveDamageSweeps[caster.EntityId] = set;
+        }
+        set.Add(listenerId);
     }
 
     private static bool TryHitAlongSegment(EntityAgent caster, IWorldAccessor world, Vec3d from, Vec3d to, float hitRadius, out EntityAgent? hitEntity, out Vec3d hitPos)
@@ -262,15 +270,18 @@ public class WindSlash : Spell
         }
     }
 
-    private static void StartHitboxSweepDebug(EntityAgent caster, IWorldAccessor world, Vec3d origin, Vec3d lookDir, float range, float radius)
+    internal static void StartHitboxSweepDebug(EntityAgent caster, IWorldAccessor world, Vec3d origin, Vec3d lookDir, float range, float radius, bool replaceExisting = true)
     {
         if (world.Api == null) return;
         float elapsed = 0f;
         long listenerId = 0;
 
-        if (ActiveDebugSweeps.TryGetValue(caster.EntityId, out long prevId))
+        if (replaceExisting && ActiveDebugSweeps.TryGetValue(caster.EntityId, out var prevIds))
         {
-            world.Api.Event.UnregisterGameTickListener(prevId);
+            foreach (var prevId in prevIds)
+            {
+                world.Api.Event.UnregisterGameTickListener(prevId);
+            }
             ActiveDebugSweeps.Remove(caster.EntityId);
         }
 
@@ -283,16 +294,31 @@ public class WindSlash : Spell
             if (dist >= range)
             {
                 world.Api.Event.UnregisterGameTickListener(listenerId);
-                ActiveDebugSweeps.Remove(caster.EntityId);
+                RemoveSweep(ActiveDebugSweeps, caster.EntityId, listenerId);
             }
         }, 20);
 
-        ActiveDebugSweeps[caster.EntityId] = listenerId;
+        if (!ActiveDebugSweeps.TryGetValue(caster.EntityId, out var set))
+        {
+            set = new HashSet<long>();
+            ActiveDebugSweeps[caster.EntityId] = set;
+        }
+        set.Add(listenerId);
+    }
+
+    private static void RemoveSweep(Dictionary<long, HashSet<long>> map, long casterId, long listenerId)
+    {
+        if (!map.TryGetValue(casterId, out var set)) return;
+        set.Remove(listenerId);
+        if (set.Count == 0)
+        {
+            map.Remove(casterId);
+        }
     }
 
 // // Crescent Blade B
 // Generated as a per-call SpawnFx() method. If your effect should persist, call this from a tick listener. Courtesy of Fx Visualizer
-public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel)
+public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, int spellLevel, double rollDeg = 0.0)
 {
     var rng = world.Rand;
     int mult = 1 + (spellLevel - 1) / 4;
@@ -300,6 +326,16 @@ public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, in
     Vec3d refUp = Math.Abs(forward.Y) > 0.98 ? new Vec3d(1, 0, 0) : new Vec3d(0, 1, 0);
     Vec3d right = refUp.Cross(forward).Normalize();
     Vec3d up = forward.Cross(right).Normalize();
+    if (Math.Abs(rollDeg) > 0.0001)
+    {
+        double rollRad = rollDeg * Math.PI / 180.0;
+        double c = Math.Cos(rollRad);
+        double s = Math.Sin(rollRad);
+        Vec3d r2 = right * c + up * s;
+        Vec3d u2 = up * c - right * s;
+        right = r2;
+        up = u2;
+    }
 
     static double Lerp(double a, double b, double t) => a + (b - a) * t;
 
@@ -419,7 +455,6 @@ public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, in
     {
         const double pitchDeg = -46.0;
         const double yawDeg = -88.0;
-        const double rollDeg = 9.0;
         Vec3d emitterOrigin = origin + right * -0.28 + up * 1.15 + forward * 0.0;
         int count = 207 * mult;
     
@@ -434,11 +469,6 @@ public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, in
                 localPos,
                 forward, right, up, pitchDeg, yawDeg, rollDeg,
                 20.0, 0.0, 0.1, -0.1);
-    
-            if (0.0 > 0)
-            {
-                velocity += RandomUnit(rng) * (rng.NextDouble() * 0.0);
-            }
     
             int color = LerpColor(
                 255, 255, 255, 255,
@@ -470,7 +500,6 @@ public static void SpawnFx(IWorldAccessor world, Vec3d origin, Vec3d lookDir, in
     {
         const double pitchDeg = -11.0;
         const double yawDeg = -171.0;
-        const double rollDeg = -53.0;
         Vec3d emitterOrigin = origin + right * 0.0 + up * 0.95 + forward * 1.71;
         int count = 342 * mult;
         if (world.ElapsedMilliseconds / 1000.0 < 0.15) return;

@@ -178,4 +178,31 @@ public class WindSpear : Spell
         }
     }
 
+    public static void SpawnImpactFx(IWorldAccessor world, Vec3d pos)
+    {
+        var rng = world.Rand;
+        var p = new SimpleParticleProperties
+        {
+            MinQuantity = 1,
+            AddQuantity = 0,
+            MinPos = pos,
+            AddPos = new Vec3d(0.18, 0.18, 0.18),
+            MinVelocity = new Vec3f(0, 0, 0),
+            AddVelocity = new Vec3f(1.1f, 0.6f, 1.1f),
+            LifeLength = 0.35f,
+            MinSize = 0.2f,
+            MaxSize = 0.55f,
+            GravityEffect = 0f,
+            ParticleModel = EnumParticleModel.Quad,
+            WithTerrainCollision = false,
+            ShouldDieInLiquid = false
+        };
+
+        for (int i = 0; i < 24; i++)
+        {
+            p.Color = ColorUtil.ColorFromRgba(230, 245, 255, 200 + rng.Next(40));
+            world.SpawnParticles(p);
+        }
+    }
+
 }

@@ -1,0 +1,50 @@
+{
+	"code": "ignis-fragment",
+	"class": "IgnisFragment",
+	"entityClass": "ignisfragment",
+	"entityBehaviors": [
+		{
+			"name": "Animatable"
+		}
+	],
+	"creativeinventory": {
+		"general": ["*"],
+		"decorative": ["*"]
+	},
+	"shape": {
+		"base": "spellsandrunes:block/ignis-fragment"
+	},
+	"drawtype": "json",
+	"blockmaterial": "Stone",
+	"sunlight_propagates": false,
+	"resistance": 2.5,
+	"renderpass": "BlendNoCull",
+	"sideopaque": {
+		"all": false
+	},
+	"sideao": {
+		"all": false
+	},
+	"sidesolid": {
+		"all": false
+	},
+	"sounds": {
+		"place": "block/stone",
+		"break": "block/stone",
+		"hit": "block/stone"
+	},
+	"drops": [
+		{
+			"type": "item",
+			"code": "spellsandrunes:ignis-fragment-gem",
+			"quantity": {
+				"avg": 1
+			}
+		}
+	],
+	"vertexFlags": {
+		"zOffset": 1
+	},
+	"lightHsv": [2, 7, 6],
+	"materialDensity": 1200
+}

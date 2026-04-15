@@ -24,12 +24,12 @@ public class SpearInAnEye : Spell
 
     public override (int col, int row) TreePosition => (1, 5);
     // Desired visible speed in blocks per second (see VS physics note: velocities are in blocks per 1/60s tick)
-    private const float SpearSpeedBps = 9f;
-    private const float ProjectileBaseSpeed = 18f;
+    private const float SpearSpeedBps = 6f;
+    private const float ProjectileBaseSpeed = 12f;
     private const float SpeedScale = (SpearSpeedBps / 60f) / ProjectileBaseSpeed;
-    private const float EnforceSpeedSeconds = 3.2f;
-    private const float StartSpeedFactor = 4.2f;
-    private const float AccelExponent = 3.2f;
+    private const float EnforceSpeedSeconds = 1.6f;
+    private const float StartSpeedFactor = 1.2f;
+    private const float AccelExponent = 1.2f;
 
     public static Vec3d GetCenter(EntityAgent caster)
     {
@@ -73,12 +73,13 @@ public class SpearInAnEye : Spell
                 volleyElapsed = 0f;
                 for (int i = 0; i < 1; i++)
                 {
-                    double spread = 3.2 + world.Rand.NextDouble() * 1.6;
-                    double height = 9.0 + world.Rand.NextDouble() * 3.0;
+                    double angle = world.Rand.NextDouble() * Math.PI * 2;
+                    double ringRadius = 5.2 + world.Rand.NextDouble() * 1.6;
+                    double height = 2.8 + world.Rand.NextDouble() * 1.4;
                     var start = center.AddCopy(
-                        (world.Rand.NextDouble() - 0.5) * spread,
+                        Math.Cos(angle) * ringRadius,
                         height,
-                        (world.Rand.NextDouble() - 0.5) * spread);
+                        Math.Sin(angle) * ringRadius);
                     var target = center.AddCopy(
                         (world.Rand.NextDouble() - 0.5) * 0.9,
                         (world.Rand.NextDouble() - 0.5) * 0.7,
@@ -98,7 +99,7 @@ public class SpearInAnEye : Spell
 
             }
 
-            if (elapsed >= duration)
+            if (elapsed >= duration && world.Api != null)
                 world.Api.Event.UnregisterGameTickListener(listenerId);
         }, 100);
     }
