@@ -13,7 +13,8 @@
 		"ignis-fragment.png": [32, 32]
 	},
 	"textures": {
-		"ignis-fragment.png": ""
+		"ignis-fragment.png": "block/ignis-fragment",
+		"ignis-fragment-gem-cracked-emissive.png": "item/ignis-fragment-gem-cracked-emissive"
 	},
 	"elements": [
 		{

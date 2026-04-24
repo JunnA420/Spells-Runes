@@ -18,6 +18,8 @@ public class WindClone : Spell
 
     public override float FluxCost => 40f;
     public override float CastTime => 1.0f;
+    public override string? AnimationCode => "air_wind_clone";
+    public override bool AnimationUpperBodyOnly => false;
 
     public override IReadOnlyList<string> Prerequisites => ["air_windy_dash"];
 

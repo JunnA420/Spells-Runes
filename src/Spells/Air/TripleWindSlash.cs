@@ -20,6 +20,8 @@ public class TripleWindSlash : Spell
 
     public override float FluxCost => 45f;
     public override float CastTime => 1.2f;
+    public override string? AnimationCode => "air_triple_wind_slash";
+    public override bool AnimationUpperBodyOnly => false;
 
     public override IReadOnlyList<string> Prerequisites => ["air_wind_slash"];
 

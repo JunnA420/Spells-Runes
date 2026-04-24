@@ -12,12 +12,14 @@
 	"textureSizes": {
 		"ignis-fragment.png": [32, 32],
 		"ignis-fragment-emissive.png": [16, 16],
+		"ignis-fragment-gem-cracked-emissive.png": [16, 16],
 		"ignis-fragment-pedestal.png": [32, 32]
 	},
 	"textures": {
 		"ignis-fragment.png": "block/ignis-fragment",
 		"ignis-fragment-emissive.png": "block/ignis-fragment-emissive",
-		"ignis-fragment-pedestal.png": "block/ignis-fragment-pedestal"
+		"ignis-fragment-gem-cracked-emissive.png": "item/ignis-fragment-gem-cracked-emissive",
+		"ignis-fragment-pedestal.png": ""
 	},
 	"elements": [
 		{
@@ -74,12 +76,12 @@
 													"to": [-1.99338, -0.31872, 0.16368],
 													"rotationOrigin": [-0.89338, -0.76872, -1.78632],
 													"faces": {
-														"north": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false},
-														"east": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false},
-														"south": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false},
-														"west": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false},
-														"up": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 3, 0, 2], "autoUv": false, "snapUv": false},
-														"down": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [3, 0, 2, 1], "rotation": 180, "autoUv": false, "snapUv": false}
+														"north": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"east": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"south": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"west": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"up": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 3, 0, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"down": {"texture": "#ignis-fragment-emissive.png", "uv": [3, 0, 2, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
 													},
 													"rotationX": -23.74457,
 													"rotationY": 62.0776,
@@ -100,12 +102,12 @@
 													"to": [-0.37484, 0.42908, 0.67935],
 													"rotationOrigin": [-0.57484, -0.02092, -0.17065],
 													"faces": {
-														"north": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false},
-														"east": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false},
-														"south": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false},
-														"west": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false},
-														"up": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false},
-														"down": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false}
+														"north": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"east": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"south": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"west": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"up": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false, "glow": 255},
+														"down": {"texture": "#ignis-fragment-emissive.png", "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
 													},
 													"rotationX": -6.99125,
 													"rotationY": 73.34848,
@@ -126,12 +128,12 @@
 													"to": [-0.7243, 0.76358, 1.03243],
 													"rotationOrigin": [-0.9243, 0.31358, -0.21757],
 													"faces": {
-														"north": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false},
-														"east": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false},
-														"south": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false},
-														"west": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false},
-														"up": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false},
-														"down": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false}
+														"north": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"east": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"south": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"west": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"up": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false, "glow": 255},
+														"down": {"texture": "#ignis-fragment-emissive.png", "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
 													},
 													"rotationX": 55.24558,
 													"rotationY": 67.56272,
@@ -152,12 +154,12 @@
 													"to": [0.2, 0.45, 0.25],
 													"rotationOrigin": [0, 0, 0],
 													"faces": {
-														"north": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false},
-														"east": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false},
-														"south": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false},
-														"west": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false},
-														"up": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false},
-														"down": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false}
+														"north": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"east": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"south": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"west": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"up": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false, "glow": 255},
+														"down": {"texture": "#ignis-fragment-emissive.png", "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
 													},
 													"rotationX": -93.34493,
 													"rotationY": -75.44099,
@@ -178,12 +180,12 @@
 													"to": [0.2, 0.45, 0.25],
 													"rotationOrigin": [0, 0, 0],
 													"faces": {
-														"north": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false},
-														"east": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false},
-														"south": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false},
-														"west": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false},
-														"up": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false},
-														"down": {"texture": "#ignis-fragment-emissive.png", "glow": 255, "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false}
+														"north": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"east": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"south": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+														"west": {"texture": "#ignis-fragment-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+														"up": {"texture": "#ignis-fragment-emissive.png", "uv": [0, 2, 1, 3], "autoUv": false, "snapUv": false, "glow": 255},
+														"down": {"texture": "#ignis-fragment-emissive.png", "uv": [2, 0, 3, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
 													},
 													"rotationY": 46.5,
 													"rotationZ": -8,
@@ -340,6 +342,21 @@
 								"down": {"texture": "#ignis-fragment-pedestal.png", "uv": [18, 14, 14, 18], "rotation": 180, "autoUv": false, "snapUv": false}
 							},
 							"rotationY": 22.5
+						},
+						{
+							"name": "cube",
+							"from": [-0.73102, 2.15, -0.37891],
+							"to": [0.66898, 3.05, 0.42109],
+							"rotationOrigin": [-0.03102, 2.6, 0.02109],
+							"faces": {
+								"north": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [0, 0, 1, 1], "autoUv": false, "snapUv": false, "glow": 255},
+								"east": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [0, 1, 1, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"south": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 0, 2, 1], "autoUv": false, "snapUv": false, "glow": 255},
+								"west": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"up": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 3, 0, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"down": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [3, 0, 2, 1], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
+							},
+							"rotationZ": -87.5
 						}
 					]
 				},
@@ -399,9 +416,9 @@
 						"bone": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
 						"bone2": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
 						"bone3": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
-						"Top Part": {"rotationX": 0, "rotationY": 0, "rotationZ": 0},
-						"Second part": {"rotationX": 0, "rotationY": 0, "rotationZ": 0},
-						"Small Fragments": {"rotationX": 0, "rotationY": 0, "rotationZ": 0},
+						"Top Part": {"rotationX": 0, "rotationY": 0, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Second part": {"rotationX": 0, "rotationY": 0, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Small Fragments": {"rotationX": 0, "rotationY": 0, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
 						"Fragment": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},
 						"Fragment2": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},
 						"Fragment3": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},
@@ -427,9 +444,9 @@
 				{
 					"frame": 120,
 					"elements": {
-						"Top Part": {"rotationX": 0, "rotationY": 180, "rotationZ": 0},
-						"Second part": {"rotationX": 0, "rotationY": -180, "rotationZ": 0},
-						"Small Fragments": {"rotationX": 0, "rotationY": 180, "rotationZ": 0},
+						"Top Part": {"rotationX": 0, "rotationY": 180, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Second part": {"rotationX": 0, "rotationY": -180, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Small Fragments": {"rotationX": 0, "rotationY": 180, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
 						"Fragment": {"offsetX": 0, "offsetY": -0.67, "offsetZ": 0}
 					}
 				},
@@ -464,9 +481,9 @@
 						"bone": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
 						"bone2": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
 						"bone3": {"scaleX": 1, "scaleY": 1, "scaleZ": 1},
-						"Top Part": {"rotationX": 0, "rotationY": 360, "rotationZ": 0},
-						"Second part": {"rotationX": 0, "rotationY": -360, "rotationZ": 0},
-						"Small Fragments": {"rotationX": 0, "rotationY": 360, "rotationZ": 0},
+						"Top Part": {"rotationX": 0, "rotationY": 360, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Second part": {"rotationX": 0, "rotationY": -360, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
+						"Small Fragments": {"rotationX": 0, "rotationY": 360, "rotationZ": 0, "rotShortestDistanceX": true, "rotShortestDistanceY": true, "rotShortestDistanceZ": true},
 						"Fragment": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},
 						"Fragment2": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},
 						"Fragment3": {"offsetX": 0, "offsetY": 0, "offsetZ": 0},

@@ -18,6 +18,8 @@ public class WindStep : Spell
 
     public override float FluxCost => 35f;
     public override float CastTime => 0.5f;
+    public override string? AnimationCode => "air_wind_step";
+    public override bool AnimationUpperBodyOnly => false;
 
     public override IReadOnlyList<string> Prerequisites => ["air_windy_dash", "air_wind_slash"];
 

@@ -1,3 +1,5 @@
+using SpellsAndRunes.Render;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
@@ -6,24 +8,35 @@ namespace SpellsAndRunes.Blocks;
 public class BlockEntityIgnisFragment : BlockEntity
 {
     private long particleListenerId = -1;
+    private IdleAnimatedBlockRenderer? animRenderer;
 
     public override void Initialize(ICoreAPI api)
-    {
+    {   
         base.Initialize(api);
         if (api.Side != EnumAppSide.Client) return;
 
         particleListenerId = api.Event.RegisterGameTickListener(_ => SpawnIgnisParticles(), 180);
+
+        if (api is ICoreClientAPI capi && Block is BlockIgnisFragment ignisBlock)
+        {
+            animRenderer = capi.ModLoader.GetModSystem<SpellsAndRunesMod>()?.IdleAnim;
+            var positionVariant = ignisBlock.GetPositionVariant();
+            var customTransform = BlockIgnisFragment.CreateAnimationTransform(Pos, positionVariant);
+            animRenderer?.Register(Block, Pos, "idle", customTransform);
+        }
     }
 
     public override void OnBlockRemoved()
     {
         UnregisterListener();
+        animRenderer?.Unregister(Pos);
         base.OnBlockRemoved();
     }
 
     public override void OnBlockUnloaded()
     {
         UnregisterListener();
+        animRenderer?.Unregister(Pos);
         base.OnBlockUnloaded();
     }
 
@@ -32,6 +45,11 @@ public class BlockEntityIgnisFragment : BlockEntity
         if (particleListenerId < 0 || Api == null) return;
         Api.Event.UnregisterGameTickListener(particleListenerId);
         particleListenerId = -1;
+    }
+
+    public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+    {
+        return true;
     }
 
     private void SpawnIgnisParticles()

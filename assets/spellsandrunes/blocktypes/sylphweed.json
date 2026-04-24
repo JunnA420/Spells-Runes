@@ -1,6 +1,6 @@
 {
 	"code": "sylphweed",
-	"class": "Block",
+	"entityClass": "sylphweed",
 	"creativeinventory": {
 		"general": ["*"],
 		"flora": ["*"]
@@ -53,6 +53,5 @@
 		"sound": "game:environment/wind",
 		"range": 8,
 		"volume": 0.7
-	},
-	"entityClass": "sylphweed"
+	}
 }

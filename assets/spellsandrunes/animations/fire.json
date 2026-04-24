@@ -1,123 +1,1686 @@
-{
-  "animations": [
-    {
-      "name": "SparkCast",
-      "code": "sparkcast",
-      "quantityframes": 39,
-      "onActivityStopped": "EaseOut",
-      "onAnimationEnd": "Hold",
-      "keyframes": [
-        {
-          "frame": 0,
-          "elements": {
-            "UpperArmR": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": 0
-            },
-            "LowerArmR": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": 0
-            },
-            "LowerArmL": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": 0
-            }
-          }
-        },
-        {
-          "frame": 11,
-          "elements": {
-            "LowerArmL": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": -30
-            }
-          }
-        },
-        {
-          "frame": 13,
-          "elements": {
-            "LowerArmR": {
-              "rotationX": -65,
-              "rotationY": 0,
-              "rotationZ": 0
-            },
-            "UpperArmL": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": 0
-            }
-          }
-        },
-        {
-          "frame": 16,
-          "elements": {
-            "UpperArmR": {
-              "rotationX": -5.1761,
-              "rotationY": 12.3257,
-              "rotationZ": -79.1563
-            }
-          }
-        },
-        {
-          "frame": 19,
-          "elements": {
-            "UpperArmL": {
-              "rotationX": 0,
-              "rotationY": 0,
-              "rotationZ": -42.5
-            }
-          }
-        },
-        {
-          "frame": 20,
-          "elements": {
-            "UpperArmR": {
-              "rotationX": -5.1761,
-              "rotationY": 12.3257,
-              "rotationZ": -79.1563
-            }
-          }
-        },
-        {
-          "frame": 25,
-          "elements": {
-            "UpperArmR": {
-              "rotationX": -10.1721,
-              "rotationY": 17.4861,
-              "rotationZ": -72.9908
-            },
-            "LowerArmR": {
-              "rotationX": -62.5,
-              "rotationY": 0,
-              "rotationZ": 0
-            }
-          }
-        },
-        {
-          "frame": 28,
-          "elements": {
-            "LowerArmR": {
-              "rotationX": -22.5,
-              "rotationY": 0,
-              "rotationZ": 0
-            }
-          }
-        },
-        {
-          "frame": 30,
-          "elements": {
-            "UpperArmR": {
-              "rotationX": -5.0917,
-              "rotationY": 6.0142,
-              "rotationZ": -74.0313
-            }
-          }
-        }
-      ]
-    }
-  ]
+﻿{
+    "animations":  [
+                       {
+                           "name":  "Fire_Spark",
+                           "code":  "fire_spark",
+                           "quantityframes":  22,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  4,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  20.5949,
+                                                                                    "rotationY":  -8.7409,
+                                                                                    "rotationZ":  -39.0449
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -65,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  -5.1761,
+                                                                                    "rotationY":  12.3257,
+                                                                                    "rotationZ":  -79.1563
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  10,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -42.5
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -30
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  11,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  -5.1761,
+                                                                                    "rotationY":  12.3257,
+                                                                                    "rotationZ":  -79.1563
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  16,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  -10.1721,
+                                                                                    "rotationY":  17.4861,
+                                                                                    "rotationZ":  -72.9908
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -62.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  19,
+                                                 "elements":  {
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -22.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  21,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  -5.0917,
+                                                                                    "rotationY":  6.0142,
+                                                                                    "rotationZ":  -74.0313
+                                                                                }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Cook_In_Hand",
+                           "code":  "fire_cook_in_hand",
+                           "quantityframes":  31,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Repeat",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  24.1954,
+                                                                                    "rotationY":  -35.8225,
+                                                                                    "rotationZ":  -59.0095
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -100,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -25.1708,
+                                                                                    "rotationY":  41.9886,
+                                                                                    "rotationZ":  -56.7359
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  100,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  15,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  26.1421,
+                                                                                    "rotationY":  -37.7772,
+                                                                                    "rotationZ":  -57.8432
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -27.4121,
+                                                                                    "rotationY":  43.8749,
+                                                                                    "rotationZ":  -55.209
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  30,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  24.1954,
+                                                                                    "rotationY":  -35.8225,
+                                                                                    "rotationZ":  -59.0095
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -25.1708,
+                                                                                    "rotationY":  41.9886,
+                                                                                    "rotationZ":  -56.7359
+                                                                                }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Fist",
+                           "code":  "fire_fist",
+                           "quantityframes":  48,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  54.0362,
+                                                                                    "rotationY":  5.6985,
+                                                                                    "rotationZ":  63.3327
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  9,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  11,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -10,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  79.6606,
+                                                                                    "rotationY":  8.5557,
+                                                                                    "rotationZ":  57.6031
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  13,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  79.6606,
+                                                                                    "rotationY":  8.5557,
+                                                                                    "rotationZ":  -89.8969
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  16,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -54.0362,
+                                                                                    "rotationY":  -5.6985,
+                                                                                    "rotationZ":  63.3327
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  20,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  10,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -79.6606,
+                                                                                    "rotationY":  -8.5557,
+                                                                                    "rotationZ":  57.6031
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  21,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -79.6606,
+                                                                                    "rotationY":  -8.5557,
+                                                                                    "rotationZ":  -89.8969
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  24,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  54.0362,
+                                                                                    "rotationY":  5.6985,
+                                                                                    "rotationZ":  63.3327
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  28,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -10,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  79.6606,
+                                                                                    "rotationY":  8.5557,
+                                                                                    "rotationZ":  57.6031
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  29,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  79.6606,
+                                                                                    "rotationY":  8.5557,
+                                                                                    "rotationZ":  -89.8969
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  31,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -54.0362,
+                                                                                    "rotationY":  -5.6985,
+                                                                                    "rotationZ":  63.3327
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  35,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  10,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -79.6606,
+                                                                                    "rotationY":  -8.5557,
+                                                                                    "rotationZ":  57.6031
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  36,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -7.5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -79.6606,
+                                                                                    "rotationY":  -8.5557,
+                                                                                    "rotationZ":  -89.8969
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  45,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  47,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Orb",
+                           "code":  "fire_orb",
+                           "quantityframes":  46,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  15,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  3.9907,
+                                                                                    "rotationY":  -6.3552,
+                                                                                    "rotationZ":  -64.7784
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -95,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  17,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  19,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  -79.9216
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -7.5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  20,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  25,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  28,
+                                                 "elements":  {
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  29,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  -79.9216
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -7.5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  30,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  35,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  38,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  3.9907,
+                                                                                    "rotationY":  -6.3552,
+                                                                                    "rotationZ":  -64.7784
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -95,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  57.5784
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -140
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  39,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -4.6043,
+                                                                                    "rotationY":  1.9516,
+                                                                                    "rotationZ":  -79.9216
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -7.5
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  40,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  12.5,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  45,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Back_Blast_Dash",
+                           "code":  "fire_back_blast_dash",
+                           "quantityframes":  14,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "root":  {
+                                                                               "offsetX":  0,
+                                                                               "offsetY":  0,
+                                                                               "offsetZ":  0
+                                                                           },
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  2,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  15
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  7.5
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  100
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -82.5
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  100
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -82.5
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -7.5
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -7.5
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  9,
+                                                 "elements":  {
+                                                                  "root":  {
+                                                                               "offsetX":  0,
+                                                                               "offsetY":  0,
+                                                                               "offsetZ":  0
+                                                                           },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  20
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -10
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  20
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -10
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  10,
+                                                 "elements":  {
+                                                                  "root":  {
+                                                                               "offsetX":  -10,
+                                                                               "offsetY":  0,
+                                                                               "offsetZ":  0
+                                                                           }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  13,
+                                                 "elements":  {
+                                                                  "root":  {
+                                                                               "offsetX":  -32,
+                                                                               "offsetY":  0,
+                                                                               "offsetZ":  0
+                                                                           }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Mine",
+                           "code":  "fire_mine",
+                           "quantityframes":  16,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -90
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -75
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -95
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -72.5
+                                                                                },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -105
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  105
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  11,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  20
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -45
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  2.5
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  -42.5
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  7.5
+                                                                                },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -22.5
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  22.5
+                                                                                 }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Flamethrower",
+                           "code":  "fire_flamethrower",
+                           "quantityframes":  9,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Repeat",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  31.9289,
+                                                                                    "rotationY":  6.414,
+                                                                                    "rotationZ":  -94.3366
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  4.5919,
+                                                                                    "rotationY":  11.0354,
+                                                                                    "rotationZ":  -92.6295
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  47.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  3,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  -1,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  4,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  31.9988,
+                                                                                    "rotationY":  4.9156,
+                                                                                    "rotationZ":  -93.3435
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  4.7078,
+                                                                                    "rotationY":  9.5397,
+                                                                                    "rotationZ":  -92.6502
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  5,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0.5,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "UpperTorso":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  31.9289,
+                                                                                    "rotationY":  6.414,
+                                                                                    "rotationZ":  -94.3366
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  4.5919,
+                                                                                    "rotationY":  11.0354,
+                                                                                    "rotationZ":  -92.6295
+                                                                                }
+                                                              }
+                                             }
+                                         ]
+                       },
+                       {
+                           "name":  "Fire_Dance",
+                           "code":  "fire_dance",
+                           "quantityframes":  61,
+                           "onActivityStopped":  "EaseOut",
+                           "onAnimationEnd":  "Stop",
+                           "keyframes":  [
+                                             {
+                                                 "frame":  0,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  0,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  0,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  8,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  134.6164,
+                                                                                    "rotationY":  -54.1618,
+                                                                                    "rotationZ":  85.4284
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -134.6164,
+                                                                                    "rotationY":  54.1618,
+                                                                                    "rotationZ":  85.4284
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  15,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  -2.3,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  268.8703,
+                                                                                    "rotationY":  -27.278,
+                                                                                    "rotationZ":  165.1189
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -265.7544,
+                                                                                    "rotationY":  18.3665,
+                                                                                    "rotationZ":  168.88
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -61
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  60
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  32.5
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  23,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  166.043,
+                                                                                    "rotationY":  -29.7406,
+                                                                                    "rotationZ":  57.0586
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -122.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -166.043,
+                                                                                    "rotationY":  29.7406,
+                                                                                    "rotationZ":  57.0586
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  122.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  26,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  0,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0.5873,
+                                                                                    "rotationY":  -2.3774,
+                                                                                    "rotationZ":  -74.6565
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -0.5873,
+                                                                                    "rotationY":  2.3774,
+                                                                                    "rotationZ":  -74.6565
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -60
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  65
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  29,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  0.5873,
+                                                                                    "rotationY":  -2.3774,
+                                                                                    "rotationZ":  -64.6565
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  0.5873,
+                                                                                    "rotationY":  -2.3774,
+                                                                                    "rotationZ":  -64.6565
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  -5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  38,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  -2,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  177.9267,
+                                                                                    "rotationY":  -47.5681,
+                                                                                    "rotationZ":  79.5285
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -130,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -177.9267,
+                                                                                    "rotationY":  47.5681,
+                                                                                    "rotationZ":  79.5285
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  130,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  25
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -55
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  55
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  41,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  0,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  17.472,
+                                                                                    "rotationY":  -82.0298,
+                                                                                    "rotationZ":  -72.3625
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -2.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -17.472,
+                                                                                    "rotationY":  82.0298,
+                                                                                    "rotationZ":  -72.3625
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  2.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  44,
+                                                 "elements":  {
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  17.472,
+                                                                                    "rotationY":  -82.0298,
+                                                                                    "rotationZ":  -72.3625
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -2.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -17.472,
+                                                                                    "rotationY":  82.0298,
+                                                                                    "rotationZ":  -72.3625
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  2.5,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "LowerFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  51,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  -2.3,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  171.339,
+                                                                                    "rotationY":  -27.2032,
+                                                                                    "rotationZ":  79.2735
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -115,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  -171.339,
+                                                                                    "rotationY":  27.2032,
+                                                                                    "rotationZ":  79.2735
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  115,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  -61
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  62.5
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  32.5
+                                                                                 }
+                                                              }
+                                             },
+                                             {
+                                                 "frame":  55,
+                                                 "elements":  {
+                                                                  "LowerTorso":  {
+                                                                                     "offsetX":  0,
+                                                                                     "offsetY":  0,
+                                                                                     "offsetZ":  0
+                                                                                 },
+                                                                  "UpperArmR":  {
+                                                                                    "rotationX":  -6.3569,
+                                                                                    "rotationY":  -10.2303,
+                                                                                    "rotationZ":  -93.6327
+                                                                                },
+                                                                  "LowerArmR":  {
+                                                                                    "rotationX":  -15,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperArmL":  {
+                                                                                    "rotationX":  6.2063,
+                                                                                    "rotationY":  12.726,
+                                                                                    "rotationZ":  -93.6028
+                                                                                },
+                                                                  "LowerArmL":  {
+                                                                                    "rotationX":  20,
+                                                                                    "rotationY":  0,
+                                                                                    "rotationZ":  0
+                                                                                },
+                                                                  "UpperFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "LowerFootL":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 },
+                                                                  "UpperFootR":  {
+                                                                                     "rotationX":  0,
+                                                                                     "rotationY":  0,
+                                                                                     "rotationZ":  0
+                                                                                 }
+                                                              }
+                                             }
+                                         ]
+                       }
+                   ]
 }

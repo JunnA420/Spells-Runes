@@ -21,6 +21,8 @@ public class WindVortex : Spell
 
     public override float FluxCost => 60f;
     public override float CastTime => 0f;
+    public override string? AnimationCode => "air_wind_vortex";
+    public override bool AnimationUpperBodyOnly => false;
 
     public override IReadOnlyList<string> Prerequisites => ["air_wind_spear"];
 

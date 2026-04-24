@@ -190,7 +190,7 @@ public abstract class Spell
     public virtual int GetParticleMultiplier(int spellLevel) => 1 + (spellLevel - 1) / 4;
 
     /// <summary>Called every tick while the spell is active (channeled/persistent spells).</summary>
-    public virtual void OnTick(EntityAgent caster, IWorldAccessor world, float deltaTime) { }
+    public virtual void OnTick(EntityAgent caster, IWorldAccessor world, float deltaTime, int spellLevel = 1) { }
 
     /// <summary>Called when the spell effect ends or is interrupted.</summary>
     public virtual void OnEnd(EntityAgent caster, IWorldAccessor world) { }

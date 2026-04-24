@@ -18,7 +18,7 @@ public class Spark : Spell
     public override float FluxCost => 15f;
     public override float CastTime => 1.0f;
 
-    public override string? AnimationCode => "sparkcast";
+    public override string? AnimationCode => "fire_spark";
 
     public override (int col, int row) TreePosition => (2, 0);
 

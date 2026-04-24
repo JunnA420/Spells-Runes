@@ -4,5 +4,13 @@
     "path": "/server/behaviors/-",
     "value": { "code": "fluxBehavior" },
     "file": "game:entities/humanoid/player.json"
+  },
+    {
+    "op": "addmerge",
+    "path": "/behaviors/-",
+    "value": {
+      "name": "ExtractGemCore"
+    },
+    "file": "game:itemtypes/tool/tongs.json"
   }
 ]

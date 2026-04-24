@@ -1,6 +1,6 @@
 [
   {
-    "blockCodes": ["spellsandrunes:ignis-fragment"],
+    "blockCodes": ["spellsandrunes:ignis-fragment-up"],
     "placement": "OnSurface",
     "minTemp": 18,
     "maxTemp": 40,

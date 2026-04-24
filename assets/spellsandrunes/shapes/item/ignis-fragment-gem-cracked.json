@@ -1,0 +1,289 @@
+{
+	"editor": {
+		"backDropShape": "",
+		"collapsedPaths": "",
+		"allAngles": false,
+		"entityTextureMode": false,
+		"singleTexture": false,
+		"vsFormatConverted": false
+	},
+	"textureWidth": 16,
+	"textureHeight": 16,
+	"textureSizes": {
+		"ignis-fragment.png": [32, 32],
+		"ignis-fragment-gem-cracked-emissive.png": [16, 16]
+	},
+	"textures": {
+		"ignis-fragment.png": "block/ignis-fragment",
+		"ignis-fragment-gem-cracked-emissive.png": "item/ignis-fragment-gem-cracked-emissive"
+	},
+	"elements": [
+		{
+			"name": "origin",
+			"from": [7.81952, 1.00244, 7.73778],
+			"to": [7.81952, 1.00244, 7.73778],
+			"rotationOrigin": [7.81952, 1.00244, 7.73778],
+			"children": [
+				{
+					"name": "Cube",
+					"from": [1.42992, -0.94662, -0.4417],
+					"to": [2.12992, 1.65338, 0.2583],
+					"rotationOrigin": [1.25389, 1.88538, 0.01024],
+					"faces": {
+						"north": {"texture": "#ignis-fragment.png", "uv": [11, 6, 11.7, 11.9], "autoUv": false, "snapUv": false},
+						"east": {"texture": "#ignis-fragment.png", "uv": [12, 6, 12.7, 11.9], "autoUv": false, "snapUv": false},
+						"south": {"texture": "#ignis-fragment.png", "uv": [13, 6, 13.7, 11.9], "autoUv": false, "snapUv": false},
+						"west": {"texture": "#ignis-fragment.png", "uv": [11, 12, 11.7, 17.9], "autoUv": false, "snapUv": false},
+						"up": {"texture": "#ignis-fragment.png", "uv": [14.7, 17.7, 14, 17], "autoUv": false, "snapUv": false},
+						"down": {"texture": "#ignis-fragment.png", "uv": [18.7, 15, 18, 15.7], "rotation": 180, "autoUv": false, "snapUv": false}
+					},
+					"rotationX": 6.0736,
+					"rotationY": 18.03716,
+					"rotationZ": -26.96486,
+					"shade": true
+				},
+				{
+					"name": "Cube",
+					"from": [1.33006, 1.25372, -0.65445],
+					"to": [2.03006, 2.85372, 0.04555],
+					"rotationOrigin": [2.38006, 3.05372, -0.20445],
+					"faces": {
+						"north": {"texture": "#ignis-fragment.png", "uv": [11, 6, 11.7, 11.9], "autoUv": false, "snapUv": false},
+						"east": {"texture": "#ignis-fragment.png", "uv": [12, 6, 12.7, 11.9], "autoUv": false, "snapUv": false},
+						"south": {"texture": "#ignis-fragment.png", "uv": [13, 6, 13.7, 11.9], "autoUv": false, "snapUv": false},
+						"west": {"texture": "#ignis-fragment.png", "uv": [11, 12, 11.7, 17.9], "autoUv": false, "snapUv": false},
+						"up": {"texture": "#ignis-fragment.png", "uv": [14.7, 17.7, 14, 17], "autoUv": false, "snapUv": false},
+						"down": {"texture": "#ignis-fragment.png", "uv": [18.7, 15, 18, 15.7], "rotation": 180, "autoUv": false, "snapUv": false}
+					},
+					"rotationX": 6.0736,
+					"rotationY": 18.03716,
+					"rotationZ": -1.96486,
+					"shade": true
+				},
+				{
+					"name": "Cube",
+					"from": [-2.29715, -0.87068, -0.71389],
+					"to": [-1.59715, 2.82932, -0.01389],
+					"rotationOrigin": [-1.13553, 1.20633, 0.30243],
+					"faces": {
+						"north": {"texture": "#ignis-fragment.png", "uv": [17, 6, 17.7, 9.7], "autoUv": false, "snapUv": false},
+						"east": {"texture": "#ignis-fragment.png", "uv": [17, 10, 17.7, 13.7], "autoUv": false, "snapUv": false},
+						"south": {"texture": "#ignis-fragment.png", "uv": [15, 16, 15.7, 19.7], "autoUv": false, "snapUv": false},
+						"west": {"texture": "#ignis-fragment.png", "uv": [17, 14, 17.7, 17.7], "autoUv": false, "snapUv": false},
+						"up": {"texture": "#ignis-fragment.png", "uv": [18.7, 16.7, 18, 16], "autoUv": false, "snapUv": false},
+						"down": {"texture": "#ignis-fragment.png", "uv": [18.7, 17, 18, 17.7], "rotation": 180, "autoUv": false, "snapUv": false}
+					},
+					"rotationX": 22.97854,
+					"rotationY": -43.30463,
+					"rotationZ": 51.24895,
+					"shade": true
+				},
+				{
+					"name": "Cube",
+					"from": [-0.85742, -0.41051, 0.72214],
+					"to": [-0.15742, 2.98949, 1.42214],
+					"rotationOrigin": [-1.13553, 1.20633, 0.30243],
+					"faces": {
+						"north": {"texture": "#ignis-fragment.png", "uv": [16, 16, 16.7, 19.4], "autoUv": false, "snapUv": false},
+						"east": {"texture": "#ignis-fragment.png", "uv": [18, 6, 18.7, 9.4], "autoUv": false, "snapUv": false},
+						"south": {"texture": "#ignis-fragment.png", "uv": [18, 9, 18.7, 12.4], "autoUv": false, "snapUv": false},
+						"west": {"texture": "#ignis-fragment.png", "uv": [18, 12, 18.7, 15.4], "autoUv": false, "snapUv": false},
+						"up": {"texture": "#ignis-fragment.png", "uv": [19.7, 6.7, 19, 6], "autoUv": false, "snapUv": false},
+						"down": {"texture": "#ignis-fragment.png", "uv": [8.7, 18, 8, 18.7], "rotation": 180, "autoUv": false, "snapUv": false}
+					},
+					"rotationX": 30.73105,
+					"rotationY": -14.29817,
+					"rotationZ": 34.55586,
+					"shade": true
+				},
+				{
+					"name": "bone2",
+					"from": [0.64683, -1.07342, 1.0712],
+					"to": [0.64683, -1.07342, 1.0712],
+					"rotationOrigin": [0.64683, -1.07342, 1.0712],
+					"children": [
+						{
+							"name": "Cube6",
+							"from": [0.85072, 0.1975, -0.86767],
+							"to": [1.95072, 3.7975, 0.43233],
+							"rotationOrigin": [0.60706, 2.9588, -1.06096],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [8, 13, 9.1, 17.9], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [9, 13, 10.3, 17.9], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [8, 8, 9.1, 12.9], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [19, 11, 20.3, 15.9], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20.1, 9.3, 19, 8], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [11.1, 18, 10, 19.3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -8.3801,
+							"rotationY": -41.93918,
+							"rotationZ": -31.29178,
+							"shade": true
+						},
+						{
+							"name": "Cube6",
+							"from": [0.35379, 3.29753, -0.16695],
+							"to": [1.25379, 4.49753, 0.93305],
+							"rotationOrigin": [1.10379, 3.99753, 0.38305],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [8, 13, 9.1, 17.9], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [9, 13, 10.3, 17.9], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [8, 8, 9.1, 12.9], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [19, 11, 20.3, 15.9], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20.1, 9.3, 19, 8], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [11.1, 18, 10, 19.3], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -8.3801,
+							"rotationY": -41.93918,
+							"rotationZ": -1.29178,
+							"shade": true
+						}
+					]
+				},
+				{
+					"name": "bone3",
+					"from": [0.17503, -1.65358, -0.2137],
+					"to": [0.17503, -1.65358, -0.2137],
+					"rotationOrigin": [0.17503, -1.65358, -0.2137],
+					"children": [
+						{
+							"name": "Cube7",
+							"from": [0.0125, 0.63263, -1.28702],
+							"to": [1.0125, 3.23263, -0.38702],
+							"rotationOrigin": [0.5125, 3.33263, -0.83702],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [15, 6, 16, 11.4], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [15, 11, 15.9, 16.4], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [16, 6, 17, 11.4], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [16, 11, 16.9, 16.4], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20, 9.9, 19, 9], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [12, 18, 11, 18.9], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": -25.03066,
+							"rotationY": -16.53897,
+							"rotationZ": -17.10384,
+							"shade": true
+						},
+						{
+							"name": "Cube7",
+							"from": [0.1125, 3.03263, -1.08702],
+							"to": [0.9125, 4.43263, -0.38702],
+							"rotationOrigin": [0.5125, 3.33263, -0.83702],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [15, 6, 16, 11.4], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [15, 11, 15.9, 16.4], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [16, 6, 17, 11.4], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [16, 11, 16.9, 16.4], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20, 9.9, 19, 9], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [12, 18, 11, 18.9], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 6.19352,
+							"rotationY": -22.79886,
+							"rotationZ": -6.34186,
+							"shade": true
+						}
+					]
+				},
+				{
+					"name": "bone",
+					"from": [-1.11952, -3.40244, -1.33778],
+					"to": [-1.11952, -3.40244, -1.33778],
+					"rotationOrigin": [-1.11952, -3.40244, -1.33778],
+					"children": [
+						{
+							"name": "Cube8",
+							"from": [-0.63202, 2.27559, 1.18332],
+							"to": [0.36798, 5.77559, 2.18332],
+							"rotationOrigin": [-0.01601, 4.60877, 1.64021],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [20, 10, 21, 15.7], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [13, 12, 14, 17.7], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [7, 6, 8, 11.7], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [9, 7, 10, 12.7], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20, 11, 19, 10], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [13, 18, 12, 19], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 3.07855,
+							"rotationY": -7.3875,
+							"rotationZ": 33.69879,
+							"shade": true
+						},
+						{
+							"name": "Cube8",
+							"from": [-1.09639, 5.20615, 1.28254],
+							"to": [-0.49639, 7.20615, 2.08254],
+							"rotationOrigin": [-0.69639, 6.95615, 1.68254],
+							"faces": {
+								"north": {"texture": "#ignis-fragment.png", "uv": [20, 10, 21, 15.7], "autoUv": false, "snapUv": false},
+								"east": {"texture": "#ignis-fragment.png", "uv": [13, 12, 14, 17.7], "autoUv": false, "snapUv": false},
+								"south": {"texture": "#ignis-fragment.png", "uv": [7, 6, 8, 11.7], "autoUv": false, "snapUv": false},
+								"west": {"texture": "#ignis-fragment.png", "uv": [9, 7, 10, 12.7], "autoUv": false, "snapUv": false},
+								"up": {"texture": "#ignis-fragment.png", "uv": [20, 11, 19, 10], "autoUv": false, "snapUv": false},
+								"down": {"texture": "#ignis-fragment.png", "uv": [13, 18, 12, 19], "rotation": 180, "autoUv": false, "snapUv": false}
+							},
+							"rotationX": 3.07855,
+							"rotationY": -7.3875,
+							"rotationZ": 1.19879,
+							"shade": true
+						}
+					]
+				},
+				{
+					"name": "fragment core",
+					"from": [0.08048, 0.49756, 0.16222],
+					"to": [0.08048, 0.49756, 0.16222],
+					"rotationOrigin": [0.08048, 0.49756, 0.16222],
+					"children": [
+						{
+							"name": "cube",
+							"from": [-0.35, -0.34, -0.35],
+							"to": [0.35, 0.34, 0.35],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [4, 0, 5, 1], "autoUv": false, "snapUv": false, "glow": 255},
+								"east": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 1, 2, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"south": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [2, 0, 3, 1], "autoUv": false, "snapUv": false, "glow": 255},
+								"west": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [4, 1, 5, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"up": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [4, 2, 5, 3], "autoUv": false, "snapUv": false, "glow": 255},
+								"down": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [4, 3, 5, 4], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
+							}
+						},
+						{
+							"name": "cube",
+							"from": [-0.35, -0.35, -0.34],
+							"to": [0.35, 0.35, 0.34],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [4, 4, 5, 5], "autoUv": false, "snapUv": false, "glow": 255},
+								"east": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [3, 4, 4, 5], "autoUv": false, "snapUv": false, "glow": 255},
+								"south": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [2, 4, 3, 5], "autoUv": false, "snapUv": false, "glow": 255},
+								"west": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [2, 3, 3, 4], "autoUv": false, "snapUv": false, "glow": 255},
+								"up": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [2, 1, 3, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"down": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 3, 2, 4], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
+							},
+							"rotationY": 45,
+							"rotationZ": -50
+						},
+						{
+							"name": "cube",
+							"from": [-0.35, -0.35, -0.34],
+							"to": [0.35, 0.35, 0.34],
+							"rotationOrigin": [0, 0, 0],
+							"faces": {
+								"north": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [2, 2, 3, 3], "autoUv": false, "snapUv": false, "glow": 255},
+								"east": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [3, 1, 4, 2], "autoUv": false, "snapUv": false, "glow": 255},
+								"south": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 2, 2, 3], "autoUv": false, "snapUv": false, "glow": 255},
+								"west": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [3, 2, 4, 3], "autoUv": false, "snapUv": false, "glow": 255},
+								"up": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [1, 4, 2, 5], "autoUv": false, "snapUv": false, "glow": 255},
+								"down": {"texture": "#ignis-fragment-gem-cracked-emissive.png", "uv": [3, 3, 4, 4], "rotation": 180, "autoUv": false, "snapUv": false, "glow": 255}
+							},
+							"rotationY": -45,
+							"rotationZ": -50
+						}
+					]
+				}
+			]
+		}
+	],
+	"animations": []
+}

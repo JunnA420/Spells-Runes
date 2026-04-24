@@ -7,6 +7,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Server;
 using Vintagestory.API.MathTools;
+using Vintagestory.GameContent;
 using SpellsAndRunes.Blocks;
 using SpellsAndRunes.Commands;
 using SpellsAndRunes.Flux;
@@ -41,15 +42,19 @@ public class SpellsAndRunesMod : ModSystem
     private GuiDialogSpellbook? spellbookDialog;
     private SpellConeRenderer?  coneRenderer;
     private SparkGlowRenderer?     sparkGlow;
+    private FireGlowRenderer?      fireGlow;
     public  SylphweedGlowRenderer? SylphGlow { get; private set; }
+    public  IdleAnimatedBlockRenderer? IdleAnim { get; private set; }
 
     private IClientNetworkChannel?  clientChannel;
     private IServerNetworkChannel? serverChannel;
     private readonly Dictionary<long, ActiveChannelSpell> activeChannelSpells = new();
     private readonly Dictionary<long, PendingCast> pendingCasts = new();
+    private readonly Dictionary<long, float> ignisPasteDrinkHold = new();
+    private const float IgnisPasteDrinkTime = 4f;
     private readonly Dictionary<string, long> recentFxReceipts = new();
     private readonly Dictionary<string, long> recentSpellReceipts = new();
-    private bool windVortexHeld;
+    private string? heldChannelSpellId;
     private bool lmbHoldActive;
     private string? lmbHoldSpellId;
     private string? activeCastSpellId;
@@ -67,7 +72,10 @@ public class SpellsAndRunesMod : ModSystem
         api.RegisterBlockEntityClass("ignisfragment", typeof(Blocks.BlockEntityIgnisFragment));
         api.RegisterBlockEntityClass("sylphweed", typeof(Blocks.BlockEntitySylphweed));
         api.RegisterItemClass("SylphweedBong", typeof(Blocks.ItemSylphweedBong));
+        api.RegisterItemClass("IgnisGemCore", typeof(Blocks.ItemIgnisGemCore));
+        api.RegisterItemClass("IgnisPaste", typeof(Blocks.ItemIgnisPaste));
         api.RegisterEntity("EntityWindSpear", typeof(Entities.EntityWindSpear));
+        api.RegisterCollectibleBehaviorClass("ExtractGemCore", typeof(CollBehaviorExtractGemCore));
         SpellRegistry.RegisterAll();
     }
 
@@ -116,10 +124,11 @@ public class SpellsAndRunesMod : ModSystem
                 var entity = player.Entity;
                 if (entity == null) return;
 
-                if (msg.SpellId != "air_wind_vortex") return;
+                var spell = SpellRegistry.Get(msg.SpellId);
+                if (spell == null || !IsChannelSpell(msg.SpellId)) return;
 
-                if (msg.IsActive) StartWindVortexChannel(api, player, entity, msg.SpellLevel);
-                else StopWindVortexChannel(api, entity, collapse: true);
+                if (msg.IsActive) StartChannelSpell(api, player, entity, spell, msg.SpellLevel);
+                else StopChannelSpell(api, entity, msg.SpellId, collapse: true);
             })
             .SetMessageHandler<MsgCastSpell>((player, msg) =>
             {
@@ -221,6 +230,20 @@ public class SpellsAndRunesMod : ModSystem
                             LookDirY = look.Y,
                             LookDirZ = look.Z,
                             UseLookY = true
+                        }, player);
+                    }
+
+                    if (msg.SpellId == "fire_back_blast_dash")
+                    {
+                        var look = entity.SidedPos.GetViewVector();
+                        serverChannel?.SendPacket(new MsgLaunchPlayer
+                        {
+                            UpForce = 0.03f,
+                            ForwardForce = Spells.Fire.FireBackBlastDash.ForwardForce * spell.GetRangeMultiplier(spellLevel),
+                            LookDirX = look.X,
+                            LookDirY = 0f,
+                            LookDirZ = look.Z,
+                            UseLookY = false
                         }, player);
                     }
 
@@ -463,6 +486,11 @@ public class SpellsAndRunesMod : ModSystem
         };
 
         api.Event.RegisterGameTickListener(dt => TickChannelSpells(api, dt), 100);
+        api.Event.RegisterGameTickListener(dt => TickIgnisPasteDrink(api, dt), 100);
+        api.Event.PlayerDisconnect += player =>
+        {
+            if (player?.Entity != null) ignisPasteDrinkHold.Remove(player.Entity.EntityId);
+        };
     }
 
     public override void StartClientSide(ICoreClientAPI api)
@@ -620,6 +648,46 @@ public class SpellsAndRunesMod : ModSystem
                         Spells.Fire.Spark.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
                         sparkGlow?.AddSparkBurst(origin, lookDir, Spells.Fire.Spark.Range, Spells.Fire.Spark.ConeAngleDeg, 60 * (1 + (msg.SpellLevel - 1) / 4));
                         break;
+                    case "fire_flamethrower":
+                        Spells.Fire.FireFlamethrower.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, lookDir, 3.6f, 12 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_hot_skin":
+                        Spells.Fire.HotSkin.SpawnFx(api.World, origin, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, new Vec3d(0, 1, 0), 0.7f, 4 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_cook_in_hand":
+                        Spells.Fire.CookInHand.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin.AddCopy(0, 0.7, 0), lookDir, 0.45f, 4 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_fist":
+                        Spells.Fire.FireFist.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, lookDir, 1.6f, 18 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_back_blast_dash":
+                        Spells.Fire.FireBackBlastDash.SpawnFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, lookDir * -1, 1.6f, 14 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_mine_arm":
+                        Spells.Fire.FireMine.SpawnArmFx(api.World, origin, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, new Vec3d(0, 1, 0), 0.55f, 8 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_mine_burst":
+                        Spells.Fire.FireMine.SpawnBurstFx(api.World, origin, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, new Vec3d(0, 1, 0), 1.4f, 22 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_orb_trail":
+                        Spells.Fire.FireOrb.SpawnTrailFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, lookDir, 0.45f, 5 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_orb_impact":
+                        Spells.Fire.FireOrb.SpawnImpactFx(api.World, origin, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, new Vec3d(0, 1, 0), 0.8f, 16 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
+                    case "fire_dance_cone":
+                        Spells.Fire.FireDance.SpawnConeFx(api.World, origin, lookDir, msg.SpellLevel);
+                        fireGlow?.AddFireGlow(origin, lookDir, 3.5f, 32 * (1 + (msg.SpellLevel - 1) / 4));
+                        break;
                 }
             });
 
@@ -646,7 +714,10 @@ public class SpellsAndRunesMod : ModSystem
         spellbookDialog = new GuiDialogSpellbook(api, clientChannel!);
         coneRenderer = new SpellConeRenderer(api, radialMenu);
         sparkGlow    = new SparkGlowRenderer(api);
+        fireGlow     = new FireGlowRenderer(api);
         api.Event.RegisterRenderer(sparkGlow, EnumRenderStage.AfterOIT, "sparkglow");
+        api.Event.RegisterRenderer(fireGlow, EnumRenderStage.AfterOIT, "fireglow");
+        IdleAnim     = new IdleAnimatedBlockRenderer(api);
 
         api.Event.RegisterGameTickListener(_ => coneRenderer.OnGameTick(_), 50);
 
@@ -729,7 +800,7 @@ public class SpellsAndRunesMod : ModSystem
             string? spellId = radialMenu.GetSelectedSpellId();
             if (spellId == "air_wind_vortex")
             {
-                if (windVortexHeld) return;
+                if (heldChannelSpellId != null) return;
 
                 var player = api.World.Player;
                 if (player?.Entity == null) return;
@@ -742,7 +813,7 @@ public class SpellsAndRunesMod : ModSystem
                     IsActive = true,
                     SpellLevel = spellLevel
                 });
-                windVortexHeld = true;
+                heldChannelSpellId = spellId;
                 e.Handled = true;
                 return;
             }
@@ -781,7 +852,24 @@ public class SpellsAndRunesMod : ModSystem
 
             var spell = SpellRegistry.Get(spellId);
             if (spell == null) return;
-            if (spell.Id == "air_wind_vortex") return;
+            if (IsChannelSpell(spell.Id))
+            {
+                if (heldChannelSpellId != null) return;
+
+                var channelPlayer = api.World.Player;
+                if (channelPlayer?.Entity == null) return;
+
+                var channelData = PlayerSpellData.For(channelPlayer.Entity);
+                int channelLevel = channelData.GetSpellLevel(spell.Id);
+                clientChannel!.SendPacket(new MsgChannelSpell
+                {
+                    SpellId = spell.Id,
+                    IsActive = true,
+                    SpellLevel = channelLevel
+                });
+                heldChannelSpellId = spell.Id;
+                return;
+            }
 
             var player = api.World.Player;
             if (player?.Entity == null) return;
@@ -800,6 +888,18 @@ public class SpellsAndRunesMod : ModSystem
 
         api.Event.MouseUp += (MouseEvent e) =>
         {
+            if (e.Button == EnumMouseButton.Left && heldChannelSpellId != null && heldChannelSpellId != "air_wind_vortex")
+            {
+                clientChannel!.SendPacket(new MsgChannelSpell
+                {
+                    SpellId = heldChannelSpellId,
+                    IsActive = false
+                });
+                heldChannelSpellId = null;
+                e.Handled = true;
+                return;
+            }
+
             if (e.Button == EnumMouseButton.Left && lmbHoldActive)
             {
                 var playerCancel = api.World.Player;
@@ -817,14 +917,14 @@ public class SpellsAndRunesMod : ModSystem
             }
 
             if (e.Button != EnumMouseButton.Right) return;
-            if (!windVortexHeld) return;
+            if (heldChannelSpellId == null) return;
 
             clientChannel!.SendPacket(new MsgChannelSpell
             {
-                SpellId = "air_wind_vortex",
+                SpellId = heldChannelSpellId,
                 IsActive = false
             });
-            windVortexHeld = false;
+            heldChannelSpellId = null;
             e.Handled = true;
         };
     }
@@ -837,32 +937,44 @@ public class SpellsAndRunesMod : ModSystem
         hudChicken?.Dispose();
         spellbookDialog?.Dispose();
         sparkGlow?.Dispose();
+        fireGlow?.Dispose();
         SylphGlow?.Dispose();
+        IdleAnim?.Dispose();
         base.Dispose();
     }
 
-    private void StartWindVortexChannel(ICoreServerAPI api, IServerPlayer player, Entity entity, int spellLevel)
+    private void StartChannelSpell(ICoreServerAPI api, IServerPlayer player, Entity entity, Spell spell, int spellLevel)
     {
-        var spell = SpellRegistry.Get("air_wind_vortex");
-        if (spell is not Spells.Air.WindVortex || !PlayerSpellData.For(entity).IsFluxUnlocked) return;
+        if (!PlayerSpellData.For(entity).IsFluxUnlocked) return;
 
         if (activeChannelSpells.ContainsKey(entity.EntityId)) return;
+        spellLevel = Math.Max(1, spellLevel);
+
+        float currentFlux = entity.WatchedAttributes.GetFloat("spellsandrunes:flux", 0f);
+        float initialCost = spell.FluxCost * spell.GetFluxCostMultiplier(spellLevel) * 0.1f;
+        if (currentFlux < initialCost) return;
+
+        entity.WatchedAttributes.SetFloat("spellsandrunes:flux", currentFlux - initialCost);
+        entity.WatchedAttributes.MarkPathDirty("spellsandrunes:flux");
 
         activeChannelSpells[entity.EntityId] = new ActiveChannelSpell
         {
             SpellId = spell.Id,
-            SpellLevel = Math.Max(1, spellLevel),
+            SpellLevel = spellLevel,
             DrainTimer = 0f,
         };
 
+        BroadcastSpellAnimation(api, entity, spell, spellLevel);
         BroadcastSpellFx(api, entity, spell.Id, spellLevel);
     }
 
-    private void StopWindVortexChannel(ICoreServerAPI api, Entity entity, bool collapse)
+    private void StopChannelSpell(ICoreServerAPI api, Entity entity, string spellId, bool collapse)
     {
         if (!activeChannelSpells.Remove(entity.EntityId, out var state)) return;
-        if (state.SpellId != "air_wind_vortex") return;
-        if (collapse) ApplyWindVortexCollapse(api.World, entity, state.SpellLevel);
+        if (state.SpellId != spellId) return;
+        BroadcastSpellAnimationStop(api, entity, state.SpellId);
+        if (collapse && state.SpellId == "air_wind_vortex")
+            ApplyWindVortexCollapse(api.World, entity, state.SpellLevel);
     }
 
     private void TickChannelSpells(ICoreServerAPI api, float deltaTime)
@@ -879,21 +991,23 @@ public class SpellsAndRunesMod : ModSystem
                 continue;
             }
 
-            if (pair.Value.SpellId != "air_wind_vortex") continue;
-
-            ApplyWindVortexAura(api.World, agent, pair.Value.SpellLevel);
-            BroadcastSpellFx(api, agent, pair.Value.SpellId, pair.Value.SpellLevel);
-
-            pair.Value.DrainTimer += deltaTime;
-            if (pair.Value.DrainTimer < 1f) continue;
-            pair.Value.DrainTimer -= 1f;
-
             var spell = SpellRegistry.Get(pair.Value.SpellId);
             if (spell == null)
             {
                 ended.Add(pair.Key);
                 continue;
             }
+
+            if (pair.Value.SpellId == "air_wind_vortex")
+                ApplyWindVortexAura(api.World, agent, pair.Value.SpellLevel);
+            else
+                spell.OnTick(agent, api.World, deltaTime, pair.Value.SpellLevel);
+
+            BroadcastSpellFx(api, agent, pair.Value.SpellId, pair.Value.SpellLevel);
+
+            pair.Value.DrainTimer += deltaTime;
+            if (pair.Value.DrainTimer < 1f) continue;
+            pair.Value.DrainTimer -= 1f;
 
             float sustainCost = spell.FluxCost * spell.GetFluxCostMultiplier(pair.Value.SpellLevel) * 0.25f;
             float currentFlux = agent.WatchedAttributes.GetFloat("spellsandrunes:flux", 0f);
@@ -910,8 +1024,72 @@ public class SpellsAndRunesMod : ModSystem
         foreach (long entityId in ended)
         {
             var entity = api.World.GetEntityById(entityId);
-            if (entity != null) StopWindVortexChannel(api, entity, collapse: true);
+            if (entity != null && activeChannelSpells.TryGetValue(entityId, out var state))
+                StopChannelSpell(api, entity, state.SpellId, collapse: true);
             else activeChannelSpells.Remove(entityId);
+        }
+    }
+
+    private static bool IsChannelSpell(string spellId) => spellId is
+        "air_wind_vortex" or
+        "fire_flamethrower" or
+        "fire_hot_skin" or
+        "fire_cook_in_hand";
+
+    private void TickIgnisPasteDrink(ICoreServerAPI api, float deltaTime)
+    {
+        foreach (var p in api.World.AllOnlinePlayers)
+        {
+            if (p is not IServerPlayer sp || sp.Entity == null) continue;
+            long id = sp.Entity.EntityId;
+
+            var slot = sp.InventoryManager.ActiveHotbarSlot;
+            var stack = slot?.Itemstack;
+
+            if (stack?.Block is not BlockLiquidContainerBase container)
+            {
+                ignisPasteDrinkHold.Remove(id);
+                continue;
+            }
+
+            var content = container.GetContent(stack);
+            if (content?.Collectible?.Code?.Domain != "spellsandrunes"
+                || content.Collectible.Code.Path != "ignis-paste")
+            {
+                ignisPasteDrinkHold.Remove(id);
+                continue;
+            }
+
+            if (!sp.Entity.Controls.RightMouseDown)
+            {
+                ignisPasteDrinkHold.Remove(id);
+                continue;
+            }
+
+            float held = ignisPasteDrinkHold.GetValueOrDefault(id, 0f) + deltaTime;
+
+            if (held < IgnisPasteDrinkTime)
+            {
+                ignisPasteDrinkHold[id] = held;
+                continue;
+            }
+
+            ignisPasteDrinkHold.Remove(id);
+
+            container.SetContent(stack, null);
+            slot!.MarkDirty();
+
+            var data = PlayerSpellData.For(sp.Entity);
+            data.TriggerActivator("element_fire");
+
+            sp.Entity.WatchedAttributes.SetBool("snr:firepower", true);
+            sp.Entity.WatchedAttributes.MarkPathDirty("snr:firepower");
+
+            api.World.PlaySoundAt(
+                new AssetLocation("sounds/effect/fire"),
+                sp.Entity.Pos.X, sp.Entity.Pos.Y, sp.Entity.Pos.Z);
+
+            sp.SendMessage(0, "The fiery paste burns in your veins — the fire element awakens.", EnumChatType.Notification);
         }
     }
 
@@ -981,6 +1159,34 @@ public class SpellsAndRunesMod : ModSystem
             serverChannel?.SendPacket(fx, p as IServerPlayer);
     }
 
+    private void BroadcastSpellAnimation(ICoreServerAPI api, Entity entity, Spell spell, int spellLevel)
+    {
+        if (string.IsNullOrEmpty(spell.AnimationCode)) return;
+
+        var msg = new MsgPlayAnimation
+        {
+            EntityId = entity.EntityId,
+            AnimationCode = spell.AnimationCode!,
+            UpperBodyOnly = spell.AnimationUpperBodyOnly,
+            AnimationSpeed = spell.AnimationSpeed,
+        };
+
+        foreach (var p in api.World.AllOnlinePlayers)
+            serverChannel?.SendPacket(msg, p as IServerPlayer);
+    }
+
+    private void BroadcastSpellAnimationStop(ICoreServerAPI api, Entity entity, string spellId)
+    {
+        var msg = new MsgCancelCast
+        {
+            EntityId = entity.EntityId,
+            SpellId = spellId,
+        };
+
+        foreach (var p in api.World.AllOnlinePlayers)
+            serverChannel?.SendPacket(msg, p as IServerPlayer);
+    }
+
     private Vec3d GetSpellFxOrigin(Entity entity, string spellId)
     {
         if (entity is not EntityAgent agent)
@@ -993,6 +1199,12 @@ public class SpellsAndRunesMod : ModSystem
             "air_spear_in_an_eye" => Spells.Air.SpearInAnEye.GetCenter(agent),
             "air_tornado" => agent.SidedPos.XYZ.Add(agent.SidedPos.GetViewVector().ToVec3d().Normalize() * 9).Add(0, 0.5, 0),
             "air_wind_vortex" => entity.SidedPos.XYZ.Add(0, 0.8, 0),
+            "fire_flamethrower" => entity.SidedPos.XYZ
+                .Add(agent.SidedPos.GetViewVector().ToVec3d().Normalize() * 1.05)
+                .Add(0, agent.LocalEyePos.Y - 0.32, 0),
+            "fire_hot_skin" => entity.SidedPos.XYZ.Add(0, 0.9, 0),
+            "fire_cook_in_hand" => entity.SidedPos.XYZ.Add(0, 0.6, 0),
+            "fire_fist" => entity.SidedPos.XYZ.Add(0, agent.LocalEyePos.Y - 0.25, 0),
             _ => entity.SidedPos.XYZ.Add(0, 0.5, 0),
         };
     }

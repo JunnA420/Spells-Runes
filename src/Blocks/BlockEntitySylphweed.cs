@@ -6,27 +6,38 @@ namespace SpellsAndRunes.Blocks;
 
 public class BlockEntitySylphweed : BlockEntity
 {
-    private SylphweedGlowRenderer? renderer;
+    private SylphweedGlowRenderer? glowRenderer;
+    private IdleAnimatedBlockRenderer? animRenderer;
 
     public override void Initialize(ICoreAPI api)
     {
         base.Initialize(api);
-        if (api is ICoreClientAPI capi)
-        {
-            renderer = capi.ModLoader.GetModSystem<SpellsAndRunesMod>()?.SylphGlow;
-            renderer?.Register(Pos);
-        }
+        if (api is not ICoreClientAPI capi) return;
+
+        var mod = capi.ModLoader.GetModSystem<SpellsAndRunesMod>();
+        glowRenderer = mod?.SylphGlow;
+        glowRenderer?.Register(Pos);
+
+        animRenderer = mod?.IdleAnim;
+        if (Block != null) animRenderer?.Register(Block, Pos);
     }
 
     public override void OnBlockRemoved()
     {
-        renderer?.Unregister(Pos);
+        glowRenderer?.Unregister(Pos);
+        animRenderer?.Unregister(Pos);
         base.OnBlockRemoved();
     }
 
     public override void OnBlockUnloaded()
     {
-        renderer?.Unregister(Pos);
+        glowRenderer?.Unregister(Pos);
+        animRenderer?.Unregister(Pos);
         base.OnBlockUnloaded();
+    }
+
+    public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+    {
+        return true;
     }
 }

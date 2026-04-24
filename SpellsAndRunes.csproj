@@ -7,7 +7,7 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <AssemblyName>SpellsAndRunes</AssemblyName>
     <RootNamespace>SpellsAndRunes</RootNamespace>
-    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+    <Configuration Condition="'$(Configuration)'==''">Debug</Configuration>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
@@ -36,6 +36,10 @@
     </Reference>
     <Reference Include="VSSurvivalMod">
       <HintPath>C:\Games\Vintagestory\Mods\VSSurvivalMod.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VSEssentials">
+      <HintPath>C:\Games\Vintagestory\Mods\VSEssentials.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

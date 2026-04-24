@@ -1,24 +1,72 @@
 {
-	"code": "ignis-fragment",
+	"code": "ignis",
 	"class": "IgnisFragment",
 	"entityClass": "ignisfragment",
-	"entityBehaviors": [
+	"behaviors": [
 		{
-			"name": "Animatable"
+			"name": "OmniAttachable",
+			"properties": {
+				"facingCode": "position",
+				"attachmentAreas": {
+					"down": { "x1": 6, "y1": 15, "z1": 6, "x2": 10, "y2": 15, "z2": 10 },
+					"up": { "x1": 6, "y1": 0, "z1": 6, "x2": 10, "y2": 0, "z2": 10 },
+					"north": { "x1": 6, "y1": 6, "z1": 0, "x2": 10, "y2": 10, "z2": 1 },
+					"east": { "x1": 6, "y1": 6, "z1": 0, "x2": 10, "y2": 10, "z2": 1, "rotateY": 90 },
+					"south": { "x1": 6, "y1": 6, "z1": 0, "x2": 10, "y2": 10, "z2": 1, "rotateY": 180 },
+					"west": { "x1": 6, "y1": 6, "z1": 0, "x2": 10, "y2": 10, "z2": 1, "rotateY": 270 }
+				}
+			}
+		}
+	],
+	"variantgroups": [
+		{
+			"code": "form",
+			"states": ["fragment"]
+		},
+		{
+			"code": "position",
+			"states": ["up", "down"],
+			"loadFromProperties": "abstract/horizontalorientation"
 		}
 	],
 	"creativeinventory": {
-		"general": ["*"],
-		"decorative": ["*"]
+		"general": ["*-fragment-up"],
+		"decorative": ["*-fragment-up"]
 	},
-	"shape": {
-		"base": "spellsandrunes:block/ignis-fragment"
+	"shapebytype": {
+		"*-fragment-up": {
+			"base": "spellsandrunes:block/ignis-fragment"
+		},
+		"*-fragment-down": {
+			"base": "spellsandrunes:block/ignis-fragment",
+			"rotateX": 180
+		},
+		"*-fragment-north": {
+			"base": "spellsandrunes:block/ignis-fragment",
+			"rotateX": 90,
+			"rotateZ": 180
+		},
+		"*-fragment-east": {
+			"base": "spellsandrunes:block/ignis-fragment",
+			"rotateX": 90,
+			"rotateZ": 270
+		},
+		"*-fragment-south": {
+			"base": "spellsandrunes:block/ignis-fragment",
+			"rotateX": 90,
+			"rotateZ": 0
+		},
+		"*-fragment-west": {
+			"base": "spellsandrunes:block/ignis-fragment",
+			"rotateX": 90,
+			"rotateZ": 90
+		}
 	},
 	"drawtype": "json",
 	"blockmaterial": "Stone",
 	"sunlight_propagates": false,
 	"resistance": 2.5,
-	"renderpass": "BlendNoCull",
+	"renderpass": "OpaqueNoCull",
 	"sideopaque": {
 		"all": false
 	},
@@ -42,6 +90,16 @@
 			}
 		}
 	],
+	  "guiTransform": {
+		"translation": { "x": -8, "y": -30, "z": 0 },
+		"rotation": { "x": 0, "y": 1, "z": -180 },
+		"scale": 3
+  },
+  	"tpHandTransform": {
+		"translation": { "x": -1.2, "y": -0.5, "z": -0.65 },
+		"rotation": { "x": 0, "y": 176, "z": 78 },
+		"scale": 0.8
+	},
 	"vertexFlags": {
 		"zOffset": 1
 	},

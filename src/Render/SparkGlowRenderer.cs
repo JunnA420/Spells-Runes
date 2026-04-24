@@ -156,7 +156,6 @@ private bool InitShader()
         }
     }
 
-
     public void OnRenderFrame(float dt, EnumRenderStage stage)
     {
         // Move and age all points

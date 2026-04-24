@@ -1,17 +1,17 @@
 {
-	"code": "ignis-fragment-gem",
+	"code": "ignis-fragment-gem-cracked",
 	"class": "Item",
 	"maxstacksize": 16,
 	"renderType": "shape",
 	"shape": {
-		"base": "spellsandrunes:item/ignis-fragment-gem"
-	},
-	"attributes": {
-		"bloomeryFuelRatio": 1
+		"base": "spellsandrunes:item/ignis-fragment-gem-cracked"
 	},
 	"textures": {
 		"ignis-fragment.png": {
 			"base": "spellsandrunes:block/ignis-fragment"
+		},
+		"ignis-fragment-gem-cracked-emissive.png": {
+			"base": "spellsandrunes:item/ignis-fragment-gem-cracked-emissive"
 		}
 	},
 	"behaviors": [
@@ -30,14 +30,6 @@
 			}
 		}
 	],
-	"creativeinventory": {
-		"general": [
-			"*"
-		],
-		"items": [
-			"*"
-		]
-	},
 	"tpHandTransform": {
 		"translation": {
 			"x": -1,
@@ -52,19 +44,25 @@
 		"scale": 1
 	},
 	"guiTransform": {
-		"translation": { "x": 10, "y": -30, "z": 0 },
-		"rotation": { "x": 0, "y": -22, "z": -180 },
+		"translation": {
+			"x": 10,
+			"y": -35,
+			"z": 0
+		},
+		"rotation": {
+			"x": 0,
+			"y": -22,
+			"z": -180
+		},
 		"scale": 3
 	},
-	"materialDensity": 400,
-	"combustibleProps": {
-		"meltingPoint": 1420,
-		"meltingDuration": 30,
-		"smeltedRatio": 1,
-		"requiresContainer": false,
-		"smeltedStack": {
-			"type": "item",
-			"code": "spellsandrunes:ignis-fragment-gem-cracked"
-		}
-	}
+	"creativeinventory": {
+		"general": [
+			"*"
+		],
+		"items": [
+			"*"
+		]
+	},
+	"materialDensity": 400
 }

@@ -18,6 +18,8 @@ public class Tornado : Spell
 
     public override float FluxCost => 70f;
     public override float CastTime => 2.0f;
+    public override string? AnimationCode => "air_wind_tornado";
+    public override bool AnimationUpperBodyOnly => false;
 
     public override IReadOnlyList<string> Prerequisites => ["air_storms_eye"];
 

@@ -1,0 +1,12 @@
+{
+  "type": "crushing",
+  "ingredient": {
+    "type": "item",
+    "code": "spellsandrunes:ignis-fragment-gem-core"
+  },
+  "output": {
+    "type": "item",
+    "code": "spellsandrunes:crushed-ignis-flux-echoe",
+    "quantity": 1
+  }
+}
