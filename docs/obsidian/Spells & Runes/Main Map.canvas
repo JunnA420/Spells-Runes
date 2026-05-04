@@ -1,0 +1,20 @@
+{
+	"nodes":[
+		{"id":"296499dfb626d348","type":"group","x":560,"y":-420,"width":673,"height":540,"color":"#ffffff","label":"Flux"},
+		{"id":"4e7b74ef248ecb0d","type":"text","text":"Flux Alignment","x":963,"y":-395,"width":250,"height":60},
+		{"id":"e4a9d26a12d16a49","type":"text","text":"Flux Alignment 2","x":963,"y":-240,"width":250,"height":60},
+		{"id":"a32dc9442ba32ca8","type":"text","text":"Flux Alignment 3","x":963,"y":-100,"width":250,"height":60},
+		{"id":"086149696895387f","type":"text","text":"Flux Alignment 4","x":963,"y":40,"width":250,"height":60},
+		{"id":"5cefdbc5e416bedd","type":"text","text":"Flux Capacity","x":580,"y":-270,"width":250,"height":60},
+		{"id":"421de8d45740696d","type":"text","text":"Flux","x":663,"y":-390,"width":84,"height":50},
+		{"id":"ef379293aad780e2","type":"text","text":"Spells & Runes","x":-20,"y":-180,"width":250,"height":60}
+	],
+	"edges":[
+		{"id":"cf9392b426495c05","fromNode":"4e7b74ef248ecb0d","fromSide":"bottom","toNode":"e4a9d26a12d16a49","toSide":"top"},
+		{"id":"31452e6f79bed775","fromNode":"e4a9d26a12d16a49","fromSide":"bottom","toNode":"a32dc9442ba32ca8","toSide":"top"},
+		{"id":"2dc39aed83146085","fromNode":"a32dc9442ba32ca8","fromSide":"bottom","toNode":"086149696895387f","toSide":"top"},
+		{"id":"2dfcdd9e5385b488","fromNode":"421de8d45740696d","fromSide":"right","toNode":"4e7b74ef248ecb0d","toSide":"left"},
+		{"id":"6e063a15f158d6a3","fromNode":"421de8d45740696d","fromSide":"bottom","toNode":"5cefdbc5e416bedd","toSide":"top"},
+		{"id":"cfac415e0bd3680f","fromNode":"ef379293aad780e2","fromSide":"right","toNode":"296499dfb626d348","toSide":"left"}
+	]
+}

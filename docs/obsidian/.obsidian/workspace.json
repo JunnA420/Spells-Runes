@@ -1,0 +1,205 @@
+{
+  "main": {
+    "id": "d815dda44823d12d",
+    "type": "split",
+    "children": [
+      {
+        "id": "1b0c1336eaff3b55",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "53973c6c29615376",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graf"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "70d9e71ef26e8687",
+    "type": "split",
+    "children": [
+      {
+        "id": "f78375322637f22e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bfbd90babe479774",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Průzkumník souborů"
+            }
+          },
+          {
+            "id": "78ec718f1d536861",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Hledat"
+            }
+          },
+          {
+            "id": "f90fc91c8b029bd4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Záložky"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "74a263a08cbec207",
+    "type": "split",
+    "children": [
+      {
+        "id": "821e0b2150799496",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dbce24d755379d33",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Zpětné odkazy"
+            }
+          },
+          {
+            "id": "4012855ea10e1b1a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Odchozí odkazy"
+            }
+          },
+          {
+            "id": "0e8a36e28fd93b01",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Štítky"
+            }
+          },
+          {
+            "id": "a5c9ebf529f5014d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Všechny vlastnosti"
+            }
+          },
+          {
+            "id": "f310a8de5b9a7403",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Přehled"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Otevřít rychlé přepínání": false,
+      "graph:Otevřít graf": false,
+      "canvas:Vytvořit nový canvas": false,
+      "daily-notes:Otevřít dnešní poznámku": false,
+      "templates:Vložit šablonu": false,
+      "command-palette:Otevřít paletu příkazů": false,
+      "bases:Vytvořit novou základnu": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "53973c6c29615376",
+  "lastOpenFiles": [
+    "Spells & Runes/Templates/Scrolls.md",
+    "Spells & Runes/Templates/Journal.md",
+    "Spells & Runes/Main Map.canvas",
+    "Pasted image 20260504183741.png",
+    "Flux.canvas",
+    "Spells & Runes/Lore/Documents/Untitled.md",
+    "Spells & Runes/Lore/Journal",
+    "Spells & Runes/Lore/Scrolls",
+    "Spells & Runes/Lore",
+    "Bez názvu",
+    "Spells & Runes",
+    "Spells & Runes/Templates",
+    "Excalidraw/Drawing 2026-05-04 18.17.52.excalidraw.md",
+    "Spells and Runes.mm",
+    "Lore/Design/Drawing 2026-05-04 18.16.27.excalidraw.md",
+    "Excalidraw",
+    "Lore/Design/Spells and Runes.md",
+    "Lore/Design/Spells and Runes.txt",
+    "Lore/Design/Spells and Runes.mm",
+    "TEST/Bez názvu.canvas",
+    "TEST/LORE _ IGNIS.md"
+  ]
+}
